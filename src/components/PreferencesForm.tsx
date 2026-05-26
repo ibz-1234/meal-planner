@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DIETARY_RESTRICTIONS, FITNESS_GOALS, ALLERGIES } from "@/lib/meal-data";
+import { generateWeeklyPlan } from "@/lib/plan-generator";
 import type { UserPreferences } from "@/lib/types";
 
 export default function PreferencesForm() {
@@ -35,12 +36,7 @@ export default function PreferencesForm() {
     };
 
     try {
-      const res = await fetch("/api/generate-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(preferences),
-      });
-      const plan = await res.json();
+      const plan = generateWeeklyPlan(preferences);
       sessionStorage.setItem("mealPlan", JSON.stringify(plan));
       router.push("/plan");
     } catch {
