@@ -1,0 +1,66 @@
+export interface UserPreferences {
+  budget: number;
+  budgetPeriod: "weekly" | "monthly";
+  fitnessGoal: string;
+  dietaryRestrictions: string[];
+  allergies: string[];
+  householdSize: number;
+  cookingSkill: "beginner" | "intermediate" | "advanced";
+}
+
+export interface Ingredient {
+  name: string;
+  quantity: string;
+  unit: string;
+  estimatedCost: number;
+  category: string;
+  affiliateUrl?: string;
+}
+
+export interface Meal {
+  name: string;
+  type: "breakfast" | "lunch" | "dinner" | "snack";
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  prepTime: number;
+  ingredients: Ingredient[];
+  instructions: string[];
+  wasteReductionTip?: string;
+}
+
+export interface DayPlan {
+  day: string;
+  meals: Meal[];
+  totalCalories: number;
+  totalCost: number;
+}
+
+export interface WeeklyPlan {
+  id: string;
+  createdAt: string;
+  preferences: UserPreferences;
+  days: DayPlan[];
+  totalWeeklyCost: number;
+  shoppingList: ShoppingListItem[];
+  supermarketComparison: SupermarketPrice[];
+  wasteReductionTips: string[];
+}
+
+export interface ShoppingListItem {
+  ingredient: string;
+  totalQuantity: string;
+  unit: string;
+  category: string;
+  estimatedCost: number;
+  checked: boolean;
+}
+
+export interface SupermarketPrice {
+  store: string;
+  totalEstimatedCost: number;
+  savings: number;
+  logo: string;
+  affiliateUrl: string;
+}
