@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import PreferencesForm from "@/components/PreferencesForm";
+import { SAMPLE_IMAGES } from "@/lib/meal-images";
 
 export default function PreviewPage() {
   return (
@@ -23,12 +25,19 @@ export default function PreviewPage() {
               "No signup needed",
               "Progress saved locally",
               "Cheapest shop highlighted",
-            ].map((item) => (
+            ].map((item, idx) => (
               <div
                 key={item}
-                className="rounded-2xl border border-card-border bg-background px-4 py-3 text-sm font-medium"
+                className="overflow-hidden rounded-2xl border border-card-border bg-background"
               >
-                {item}
+                <Image
+                  src={SAMPLE_IMAGES[idx]}
+                  alt={item}
+                  width={600}
+                  height={400}
+                  className="h-28 w-full object-cover"
+                />
+                <div className="px-4 py-3 text-sm font-medium">{item}</div>
               </div>
             ))}
           </div>

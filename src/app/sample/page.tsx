@@ -1,3 +1,6 @@
+import Image from "next/image";
+import { SAMPLE_IMAGES } from "@/lib/meal-images";
+
 export default function SamplePage() {
   const meals = [
     { title: "Monday", name: "Greek Yogurt Parfait", note: "350 cal · 22g protein" },
@@ -25,7 +28,14 @@ export default function SamplePage() {
             key={meal.title}
             className="overflow-hidden rounded-3xl border border-card-border bg-card shadow-sm"
           >
-            <div className={`h-48 bg-gradient-to-br ${index % 2 === 0 ? "from-amber-200 via-orange-100 to-rose-100" : "from-green-200 via-lime-100 to-amber-50"}`} />
+            <Image
+              src={SAMPLE_IMAGES[index % SAMPLE_IMAGES.length]}
+              alt={meal.name}
+              width={800}
+              height={550}
+              className="h-48 w-full object-cover"
+              loading="lazy"
+            />
             <div className="p-5">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
                 {meal.title}

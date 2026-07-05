@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { SAMPLE_IMAGES } from "@/lib/meal-images";
 
 const CATEGORY_COUNTS = [
   { label: "5-Minute Meals", count: 8 },
@@ -145,32 +147,29 @@ export default function Home() {
               {FEATURED_RECIPES.map((recipe, index) => (
                 <article
                   key={recipe.name}
-                  className={`overflow-hidden rounded-2xl border border-card-border bg-gradient-to-br ${recipe.accent}`}
+                  className="overflow-hidden rounded-2xl border border-card-border bg-card"
                 >
-                  <div className="aspect-[4/3] w-full bg-[linear-gradient(135deg,rgba(255,255,255,0.2),rgba(255,255,255,0.8))] p-4">
-                    <div className="flex h-full flex-col justify-between rounded-2xl border border-white/40 bg-white/65 p-4 backdrop-blur-sm">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
-                          {recipe.time}
-                        </div>
-                        <div className="rounded-full bg-[#e11d2e] px-2.5 py-1 text-xs font-bold text-white">
-                          {recipe.tag}
-                        </div>
+                  <Image
+                    src={SAMPLE_IMAGES[index % SAMPLE_IMAGES.length]}
+                    alt={recipe.name}
+                    width={800}
+                    height={550}
+                    className="h-44 w-full object-cover"
+                  />
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
+                        {recipe.time}
                       </div>
-                      <div>
-                        <div className="mb-3 flex items-end justify-between">
-                          <span className="text-4xl">{["🍱", "🍔", "🍛", "🥢"][index]}</span>
-                          <span className="text-xs font-semibold text-muted">
-                            {index + 1}/4
-                          </span>
-                        </div>
-                        <h2 className="max-w-[14rem] text-lg font-bold leading-tight">
-                          {recipe.name}
-                        </h2>
-                        <p className="mt-2 text-sm text-muted">
-                          High-protein, realistic, and easy to shop for.
-                        </p>
+                      <div className="rounded-full bg-[#e11d2e] px-2.5 py-1 text-xs font-bold text-white">
+                        {recipe.tag}
                       </div>
+                    </div>
+                    <div className="mt-4">
+                      <h2 className="text-lg font-bold leading-tight">{recipe.name}</h2>
+                      <p className="mt-2 text-sm text-muted">
+                        Hand-picked meals, nothing overworked.
+                      </p>
                     </div>
                   </div>
                 </article>
