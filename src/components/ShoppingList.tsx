@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import type { ShoppingListItem } from "@/lib/types";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
+  const { format } = useCurrency();
 
   const toggleCheck = (ingredient: string) => {
     const next = new Set(checkedItems);
@@ -26,9 +28,7 @@ export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
         <h3 className="text-lg font-bold">Shopping List</h3>
         <div className="text-sm text-muted">
           {checkedCount}/{items.length} items ·{" "}
-          <span className="font-semibold text-primary">
-            ${totalCost.toFixed(2)}
-          </span>
+          <span className="font-semibold text-primary">{format(totalCost)}</span>
         </div>
       </div>
 
@@ -95,9 +95,7 @@ export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
                         ({item.totalQuantity})
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-primary">
-                      ${item.estimatedCost.toFixed(2)}
-                    </span>
+                    <span className="text-sm font-medium text-primary">{format(item.estimatedCost)}</span>
                   </li>
                 );
               })}

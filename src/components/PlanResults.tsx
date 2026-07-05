@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { WeeklyPlan } from "@/lib/types";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
 import SupermarketComparison from "./SupermarketComparison";
@@ -25,6 +26,7 @@ function getPlanFromStorage(): WeeklyPlan | null {
 
 export default function PlanResults() {
   const router = useRouter();
+  const { format } = useCurrency();
   const [plan] = useState<WeeklyPlan | null>(getPlanFromStorage);
   const [activeTab, setActiveTab] = useState<TabId>("meals");
   const [selectedDay, setSelectedDay] = useState(0);
@@ -65,7 +67,7 @@ export default function PlanResults() {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold">${plan.totalWeeklyCost.toFixed(2)}</p>
+            <p className="text-3xl font-bold">{format(plan.totalWeeklyCost)}</p>
             <p className="text-sm opacity-90">estimated weekly cost</p>
           </div>
         </div>
@@ -106,7 +108,7 @@ export default function PlanResults() {
               >
                 <span className="font-semibold">{day.day.slice(0, 3)}</span>
                 <span className="mt-0.5 text-xs opacity-80">
-                  ${day.totalCost.toFixed(2)}
+                  {format(day.totalCost)}
                 </span>
               </button>
             ))}
@@ -129,7 +131,7 @@ export default function PlanResults() {
             <div className="rounded-xl bg-card border border-card-border p-3 text-center">
               <p className="text-xs text-muted">Cost</p>
               <p className="text-lg font-bold text-primary">
-                ${plan.days[selectedDay].totalCost.toFixed(2)}
+                {format(plan.days[selectedDay].totalCost)}
               </p>
             </div>
             <div className="rounded-xl bg-card border border-card-border p-3 text-center">
@@ -156,7 +158,7 @@ export default function PlanResults() {
       {activeTab === "shopping" && <ShoppingList items={plan.shoppingList} />}
 
       {activeTab === "stores" && (
-        <SupermarketComparison stores={plan.supermarketComparison} />
+        <SupermarketComparison weeklyBasketGBP={plan.totalWeeklyCost} />
       )}
 
       {activeTab === "waste" && (

@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --primary: #10b981;
-  --primary-dark: #059669;
-  --primary-light: #d1fae5;
-  --secondary: #f59e0b;
+  --background: #faf8f5;
+  --foreground: #2c2416;
+  --primary: #b45309;
+  --primary-dark: #92400e;
+  --primary-light: #fde9d0;
+  --secondary: #d97706;
   --secondary-light: #fef3c7;
-  --accent: #6366f1;
-  --accent-light: #e0e7ff;
+  --accent: #4d7c0f;
+  --accent-light: #ecfccb;
   --card: #ffffff;
-  --card-border: #e2e8f0;
-  --muted: #64748b;
-  --danger: #ef4444;
+  --card-border: #e8e0d4;
+  --muted: #6f6350;
+  --danger: #b91c1c;
   --danger-light: #fee2e2;
 }
 
@@ -32,33 +32,20 @@
   --color-muted: var(--muted);
   --color-danger: var(--danger);
   --color-danger-light: var(--danger-light);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #f1f5f9;
-    --primary: #34d399;
-    --primary-dark: #10b981;
-    --primary-light: #064e3b;
-    --secondary: #fbbf24;
-    --secondary-light: #78350f;
-    --accent: #818cf8;
-    --accent-light: #312e81;
-    --card: #1e293b;
-    --card-border: #334155;
-    --muted: #94a3b8;
-    --danger: #f87171;
-    --danger-light: #7f1d1d;
-  }
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-source-serif);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif), Georgia, serif;
 }
 
 * {

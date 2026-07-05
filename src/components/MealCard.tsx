@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import type { Meal } from "@/lib/types";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function MealCard({ meal }: { meal: Meal }) {
   const [expanded, setExpanded] = useState(false);
+  const { format } = useCurrency();
 
   const mealTypeColors: Record<string, string> = {
     breakfast: "bg-secondary-light text-secondary",
@@ -33,7 +35,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
           </div>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <span className="font-medium text-primary">${totalCost.toFixed(2)}</span>
+          <span className="font-medium text-primary">{format(totalCost)}</span>
           <span className="text-muted">{meal.calories} cal</span>
           <svg
             className={`h-5 w-5 text-muted transition-transform ${expanded ? "rotate-180" : ""}`}
@@ -73,9 +75,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
                   <span className="text-muted">
                     {ing.quantity} {ing.unit} {ing.name}
                   </span>
-                  <span className="text-xs font-medium text-primary">
-                    ${ing.estimatedCost.toFixed(2)}
-                  </span>
+                  <span className="text-xs font-medium text-primary">{format(ing.estimatedCost)}</span>
                 </li>
               ))}
             </ul>

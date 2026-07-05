@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 import { DIETARY_RESTRICTIONS, FITNESS_GOALS, ALLERGIES } from "@/lib/meal-data";
 import { generateWeeklyPlan } from "@/lib/plan-generator";
 import type { UserPreferences } from "@/lib/types";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { convertToGBP, currencySymbol } from "@/lib/currency";
 
 export default function PreferencesForm() {
   const router = useRouter();
+  const { country } = useCurrency();
+  const symbol = currencySymbol(country);
   const [loading, setLoading] = useState(false);
   const [budget, setBudget] = useState(100);
   const [budgetPeriod, setBudgetPeriod] = useState<"weekly" | "monthly">("weekly");
@@ -26,7 +30,7 @@ export default function PreferencesForm() {
     setLoading(true);
 
     const preferences: UserPreferences = {
-      budget,
+      budget: convertToGBP(budget, country.currency),
       budgetPeriod,
       fitnessGoal,
       dietaryRestrictions,
@@ -51,14 +55,14 @@ export default function PreferencesForm() {
       {/* Budget */}
       <div className="rounded-xl border border-card-border bg-card p-6">
         <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary text-sm font-bold">$</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary text-sm font-bold">{symbol}</span>
           Budget
         </h3>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
           <div className="flex-1">
             <label className="mb-1 block text-sm font-medium text-muted">Amount</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">{symbol}</span>
               <input
                 type="number"
                 min={10}
@@ -96,8 +100,8 @@ export default function PreferencesForm() {
           className="mt-4 w-full accent-primary"
         />
         <div className="mt-1 flex justify-between text-xs text-muted">
-          <span>$10</span>
-          <span>$500</span>
+          <span>{symbol}10</span>
+          <span>{symbol}500</span>
         </div>
       </div>
 

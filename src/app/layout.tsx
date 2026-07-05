@@ -1,30 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "MealPlanAI – AI-Powered Meal Planning & Grocery Optimizer",
+  title: "My Meal Plan – Your personalised meal plan in under 5 minutes",
   description:
-    "Create personalized weekly meal plans, generate smart shopping lists, compare supermarket prices, and reduce food waste with AI-powered meal planning.",
+    "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Includes recipes, shopping lists, nutrition and local supermarket price comparison.",
   keywords: [
     "meal planner",
-    "grocery optimizer",
-    "meal prep",
+    "meal plan",
+    "grocery list",
     "shopping list",
-    "food waste",
     "budget meals",
+    "macros",
     "healthy eating",
   ],
 };
@@ -37,12 +38,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${sourceSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <CurrencyProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </CurrencyProvider>
       </body>
     </html>
   );
