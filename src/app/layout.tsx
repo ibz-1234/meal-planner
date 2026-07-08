@@ -16,7 +16,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "My Meal Plan – Your personalised meal plan in under 5 minutes",
+  title: "Mealsmith – Your personalised meal plan in under 5 minutes",
   description:
     "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Includes recipes, shopping lists, nutrition and local supermarket price comparison.",
   keywords: [

@@ -26,7 +26,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2">
           <span className="text-2xl">🍽️</span>
           <span className="text-xl font-bold text-foreground">
-            My Meal <span className="text-primary">Plan</span>
+            Meal<span className="text-primary">smith</span>
           </span>
         </Link>
         <nav className="flex items-center gap-3">

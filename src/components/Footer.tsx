@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               <span className="text-xl">🍽️</span>
               <span className="text-lg font-bold">
-                My Meal <span className="text-primary">Plan</span>
+                Meal<span className="text-primary">smith</span>
               </span>
             </div>
             <p className="mt-2 text-sm text-muted">
@@ -35,7 +35,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-card-border pt-4 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} My Meal Plan. All rights reserved.
+          &copy; {new Date().getFullYear()} Mealsmith. All rights reserved.
         </div>
       </div>
     </footer>

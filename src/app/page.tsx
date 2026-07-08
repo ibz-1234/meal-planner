@@ -60,7 +60,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 text-2xl font-black tracking-tight">
             <span className="rounded bg-white/15 px-2 py-0.5 text-base">🍽️</span>
-            <span>My Meal Plan</span>
+            <span>Mealsmith</span>
           </div>
           <div className="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.18em] md:flex">
             <span>Choose meals</span>
