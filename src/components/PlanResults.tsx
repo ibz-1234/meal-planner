@@ -158,7 +158,13 @@ export default function PlanResults() {
       {activeTab === "shopping" && <ShoppingList items={plan.shoppingList} />}
 
       {activeTab === "stores" && (
-        <SupermarketComparison weeklyBasketGBP={plan.totalWeeklyCost} />
+        <SupermarketComparison
+          weeklyBasketGBP={plan.totalWeeklyCost}
+          items={plan.shoppingList.map((item) => ({
+            ingredient: item.ingredient,
+            estimatedCost: item.estimatedCost,
+          }))}
+        />
       )}
 
       {activeTab === "waste" && (
