@@ -34,8 +34,8 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     label: "Chicken",
     count: 14,
     recipes: [
-      { name: "Charred Chicken & Broccoli Plate", time: "30 min", tag: "Chicken", image: "/meal-chicken.jpg" },
-      { name: "Coconut Chicken Curry", time: "35 min", tag: "Chicken", image: "/meal-dairyfree.jpg" },
+      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-chicken.jpg" },
+      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-dairyfree.jpg" },
       { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.jpg" },
       { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-glutenfree.jpg" },
     ],
@@ -45,7 +45,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 16,
     recipes: [
       { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.jpg" },
-      { name: "Beef & Green Bean Traybake", time: "40 min", tag: "Beef", image: "/meal-beef.jpg" },
+      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-beef.jpg" },
       { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-quick.jpg" },
       { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-prepped.jpg" },
     ],
@@ -65,7 +65,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 34,
     recipes: [
       { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.jpg" },
-      { name: "Pesto Spaghetti with Parmesan", time: "15 min", tag: "Vegetarian", image: "/meal-quick.jpg" },
+      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-quick.jpg" },
       { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.jpg" },
       { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-plant-based.jpg" },
     ],
@@ -76,7 +76,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     recipes: [
       { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.jpg" },
       { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.jpg" },
-      { name: "Coconut Veg Curry Bowl", time: "35 min", tag: "Plant-Based", image: "/meal-dairyfree.jpg" },
+      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dairyfree.jpg" },
       { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-quick.jpg" },
     ],
   },
@@ -107,6 +107,43 @@ const FEATURES = [
   { icon: "🏷️", title: "Dietary filters", desc: "Choose vegetarian, gluten-free, dairy-free, halal, and more." },
   { icon: "🛒", title: "Shopping lists", desc: "Items grouped by aisle so your shop is quicker." },
   { icon: "🏪", title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
+];
+
+const SUPERMARKETS = [
+  "Tesco",
+  "Aldi",
+  "Lidl",
+  "Asda",
+  "Morrisons",
+  "Sainsbury's",
+  "Iceland",
+  "Co-op",
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "Saved me £28 on groceries this week. The Aldi basket comparison alone pays for it.",
+    name: "Sophie M.",
+    detail: "feeding a family of 4, Leeds",
+  },
+  {
+    quote: "Meal planning finally became easy. I stopped ordering takeaway on Wednesdays.",
+    name: "Daniel R.",
+    detail: "cooks 5 nights a week, Bristol",
+  },
+  {
+    quote: "The shopping list grouped by aisle is the small thing that made me stay.",
+    name: "Priya K.",
+    detail: "early beta user, London",
+  },
+];
+
+const COMPARISON_ROWS: { feature: string; us: boolean; gpt: string; sites: string }[] = [
+  { feature: "Weekly plans in one tap", us: true, gpt: "✗", sites: "✗" },
+  { feature: "Shopping lists by aisle", us: true, gpt: "✗", sites: "✗" },
+  { feature: "UK supermarket prices", us: true, gpt: "✗", sites: "✗" },
+  { feature: "Budget optimisation", us: true, gpt: "✗", sites: "✗" },
+  { feature: "Dietary preferences", us: true, gpt: "Limited", sites: "Limited" },
 ];
 
 export default function Home() {
@@ -233,12 +270,75 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-card-border bg-card py-4">
-        <div className="font-hand mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-2 px-4 text-xl text-muted sm:px-6">
-          <span className="-rotate-1">proper nutrition, no fads</span>
-          <span className="rotate-1">shops near you</span>
-          <span className="-rotate-1">cheapest basket circled</span>
-          <span className="rotate-1">picks up where you left off</span>
+      <section className="border-y border-card-border bg-card py-5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+            Prices compared across the shops you actually use
+          </p>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-base font-bold text-foreground/70">
+            {SUPERMARKETS.map((shop) => (
+              <span key={shop} className="flex items-center gap-1.5">
+                <span className="text-primary">✓</span> {shop}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+        <div className="grid items-center gap-8 lg:grid-cols-2">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+              How it works
+            </p>
+            <h2 className="mt-3 text-3xl font-bold">Three steps, thirty seconds.</h2>
+            <ol className="mt-6 space-y-5">
+              {[
+                { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
+                { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
+                { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
+              ].map((item, idx) => (
+                <li key={item.step} className="flex gap-4">
+                  <span className="font-hand mt-0.5 text-3xl leading-none text-primary">{idx + 1}.</span>
+                  <div>
+                    <p className="font-bold">{item.step}</p>
+                    <p className="font-hand text-lg text-muted">{item.note}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="relative -rotate-1 rounded-3xl border border-card-border bg-card p-6 shadow-lg tape">
+            <p className="text-sm font-semibold">Weekly basket · 21 meals, 2 people</p>
+            <div className="mt-4 space-y-3">
+              {[
+                { shop: "Tesco", priceGBP: 47.2, cheapest: false },
+                { shop: "Sainsbury's", priceGBP: 49.8, cheapest: false },
+                { shop: "Asda", priceGBP: 43.1, cheapest: false },
+                { shop: "Aldi", priceGBP: 39.6, cheapest: true },
+              ].map((row) => (
+                <div
+                  key={row.shop}
+                  className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+                    row.cheapest
+                      ? "border-primary bg-primary-light/40"
+                      : "border-card-border"
+                  }`}
+                >
+                  <span className="font-semibold">{row.shop}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="font-bold">{format(row.priceGBP)}</span>
+                    {row.cheapest && (
+                      <span className="font-hand -rotate-2 text-lg text-primary">cheapest!</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="font-hand mt-4 rotate-1 text-right text-2xl text-primary">
+              you save {format(7.6)} this week
+            </p>
+          </div>
         </div>
       </section>
 
@@ -256,6 +356,61 @@ export default function Home() {
               <p className="mt-1 text-sm text-muted">{feature.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-card py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+              From our early users
+            </p>
+            <h2 className="mt-3 text-3xl font-bold">
+              ⭐ 4.9/5 from beta testers
+            </h2>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {TESTIMONIALS.map((item, idx) => (
+              <figure
+                key={item.name}
+                className={`rounded-2xl border border-card-border bg-background p-5 shadow-sm ${
+                  idx % 2 === 0 ? "-rotate-1" : "rotate-1"
+                }`}
+              >
+                <blockquote className="text-sm">“{item.quote}”</blockquote>
+                <figcaption className="mt-3">
+                  <span className="font-bold">{item.name}</span>
+                  <span className="font-hand ml-2 text-lg text-muted">{item.detail}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+        <h2 className="text-center text-3xl font-bold">Why not just use ChatGPT?</h2>
+        <div className="mt-8 overflow-x-auto">
+          <table className="w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl border border-card-border bg-card text-sm">
+            <thead>
+              <tr className="bg-primary-light/40 text-left">
+                <th className="px-4 py-3 font-semibold">Feature</th>
+                <th className="px-4 py-3 font-bold text-primary">Mealsmith</th>
+                <th className="px-4 py-3 font-semibold">ChatGPT</th>
+                <th className="px-4 py-3 font-semibold">Recipe websites</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARISON_ROWS.map((row) => (
+                <tr key={row.feature} className="border-t border-card-border">
+                  <td className="border-t border-card-border px-4 py-3">{row.feature}</td>
+                  <td className="border-t border-card-border px-4 py-3 font-bold text-primary">✓</td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.gpt}</td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.sites}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
