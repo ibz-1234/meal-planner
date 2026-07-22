@@ -1,19 +1,22 @@
+"use client";
+
+import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="border-t border-card-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl">🍽️</span>
+              <Image src="/logo.png" alt="Mealsmith logo" width={28} height={28} className="h-7 w-7" />
               <span className="text-lg font-bold">
                 Meal<span className="text-primary">smith</span>
               </span>
             </div>
-            <p className="mt-2 text-sm text-muted">
-              Warm, practical meal planning with local shops, progress tracking,
-              and shopping lists that fit real life.
-            </p>
+            <p className="mt-2 text-sm text-muted">{t("footer.tagline")}</p>
           </div>
           <div>
             <h3 className="font-semibold">Features</h3>

@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import CurrencySelector from "./CurrencySelector";
+import LanguageSelector from "./LanguageSelector";
 import { currentUser, logOut, type User } from "@/lib/auth";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Header() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [user, setUser] = useState<User | null>(() => currentUser());
 
   useEffect(() => {
@@ -24,12 +28,13 @@ export default function Header() {
     <header className="border-b border-card-border bg-card">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">🍽️</span>
+          <Image src="/logo.png" alt="Mealsmith logo" width={36} height={36} className="h-9 w-9" />
           <span className="text-xl font-bold text-foreground">
             Meal<span className="text-primary">smith</span>
           </span>
         </Link>
         <nav className="flex items-center gap-3">
+          <LanguageSelector />
           <CurrencySelector />
           {user ? (
             <>
@@ -40,7 +45,7 @@ export default function Header() {
                 href="/plan"
                 className="hidden text-sm font-medium text-muted hover:text-foreground sm:inline"
               >
-                My plan
+                {t("nav.myPlan")}
               </Link>
               <button
                 type="button"
@@ -52,7 +57,7 @@ export default function Header() {
                 }}
                 className="text-sm font-medium text-muted hover:text-foreground"
               >
-                Log out
+                {t("nav.logout")}
               </button>
             </>
           ) : (
@@ -60,14 +65,14 @@ export default function Header() {
               href="/login"
               className="text-sm font-medium text-muted hover:text-foreground"
             >
-              Log in
+              {t("nav.login")}
             </Link>
           )}
           <Link
             href="/preview"
             className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
           >
-            Get started
+            {t("nav.getStarted")}
           </Link>
         </nav>
       </div>

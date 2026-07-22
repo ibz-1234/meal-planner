@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import PricingSection from "@/components/PricingSection";
 
 type Recipe = { name: string; time: string; tag: string; image: string };
 
@@ -109,6 +111,7 @@ const FEATURES = [
 
 export default function Home() {
   const { format } = useCurrency();
+  const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState("Plant-Based");
   const category =
     CATEGORIES.find((c) => c.label === activeCategory) ?? CATEGORIES[0];
@@ -118,19 +121,25 @@ export default function Home() {
       <section className="border-b border-card-border bg-[#e11d2e] text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 text-2xl font-black tracking-tight">
-            <span className="rounded bg-white/15 px-2 py-0.5 text-base">🍽️</span>
+            <Image
+              src="/logo.png"
+              alt="Mealsmith logo"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded bg-white p-0.5"
+            />
             <span>Mealsmith</span>
           </div>
           <div className="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.18em] md:flex">
-            <span>Choose meals</span>
-            <span>Local shops</span>
-            <span>Save progress</span>
+            <span>{t("nav.chooseMeals")}</span>
+            <span>{t("nav.localShops")}</span>
+            <span>{t("nav.saveProgress")}</span>
           </div>
           <Link
             href="/preview"
             className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/20"
           >
-            Get started
+            {t("nav.getStarted")}
           </Link>
         </div>
       </section>
@@ -168,42 +177,44 @@ export default function Home() {
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-              Cooking made simple
+              {t("hero.kicker")}
             </p>
             <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Meals that feel hand-picked for your week.
+              {t("hero.title")}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted sm:text-xl">
-              Build a weekly plan around the food you actually eat, then see the
-              cheapest local shop and save your progress on any device.
+              {t("hero.subtitle")}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/preview"
                 className="rounded-xl bg-[#e11d2e] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:brightness-95"
               >
-                Get My Meal Plan
+                {t("hero.cta")}
               </Link>
               <Link
                 href="/sample"
                 className="rounded-xl border border-card-border bg-card px-6 py-3.5 text-base font-semibold transition hover:border-primary hover:text-primary"
               >
-                View sample
+                {t("hero.sample")}
               </Link>
             </div>
             <p className="mt-4 text-sm text-muted">
-              Free preview — no signup needed · Prices from {format(7.99)}/month
+              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(7.99)}
+              {t("hero.perMonth")}
             </p>
           </div>
 
           <div className="rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5">
             <div className="flex items-center justify-between border-b border-card-border pb-3">
               <div>
-                <p className="text-sm font-semibold">{category.label} menu</p>
-                <p className="text-xs text-muted">Built for smaller screens too</p>
+                <p className="text-sm font-semibold">
+                  {category.label} {t("menu.suffix")}
+                </p>
+                <p className="text-xs text-muted">{t("menu.subtitle")}</p>
               </div>
-              <span className="rounded-full bg-accent-light px-3 py-1 text-xs font-bold text-accent">
-                LIVE
+              <span className="rounded-full bg-primary-light px-3 py-1 text-xs font-bold text-primary">
+                This week
               </span>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -231,7 +242,7 @@ export default function Home() {
                     <div className="mt-4">
                       <h2 className="text-lg font-bold leading-tight">{recipe.name}</h2>
                       <p className="mt-2 text-sm text-muted">
-                        Hand-picked meals, nothing overworked.
+                        Proper food, made in your kitchen.
                       </p>
                     </div>
                   </div>
@@ -294,6 +305,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PricingSection />
     </div>
   );
 }
