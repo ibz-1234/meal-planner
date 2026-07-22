@@ -34,12 +34,52 @@
   --color-danger-light: var(--danger-light);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-source-serif);
+  --font-hand: var(--font-caveat);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: radial-gradient(#e8e0d4 0.65px, transparent 0.65px);
+  background-size: 26px 26px;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.font-hand {
+  font-family: var(--font-hand), "Comic Sans MS", cursive;
+}
+
+.hand-underline {
+  position: relative;
+  white-space: nowrap;
+}
+
+.hand-underline::after {
+  content: "";
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -0.12em;
+  height: 0.28em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8 C 20 4, 40 10, 60 6 S 100 4, 118 7' fill='none' stroke='%23e11d2e' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")
+    no-repeat center / 100% 100%;
+}
+
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 84px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(233, 214, 160, 0.75);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.wobbly {
+  border-radius: 62% 38% 55% 45% / 45% 55% 42% 58%;
 }
 
 h1,

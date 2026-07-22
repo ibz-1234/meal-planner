@@ -118,32 +118,6 @@ export default function Home() {
 
   return (
     <div className="bg-background">
-      <section className="border-b border-card-border bg-[#e11d2e] text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2 text-2xl font-black tracking-tight">
-            <Image
-              src="/logo.png"
-              alt="Mealsmith logo"
-              width={36}
-              height={36}
-              className="h-9 w-9 rounded bg-white p-0.5"
-            />
-            <span>Mealsmith</span>
-          </div>
-          <div className="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.18em] md:flex">
-            <span>{t("nav.chooseMeals")}</span>
-            <span>{t("nav.localShops")}</span>
-            <span>{t("nav.saveProgress")}</span>
-          </div>
-          <Link
-            href="/preview"
-            className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/20"
-          >
-            {t("nav.getStarted")}
-          </Link>
-        </div>
-      </section>
-
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
         <div className="overflow-x-auto pb-3">
           <div className="flex min-w-max items-center gap-2 rounded-full border border-card-border bg-card p-2 shadow-sm">
@@ -180,10 +154,14 @@ export default function Home() {
               {t("hero.kicker")}
             </p>
             <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              {t("hero.title")}
+              <span className="hand-underline">{t("hero.title").split(" ")[0]}</span>{" "}
+              {t("hero.title").split(" ").slice(1).join(" ")}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted sm:text-xl">
               {t("hero.subtitle")}
+            </p>
+            <p className="font-hand mt-3 -rotate-1 text-2xl text-primary">
+              cooked by you, planned by us — no fuss
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
@@ -205,7 +183,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5">
+          <div className="relative rotate-1 rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5 tape">
             <div className="flex items-center justify-between border-b border-card-border pb-3">
               <div>
                 <p className="text-sm font-semibold">
@@ -213,15 +191,17 @@ export default function Home() {
                 </p>
                 <p className="text-xs text-muted">{t("menu.subtitle")}</p>
               </div>
-              <span className="rounded-full bg-primary-light px-3 py-1 text-xs font-bold text-primary">
-                This week
+              <span className="font-hand -rotate-2 text-xl text-primary">
+                this week’s picks
               </span>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {category.recipes.map((recipe) => (
+              {category.recipes.map((recipe, idx) => (
                 <article
                   key={recipe.name}
-                  className="overflow-hidden rounded-2xl border border-card-border bg-card"
+                  className={`overflow-hidden rounded-2xl border border-card-border bg-card shadow-sm ${
+                    idx % 2 === 0 ? "-rotate-1" : "rotate-1"
+                  }`}
                 >
                   <Image
                     src={recipe.image}
@@ -254,11 +234,11 @@ export default function Home() {
       </section>
 
       <section className="border-y border-card-border bg-card py-4">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-2 px-4 text-sm text-muted sm:px-6">
-          <span>✓ Evidence-based nutrition</span>
-          <span>✓ Country-specific shops</span>
-          <span>✓ Cheapest shop highlighted</span>
-          <span>✓ Progress saved in browser</span>
+        <div className="font-hand mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-2 px-4 text-xl text-muted sm:px-6">
+          <span className="-rotate-1">proper nutrition, no fads</span>
+          <span className="rotate-1">shops near you</span>
+          <span className="-rotate-1">cheapest basket circled</span>
+          <span className="rotate-1">picks up where you left off</span>
         </div>
       </section>
 
@@ -267,12 +247,12 @@ export default function Home() {
           {FEATURES.map((feature, idx) => (
             <div
               key={feature.title}
-              className={`rounded-3xl border border-card-border p-5 ${
-                idx === 0 ? "bg-[#fff7ed]" : idx === 1 ? "bg-[#f0fdf4]" : idx === 2 ? "bg-[#eff6ff]" : "bg-[#fdf2f8]"
+              className={`rounded-2xl border border-card-border bg-card p-5 shadow-sm ${
+                idx % 2 === 0 ? "-rotate-1" : "rotate-1"
               }`}
             >
-              <span className="text-2xl">{feature.icon}</span>
-              <h3 className="mt-3 text-lg font-bold">{feature.title}</h3>
+              <span className="font-hand text-3xl text-primary">{idx + 1}.</span>
+              <h3 className="mt-2 text-lg font-bold">{feature.title}</h3>
               <p className="mt-1 text-sm text-muted">{feature.desc}</p>
             </div>
           ))}
