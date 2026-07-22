@@ -2,45 +2,101 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { SAMPLE_IMAGES } from "@/lib/meal-images";
 
-const CATEGORY_COUNTS = [
-  { label: "5-Minute Meals", count: 8 },
-  { label: "Prepped in 5", count: 3 },
-  { label: "Chicken", count: 14 },
-  { label: "Beef & Pork", count: 16 },
-  { label: "Fish", count: 15 },
-  { label: "Vegetarian", count: 34 },
-  { label: "Plant-Based", count: 15, active: true },
-  { label: "Gluten-Free", count: 13 },
-  { label: "Dairy-Free", count: 22 },
-];
+type Recipe = { name: string; time: string; tag: string; image: string };
 
-const FEATURED_RECIPES = [
+const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
   {
-    name: "Katsu Tofu with Sticky Rice",
-    time: "30 min",
-    tag: "Plant-Based",
-    accent: "from-rose-200 via-amber-100 to-yellow-50",
+    label: "5-Minute Meals",
+    count: 8,
+    recipes: [
+      { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute", image: "/meal-quick.jpg" },
+      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-breakfast.jpg" },
+      { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute", image: "/meal-plant-based.jpg" },
+      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-chicken.jpg" },
+    ],
   },
   {
-    name: "Sticky Hoisin Chicken Burger",
-    time: "35 min",
-    tag: "Chicken",
-    accent: "from-orange-200 via-amber-100 to-yellow-50",
+    label: "Prepped in 5",
+    count: 3,
+    recipes: [
+      { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-prepped.jpg" },
+      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-breakfast.jpg" },
+      { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-glutenfree.jpg" },
+      { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-plant-based.jpg" },
+    ],
   },
   {
-    name: "Cauliflower Pav Bhaji",
-    time: "30 min",
-    tag: "Vegetarian",
-    accent: "from-amber-200 via-orange-100 to-amber-50",
+    label: "Chicken",
+    count: 14,
+    recipes: [
+      { name: "Charred Chicken & Broccoli Plate", time: "30 min", tag: "Chicken", image: "/meal-chicken.jpg" },
+      { name: "Coconut Chicken Curry", time: "35 min", tag: "Chicken", image: "/meal-dairyfree.jpg" },
+      { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.jpg" },
+      { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-glutenfree.jpg" },
+    ],
   },
   {
-    name: "Crispy Teriyaki Tofu",
-    time: "35 min",
-    tag: "Plant-Based",
-    accent: "from-stone-200 via-rose-100 to-amber-50",
+    label: "Beef & Pork",
+    count: 16,
+    recipes: [
+      { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.jpg" },
+      { name: "Beef & Green Bean Traybake", time: "40 min", tag: "Beef", image: "/meal-beef.jpg" },
+      { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-quick.jpg" },
+      { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-prepped.jpg" },
+    ],
+  },
+  {
+    label: "Fish",
+    count: 15,
+    recipes: [
+      { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-fish.jpg" },
+      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-fish.jpg" },
+      { name: "Fish Rice Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-plant-based.jpg" },
+      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-glutenfree.jpg" },
+    ],
+  },
+  {
+    label: "Vegetarian",
+    count: 34,
+    recipes: [
+      { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.jpg" },
+      { name: "Pesto Spaghetti with Parmesan", time: "15 min", tag: "Vegetarian", image: "/meal-quick.jpg" },
+      { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.jpg" },
+      { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-plant-based.jpg" },
+    ],
+  },
+  {
+    label: "Plant-Based",
+    count: 15,
+    recipes: [
+      { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.jpg" },
+      { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.jpg" },
+      { name: "Coconut Veg Curry Bowl", time: "35 min", tag: "Plant-Based", image: "/meal-dairyfree.jpg" },
+      { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-quick.jpg" },
+    ],
+  },
+  {
+    label: "Gluten-Free",
+    count: 13,
+    recipes: [
+      { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free", image: "/meal-glutenfree.jpg" },
+      { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free", image: "/meal-beef.jpg" },
+      { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free", image: "/meal-fish.jpg" },
+      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-chicken.jpg" },
+    ],
+  },
+  {
+    label: "Dairy-Free",
+    count: 22,
+    recipes: [
+      { name: "Coconut Chicken Curry", time: "35 min", tag: "Dairy-Free", image: "/meal-dairyfree.jpg" },
+      { name: "Sticky Sesame Tofu Bowl", time: "30 min", tag: "Dairy-Free", image: "/meal-plant-based.jpg" },
+      { name: "Salmon with Crushed Potatoes", time: "30 min", tag: "Dairy-Free", image: "/meal-fish.jpg" },
+      { name: "Quinoa Avocado Bowl", time: "25 min", tag: "Dairy-Free", image: "/meal-glutenfree.jpg" },
+    ],
   },
 ];
 
@@ -53,6 +109,9 @@ const FEATURES = [
 
 export default function Home() {
   const { format } = useCurrency();
+  const [activeCategory, setActiveCategory] = useState("Plant-Based");
+  const category =
+    CATEGORIES.find((c) => c.label === activeCategory) ?? CATEGORIES[0];
 
   return (
     <div className="bg-background">
@@ -79,26 +138,30 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
         <div className="overflow-x-auto pb-3">
           <div className="flex min-w-max items-center gap-2 rounded-full border border-card-border bg-card p-2 shadow-sm">
-            {CATEGORY_COUNTS.map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
-                  item.active
-                    ? "bg-[#e11d2e] text-white"
-                    : "bg-transparent text-foreground hover:bg-primary-light/50"
-                }`}
-              >
-                <span>{item.label}</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    item.active ? "bg-white/15 text-white" : "bg-black/5 text-muted"
+            {CATEGORIES.map((item) => {
+              const isActive = item.label === activeCategory;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => setActiveCategory(item.label)}
+                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? "bg-[#e11d2e] text-white"
+                      : "bg-transparent text-foreground hover:bg-primary-light/50"
                   }`}
                 >
-                  {item.count}
-                </span>
-              </button>
-            ))}
+                  <span>{item.label}</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      isActive ? "bg-white/15 text-white" : "bg-black/5 text-muted"
+                    }`}
+                  >
+                    {item.count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -136,7 +199,7 @@ export default function Home() {
           <div className="rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5">
             <div className="flex items-center justify-between border-b border-card-border pb-3">
               <div>
-                <p className="text-sm font-semibold">Menu for this week</p>
+                <p className="text-sm font-semibold">{category.label} menu</p>
                 <p className="text-xs text-muted">Built for smaller screens too</p>
               </div>
               <span className="rounded-full bg-accent-light px-3 py-1 text-xs font-bold text-accent">
@@ -144,13 +207,13 @@ export default function Home() {
               </span>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {FEATURED_RECIPES.map((recipe, index) => (
+              {category.recipes.map((recipe) => (
                 <article
                   key={recipe.name}
                   className="overflow-hidden rounded-2xl border border-card-border bg-card"
                 >
                   <Image
-                    src={SAMPLE_IMAGES[index % SAMPLE_IMAGES.length]}
+                    src={recipe.image}
                     alt={recipe.name}
                     width={800}
                     height={550}
