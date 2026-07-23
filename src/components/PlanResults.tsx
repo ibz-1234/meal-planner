@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { WeeklyPlan } from "@/lib/types";
+import { swapMeal } from "@/lib/plan-generator";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
@@ -27,7 +28,16 @@ function getPlanFromStorage(): WeeklyPlan | null {
 export default function PlanResults() {
   const router = useRouter();
   const { format } = useCurrency();
-  const [plan] = useState<WeeklyPlan | null>(getPlanFromStorage);
+  const [plan, setPlan] = useState<WeeklyPlan | null>(getPlanFromStorage);
+
+  const handleSwap = (dayIndex: number, mealIndex: number) => {
+    setPlan((current) => {
+      if (!current) return current;
+      const updated = swapMeal(current, dayIndex, mealIndex);
+      sessionStorage.setItem("mealPlan", JSON.stringify(updated));
+      return updated;
+    });
+  };
   const [activeTab, setActiveTab] = useState<TabId>("meals");
   const [selectedDay, setSelectedDay] = useState(0);
 
@@ -149,7 +159,11 @@ export default function PlanResults() {
           {/* Meals */}
           <div className="space-y-3">
             {plan.days[selectedDay].meals.map((meal, i) => (
-              <MealCard key={i} meal={meal} />
+              <MealCard
+                key={`${meal.name}-${i}`}
+                meal={meal}
+                onSwap={() => handleSwap(selectedDay, i)}
+              />
             ))}
           </div>
         </div>

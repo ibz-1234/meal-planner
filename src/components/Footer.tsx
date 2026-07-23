@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
@@ -30,10 +31,10 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold">Company</h3>
             <ul className="mt-2 space-y-1 text-sm text-muted">
-              <li>About</li>
-              <li>Blog</li>
-              <li>Privacy Policy</li>
-              <li>Terms of Service</li>
+              <li><Link href="/faq" className="hover:text-primary">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-primary">Contact</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-primary">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

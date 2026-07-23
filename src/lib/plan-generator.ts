@@ -211,6 +211,60 @@ function generateSupermarketComparison(
   }).sort((a, b) => a.totalEstimatedCost - b.totalEstimatedCost);
 }
 
+export function swapMeal(
+  plan: WeeklyPlan,
+  dayIndex: number,
+  mealIndex: number
+): WeeklyPlan {
+  const current = plan.days[dayIndex].meals[mealIndex];
+  const pool = filterMealsByPreferences(
+    ALL_MEALS[current.type] ?? [],
+    plan.preferences
+  ).filter((m) => m.name !== current.name);
+  if (pool.length === 0) return plan;
+
+  const usedNames = new Set(
+    plan.days.flatMap((d) => d.meals.map((m) => m.name))
+  );
+  const fresh = pool.filter((m) => !usedNames.has(m.name));
+  const candidates = fresh.length > 0 ? fresh : pool;
+  const replacement = candidates[Math.floor(Math.random() * candidates.length)];
+
+  const scaleFactor = plan.preferences.householdSize;
+  const days = plan.days.map((day, di) => {
+    if (di !== dayIndex) return day;
+    const meals = day.meals.map((m, mi) => (mi === mealIndex ? replacement : m));
+    const totalCost =
+      meals.reduce(
+        (sum, meal) =>
+          sum + meal.ingredients.reduce((s, i) => s + i.estimatedCost, 0),
+        0
+      ) * scaleFactor;
+    return {
+      ...day,
+      meals,
+      totalCalories: meals.reduce((sum, m) => sum + m.calories, 0),
+      totalCost: Math.round(totalCost * 100) / 100,
+    };
+  });
+
+  const totalWeeklyCost =
+    Math.round(days.reduce((sum, d) => sum + d.totalCost, 0) * 100) / 100;
+
+  const shoppingList = generateShoppingList(days).map((item) => ({
+    ...item,
+    estimatedCost: Math.round(item.estimatedCost * scaleFactor * 100) / 100,
+  }));
+
+  return {
+    ...plan,
+    days,
+    totalWeeklyCost,
+    shoppingList,
+    supermarketComparison: generateSupermarketComparison(totalWeeklyCost),
+  };
+}
+
 export function generateWeeklyPlan(
   preferences: UserPreferences
 ): WeeklyPlan {

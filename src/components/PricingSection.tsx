@@ -11,7 +11,7 @@ const PLANS = [
     period: "forever",
     tagline: "Try the kitchen before you commit.",
     features: [
-      "1 weekly meal plan",
+      "3 meal plans per month",
       "Basic shopping list",
       "3 dietary preferences",
       "Local shop price comparison",
@@ -32,6 +32,7 @@ const PLANS = [
       "Full macro & calorie dashboard",
       "Food waste planner — use up what you buy",
       "Swap any meal with one tap",
+      "PDF export of plans & shopping lists",
       "Save & sync progress across devices",
       "Priority support",
     ],
