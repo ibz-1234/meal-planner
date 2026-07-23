@@ -15,9 +15,9 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 8,
     recipes: [
       { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute", image: "/meal-quick.jpg" },
-      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-breakfast.jpg" },
+      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-parfait.jpg" },
       { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute", image: "/meal-plant-based.jpg" },
-      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-chicken.jpg" },
+      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-greek-bowl.jpg" },
     ],
   },
   {
@@ -25,7 +25,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 3,
     recipes: [
       { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-prepped.jpg" },
-      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-breakfast.jpg" },
+      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-parfait.jpg" },
       { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-glutenfree.jpg" },
       { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-plant-based.jpg" },
     ],
@@ -34,8 +34,8 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     label: "Chicken",
     count: 14,
     recipes: [
-      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-chicken.jpg" },
-      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-dairyfree.jpg" },
+      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-katsu.jpg" },
+      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-greek-bowl.jpg" },
       { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.jpg" },
       { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-glutenfree.jpg" },
     ],
@@ -45,7 +45,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 16,
     recipes: [
       { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.jpg" },
-      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-beef.jpg" },
+      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-chilli.jpg" },
       { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-quick.jpg" },
       { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-prepped.jpg" },
     ],
@@ -56,8 +56,8 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     recipes: [
       { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-fish.jpg" },
       { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Fish Rice Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-plant-based.jpg" },
-      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-glutenfree.jpg" },
+      { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-tuna-salad.jpg" },
+      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-salmon-salad.jpg" },
     ],
   },
   {
@@ -65,7 +65,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 34,
     recipes: [
       { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.jpg" },
-      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-quick.jpg" },
+      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-mushroom-pasta.jpg" },
       { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.jpg" },
       { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-plant-based.jpg" },
     ],
@@ -76,7 +76,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     recipes: [
       { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.jpg" },
       { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.jpg" },
-      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dairyfree.jpg" },
+      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dahl.jpg" },
       { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-quick.jpg" },
     ],
   },
@@ -87,7 +87,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
       { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free", image: "/meal-glutenfree.jpg" },
       { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free", image: "/meal-beef.jpg" },
       { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free", image: "/meal-fish.jpg" },
-      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-chicken.jpg" },
+      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-greek-bowl.jpg" },
     ],
   },
   {

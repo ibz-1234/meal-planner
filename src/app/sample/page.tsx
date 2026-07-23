@@ -5,7 +5,7 @@ export default function SamplePage() {
   const meals = [
     { title: "Monday", name: "Greek Yogurt Parfait", note: "350 cal · 22g protein" },
     { title: "Tuesday", name: "Chicken Caesar Salad", note: "480 cal · 35g protein" },
-    { title: "Wednesday", name: "Butter Chicken & Rice", note: "560 cal · 36g protein" },
+    { title: "Wednesday", name: "Chicken Katsu Curry", note: "560 cal · 36g protein" },
     { title: "Thursday", name: "Apple & Almond Butter", note: "200 cal · 5g protein" },
   ];
 

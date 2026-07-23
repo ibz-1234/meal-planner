@@ -23,7 +23,7 @@ export default function MealCard({ meal }: { meal: Meal }) {
     <div className="rounded-xl border border-card-border bg-card transition-shadow hover:shadow-md">
       <div className="relative aspect-[16/9] overflow-hidden rounded-t-xl bg-background">
         <Image
-          src={getMealImage(meal.type)}
+          src={getMealImage(meal.type, meal.name)}
           alt={meal.name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
