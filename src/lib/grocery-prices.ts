@@ -95,6 +95,101 @@ export const UK_PRICE_TABLE: Record<string, IngredientPrice> = {
   "Vegetable Broth": { pack: "1L", prices: [1.1, 0.89, 0.92, 1.0, 1.05, 1.2] },
 };
 
+// Typical fraction of a pack used per recipe serving (2 people), so a
+// per-use cost can be derived from real pack prices.
+export const PORTION_OF_PACK: Record<string, number> = {
+  "Chicken Breast": 0.6,
+  "Chicken Thighs": 0.5,
+  "Salmon Fillet": 1.0,
+  "Canned Tuna": 0.25,
+  "Turkey Slices": 0.8,
+  Eggs: 0.17,
+  Milk: 0.13,
+  "Greek Yogurt": 0.5,
+  "Parmesan Cheese": 0.15,
+  "Almond Milk": 0.25,
+  "Whole Wheat Bread": 0.1,
+  "Whole Wheat Pasta": 0.35,
+  "Whole Wheat Tortilla": 0.25,
+  "Corn Tortillas": 0.38,
+  "Brown Rice": 0.19,
+  "Jasmine Rice": 0.19,
+  Quinoa: 0.28,
+  "Rolled Oats": 0.05,
+  Granola: 0.12,
+  "Red Lentils": 0.4,
+  Chickpeas: 1.0,
+  "Black Beans": 1.0,
+  Avocado: 0.5,
+  Banana: 0.2,
+  "Frozen Banana": 0.25,
+  Apple: 0.17,
+  Lemon: 1.0,
+  Lime: 1.0,
+  "Lemon Juice": 0.15,
+  "Mixed Berries": 0.25,
+  "Frozen Berries": 0.25,
+  "Dried Fruit": 0.15,
+  Broccoli: 0.5,
+  Spinach: 0.4,
+  Kale: 0.5,
+  "Mixed Greens": 0.7,
+  "Romaine Lettuce": 0.5,
+  "Cherry Tomatoes": 0.5,
+  Tomato: 0.33,
+  Cucumber: 0.5,
+  "Bell Pepper": 0.33,
+  Carrots: 0.15,
+  "Carrot Sticks": 0.5,
+  "Celery Sticks": 0.3,
+  Onion: 0.12,
+  Garlic: 0.12,
+  Zucchini: 1.0,
+  "Sweet Potato": 0.3,
+  Potatoes: 0.15,
+  "Mixed Stir-Fry Vegetables": 0.5,
+  Cilantro: 0.5,
+  "Herbs (Thyme, Rosemary)": 0.3,
+  "Kalamata Olives": 0.5,
+  Hummus: 0.5,
+  Salsa: 0.4,
+  "Caesar Dressing": 0.2,
+  Croutons: 0.3,
+  "Olive Oil": 0.05,
+  "Sesame Oil": 0.06,
+  "Soy Sauce": 0.1,
+  Honey: 0.06,
+  "Peanut Butter": 0.09,
+  "Almond Butter": 0.15,
+  Tahini: 0.1,
+  "Chia Seeds": 0.12,
+  "Mixed Nuts": 0.2,
+  Cumin: 0.08,
+  "Salt & Pepper": 0.02,
+  "Vegetable Broth": 0.5,
+};
+
+const PRICE_TABLE_BY_LOWER = new Map(
+  Object.entries(UK_PRICE_TABLE).map(([k, v]) => [k.toLowerCase(), v])
+);
+const PORTION_BY_LOWER = new Map(
+  Object.entries(PORTION_OF_PACK).map(([k, v]) => [k.toLowerCase(), v])
+);
+
+function lookupEntry(name: string): IngredientPrice | undefined {
+  return UK_PRICE_TABLE[name] ?? PRICE_TABLE_BY_LOWER.get(name.toLowerCase());
+}
+
+/** Per-use cost (six-store average price × typical portion of pack), GBP. */
+export function portionCostGBP(name: string): number | null {
+  const entry = lookupEntry(name);
+  const fraction =
+    PORTION_OF_PACK[name] ?? PORTION_BY_LOWER.get(name.toLowerCase());
+  if (!entry || fraction === undefined) return null;
+  const avg = entry.prices.reduce((s, p) => s + p, 0) / entry.prices.length;
+  return Math.round(avg * fraction * 100) / 100;
+}
+
 // Fallback relative index for ingredients not in the table
 const STORE_FALLBACK_INDEX: Record<UKStore, number> = {
   Tesco: 1.0,
@@ -111,7 +206,7 @@ function storeIdx(store: UKStore): number {
 
 /** How this store's price for an ingredient compares to the six-store average (1 = average). */
 export function ingredientStoreFactor(name: string, store: UKStore): number {
-  const entry = UK_PRICE_TABLE[name];
+  const entry = lookupEntry(name);
   if (!entry) return STORE_FALLBACK_INDEX[store] / 0.94; // 0.94 ≈ avg of fallback indices
   const avg = entry.prices.reduce((s, p) => s + p, 0) / entry.prices.length;
   return entry.prices[storeIdx(store)] / avg;
@@ -120,7 +215,7 @@ export function ingredientStoreFactor(name: string, store: UKStore): number {
 export function ingredientPackPrice(
   name: string
 ): { pack: string; prices: Record<UKStore, number> } | null {
-  const entry = UK_PRICE_TABLE[name];
+  const entry = lookupEntry(name);
   if (!entry) return null;
   return {
     pack: entry.pack,

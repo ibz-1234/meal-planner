@@ -1,4 +1,5 @@
 import type { Meal, SupermarketPrice } from "./types";
+import { portionCostGBP } from "./grocery-prices";
 
 export const DIETARY_RESTRICTIONS = [
   "Vegetarian",
@@ -430,11 +431,23 @@ const SNACK_MEALS: Meal[] = [
   },
 ];
 
+// Reprice every ingredient from the per-supermarket UK price table so meal
+// costs, shopping lists and store comparisons all use the same real prices.
+function repriceMeals(meals: Meal[]): Meal[] {
+  return meals.map((meal) => ({
+    ...meal,
+    ingredients: meal.ingredients.map((ing) => ({
+      ...ing,
+      estimatedCost: portionCostGBP(ing.name) ?? ing.estimatedCost,
+    })),
+  }));
+}
+
 export const ALL_MEALS = {
-  breakfast: BREAKFAST_MEALS,
-  lunch: LUNCH_MEALS,
-  dinner: DINNER_MEALS,
-  snack: SNACK_MEALS,
+  breakfast: repriceMeals(BREAKFAST_MEALS),
+  lunch: repriceMeals(LUNCH_MEALS),
+  dinner: repriceMeals(DINNER_MEALS),
+  snack: repriceMeals(SNACK_MEALS),
 };
 
 export const SUPERMARKETS: SupermarketPrice[] = [
