@@ -129,7 +129,8 @@ function selectMealsForDay(
     0
   );
 
-  if (totalCost < dailyBudget * 0.85 && snacks.length > 0) {
+  const perServingBudget = dailyBudget / preferences.householdSize;
+  if (totalCost < perServingBudget * 0.85 && snacks.length > 0) {
     const snack = pickRandom(snacks);
     selectedMeals.push(snack);
   }

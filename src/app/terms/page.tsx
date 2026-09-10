@@ -4,7 +4,7 @@ export default function TermsPage() {
       <h1 className="text-3xl font-bold">Terms of Service</h1>
       <div className="mt-6 space-y-4 text-sm text-muted">
         <p>
-          Mealsmith provides meal planning suggestions and grocery cost
+          Chef.ai provides meal planning suggestions and grocery cost
           estimates for personal, non-commercial use.
         </p>
         <p>

@@ -12,9 +12,9 @@ export default function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Mealsmith logo" width={28} height={28} className="h-7 w-7" />
+              <Image src="/logo.png" alt="Chef.ai logo" width={28} height={28} className="h-7 w-7" />
               <span className="text-lg font-bold">
-                Meal<span className="text-primary">smith</span>
+                Chef<span className="text-primary">.ai</span>
               </span>
             </div>
             <p className="mt-2 text-sm text-muted">{t("footer.tagline")}</p>
@@ -39,7 +39,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-card-border pt-4 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} Mealsmith. All rights reserved.
+          &copy; {new Date().getFullYear()} Chef.ai. All rights reserved.
         </div>
       </div>
     </footer>

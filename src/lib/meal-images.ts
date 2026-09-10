@@ -20,31 +20,52 @@ const MEAL_IMAGE_BY_NAME: Record<string, string> = {
 };
 
 const KEYWORD_IMAGES: [string, string][] = [
-  ["katsu", "/meal-katsu.jpg"],
-  ["chilli", "/meal-chilli.jpg"],
-  ["dahl", "/meal-dahl.jpg"],
+  // specific dishes first
   ["mushroom pasta", "/meal-mushroom-pasta.jpg"],
-  ["parfait", "/meal-parfait.jpg"],
-  ["oats", "/meal-overnight-oats.jpg"],
-  ["smoothie", "/meal-smoothie-bowl.jpg"],
-  ["caesar", "/meal-caesar.jpg"],
+  ["spaghetti", "/meal-quick.jpg"],
+  ["greek bowl", "/meal-greek-bowl.jpg"],
+  ["greek chicken", "/meal-greek-bowl.jpg"],
+  ["chicken katsu", "/meal-katsu.jpg"],
+  ["chicken & rice", "/meal-greek-bowl.jpg"],
+  ["prep box", "/meal-prepped.jpg"],
+  ["prep", "/meal-prepped.jpg"],
+  ["cauliflower curry", "/meal-vegetarian.jpg"],
+  ["lentil dahl", "/meal-dahl.jpg"],
+  ["dahl", "/meal-dahl.jpg"],
+  ["salmon salad", "/meal-salmon-salad.jpg"],
+  ["tuna salad", "/meal-tuna-salad.jpg"],
+  ["chilli", "/meal-chilli.jpg"],
+  // proteins
+  ["steak", "/meal-beef.jpg"],
+  ["beef", "/meal-beef.jpg"],
+  ["bacon", "/meal-quick.jpg"],
+  ["pork", "/meal-prepped.jpg"],
+  ["salmon", "/meal-fish.jpg"],
+  ["fish", "/meal-fish.jpg"],
+  ["tuna", "/meal-tuna-salad.jpg"],
+  ["chicken", "/meal-chicken.jpg"],
+  ["tofu", "/meal-plant-based.jpg"],
+  ["hummus", "/meal-hummus.jpg"],
+  // bases / cuisines
+  ["katsu", "/meal-katsu.jpg"],
   ["wrap", "/meal-wrap.jpg"],
   ["taco", "/meal-tacos.jpg"],
   ["stir-fry", "/meal-stirfry.jpg"],
-  ["tuna", "/meal-tuna-salad.jpg"],
-  ["salmon", "/meal-fish.jpg"],
-  ["fish", "/meal-fish.jpg"],
-  ["steak", "/meal-beef.jpg"],
-  ["beef", "/meal-beef.jpg"],
-  ["tofu", "/meal-plant-based.jpg"],
-  ["lentil", "/meal-lentil-soup.jpg"],
   ["curry", "/meal-vegetarian.jpg"],
   ["pasta", "/meal-quick.jpg"],
   ["quinoa", "/meal-buddha-bowl.jpg"],
-  ["hummus", "/meal-hummus.jpg"],
+  ["lentil", "/meal-lentil-soup.jpg"],
+  // meal types
+  ["parfait", "/meal-parfait.jpg"],
+  ["berry", "/meal-smoothie-bowl.jpg"],
+  ["oats", "/meal-overnight-oats.jpg"],
+  ["smoothie", "/meal-smoothie-bowl.jpg"],
+  ["caesar", "/meal-caesar.jpg"],
+  ["breakfast", "/meal-breakfast.jpg"],
   ["apple", "/meal-apple-snack.jpg"],
   ["egg", "/meal-egg-scramble.jpg"],
-  ["chicken", "/meal-chicken.jpg"],
+  ["veg", "/meal-plant-based.jpg"],
+  ["rice", "/meal-glutenfree.jpg"],
 ];
 
 const MEAL_IMAGE_BY_TYPE: Record<string, string> = {
@@ -71,4 +92,9 @@ export function getMealImage(type: string, name?: string): string {
     }
   }
   return MEAL_IMAGE_BY_TYPE[type] ?? "/meal-chicken.jpg";
+}
+
+/** Landing-page recipe card image resolver. */
+export function getRecipeImage(name: string): string {
+  return getMealImage("dinner", name);
 }

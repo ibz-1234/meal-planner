@@ -6,98 +6,99 @@ import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PricingSection from "@/components/PricingSection";
+import { getRecipeImage } from "@/lib/meal-images";
 
-type Recipe = { name: string; time: string; tag: string; image: string };
+type Recipe = { name: string; time: string; tag: string };
 
 const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
   {
     label: "5-Minute Meals",
     count: 8,
     recipes: [
-      { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute", image: "/meal-quick.jpg" },
-      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-parfait.jpg" },
-      { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute", image: "/meal-plant-based.jpg" },
-      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-greek-bowl.jpg" },
+      { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute" },
+      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute" },
+      { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute" },
+      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute" },
     ],
   },
   {
     label: "Prepped in 5",
     count: 3,
     recipes: [
-      { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-prepped.jpg" },
-      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-parfait.jpg" },
-      { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-glutenfree.jpg" },
-      { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-plant-based.jpg" },
+      { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped" },
+      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped" },
+      { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped" },
+      { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped" },
     ],
   },
   {
     label: "Chicken",
     count: 14,
     recipes: [
-      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-katsu.jpg" },
-      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-greek-bowl.jpg" },
-      { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.jpg" },
-      { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-glutenfree.jpg" },
+      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken" },
+      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken" },
+      { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken" },
+      { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken" },
     ],
   },
   {
     label: "Beef & Pork",
     count: 16,
     recipes: [
-      { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.jpg" },
-      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-chilli.jpg" },
-      { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-quick.jpg" },
-      { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-prepped.jpg" },
+      { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef" },
+      { name: "Chilli Con Carne", time: "40 min", tag: "Beef" },
+      { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork" },
+      { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork" },
     ],
   },
   {
     label: "Fish",
     count: 15,
     recipes: [
-      { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-tuna-salad.jpg" },
-      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-salmon-salad.jpg" },
+      { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish" },
+      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish" },
+      { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish" },
+      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish" },
     ],
   },
   {
     label: "Vegetarian",
     count: 34,
     recipes: [
-      { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.jpg" },
-      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-mushroom-pasta.jpg" },
-      { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.jpg" },
-      { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-plant-based.jpg" },
+      { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian" },
+      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian" },
+      { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian" },
+      { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian" },
     ],
   },
   {
     label: "Plant-Based",
     count: 15,
     recipes: [
-      { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.jpg" },
-      { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.jpg" },
-      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dahl.jpg" },
-      { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-quick.jpg" },
+      { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based" },
+      { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based" },
+      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based" },
+      { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based" },
     ],
   },
   {
     label: "Gluten-Free",
     count: 13,
     recipes: [
-      { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free", image: "/meal-glutenfree.jpg" },
-      { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free", image: "/meal-beef.jpg" },
-      { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free", image: "/meal-fish.jpg" },
-      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-greek-bowl.jpg" },
+      { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free" },
+      { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free" },
+      { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free" },
+      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free" },
     ],
   },
   {
     label: "Dairy-Free",
     count: 22,
     recipes: [
-      { name: "Coconut Chicken Curry", time: "35 min", tag: "Dairy-Free", image: "/meal-dairyfree.jpg" },
-      { name: "Sticky Sesame Tofu Bowl", time: "30 min", tag: "Dairy-Free", image: "/meal-plant-based.jpg" },
-      { name: "Salmon with Crushed Potatoes", time: "30 min", tag: "Dairy-Free", image: "/meal-fish.jpg" },
-      { name: "Quinoa Avocado Bowl", time: "25 min", tag: "Dairy-Free", image: "/meal-glutenfree.jpg" },
+      { name: "Coconut Chicken Curry", time: "35 min", tag: "Dairy-Free" },
+      { name: "Sticky Sesame Tofu Bowl", time: "30 min", tag: "Dairy-Free" },
+      { name: "Salmon with Crushed Potatoes", time: "30 min", tag: "Dairy-Free" },
+      { name: "Quinoa Avocado Bowl", time: "25 min", tag: "Dairy-Free" },
     ],
   },
 ];
@@ -167,7 +168,7 @@ export default function Home() {
                   onClick={() => setActiveCategory(item.label)}
                   className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                     isActive
-                      ? "bg-[#e11d2e] text-white"
+                      ? "bg-primary text-white"
                       : "bg-transparent text-foreground hover:bg-primary-light/50"
                   }`}
                 >
@@ -203,7 +204,7 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/preview"
-                className="rounded-xl bg-[#e11d2e] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:brightness-95"
+                className="rounded-xl bg-primary px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:bg-primary-dark"
               >
                 {t("hero.cta")}
               </Link>
@@ -241,7 +242,7 @@ export default function Home() {
                   }`}
                 >
                   <Image
-                    src={recipe.image}
+                    src={getRecipeImage(recipe.name)}
                     alt={recipe.name}
                     width={800}
                     height={550}
@@ -252,7 +253,7 @@ export default function Home() {
                       <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
                         {recipe.time}
                       </div>
-                      <div className="rounded-full bg-[#e11d2e] px-2.5 py-1 text-xs font-bold text-white">
+                      <div className="rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
                         {recipe.tag}
                       </div>
                     </div>
@@ -395,7 +396,7 @@ export default function Home() {
             <thead>
               <tr className="bg-primary-light/40 text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-bold text-primary">Mealsmith</th>
+                <th className="px-4 py-3 font-bold text-primary">Chef.ai</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
                 <th className="px-4 py-3 font-semibold">Recipe websites</th>
               </tr>

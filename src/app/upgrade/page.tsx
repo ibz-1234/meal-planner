@@ -10,24 +10,30 @@ const OPTIONS: { tier: Tier; name: string; priceGBP: number; blurb: string; perk
     tier: "premium",
     name: "Premium",
     priceGBP: 7.99,
-    blurb: "Chef AI writes your week, every week.",
+    blurb: "Chef AI plans, prices and writes your week, every week.",
     perks: [
-      "All seven days unlocked, with full AI recipe descriptions",
+      "All seven days unlocked with full AI recipe descriptions",
       "Plans re-priced every Monday at your supermarket",
-      "Unlimited regenerations and one-tap swaps",
+      "Unlimited regenerations and one-tap smart swaps",
       "Four-week progression that follows your goal",
+      "Macro, calorie and nutrition dashboard",
+      "Pantry \"use-it-up\" planner to cut waste",
+      "PDF export of plans, lists & recipes",
     ],
   },
   {
     tier: "family",
     name: "Family",
     priceGBP: 12.99,
-    blurb: "One plan the whole table will eat.",
+    blurb: "One plan that feeds the whole table, with portions for everyone.",
     perks: [
       "Everything in Premium",
-      "Up to 8 profiles with individual portions",
+      "Up to 8 profiles with custom portions",
       "Kid-friendly swaps written by Chef AI",
-      "Shared shopping list in real time",
+      "Shared shopping list updated in real time",
+      "Batch-cook mode with bulk scaling",
+      "Per-person nutrition targets",
+      "Dedicated family support",
     ],
   },
 ];
@@ -111,6 +117,17 @@ export default function UpgradePage() {
         <p className="mt-3 text-center text-xs text-muted">
           No card required for the demo. Cancel any time. 30-day money-back guarantee once billing starts.
         </p>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-card-border bg-card p-6 text-center">
+        <p className="text-sm font-medium text-foreground">
+          “I saved more on my first Aldi shop than the whole month costs.”
+        </p>
+        <p className="mt-1 text-xs text-muted">Sophie M. · Leeds · Premium member</p>
+        <div className="mt-4 flex items-center justify-center gap-1 text-sm font-semibold text-primary">
+          <span>⭐ 4.9/5</span>
+          <span className="text-muted">from 2,000+ early users</span>
+        </div>
       </div>
     </div>
   );

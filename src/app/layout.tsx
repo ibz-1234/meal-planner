@@ -22,9 +22,9 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Mealsmith – Your personalised meal plan in under 5 minutes",
+  title: "Chef.ai – Your AI-powered meal plan in under 5 minutes",
   description:
-    "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Includes recipes, shopping lists, nutrition and local supermarket price comparison.",
+    "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Chef AI writes recipes, shopping lists and local supermarket price comparisons.",
   keywords: [
     "meal planner",
     "meal plan",

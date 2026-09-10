@@ -28,9 +28,9 @@ export default function Header() {
     <header className="border-b border-card-border bg-card">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Mealsmith logo" width={36} height={36} className="h-9 w-9" />
+          <Image src="/logo.png" alt="Chef.ai logo" width={36} height={36} className="h-9 w-9" />
           <span className="text-xl font-bold text-foreground">
-            Meal<span className="text-primary">smith</span>
+            Chef<span className="text-primary">.ai</span>
           </span>
         </Link>
         <nav className="flex items-center gap-3">
