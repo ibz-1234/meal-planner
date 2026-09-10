@@ -118,7 +118,7 @@ export default function PricingSection() {
                 ))}
               </ul>
               <Link
-                href="/signup"
+                href={plan.priceGBP === 0 ? "/signup" : "/upgrade"}
                 className={`mt-6 block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
                   plan.featured
                     ? "bg-primary text-white hover:bg-primary-dark"

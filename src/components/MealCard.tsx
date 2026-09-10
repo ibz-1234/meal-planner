@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { isFavourite, toggleFavourite } from "@/lib/favourites";
-import type { Meal } from "@/lib/types";
+import type { Meal, UserPreferences } from "@/lib/types";
+import { describeMeal } from "@/lib/ai-copy";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getMealImage } from "@/lib/meal-images";
 
@@ -15,12 +16,15 @@ function difficultyLabel(prepTime: number): string {
 
 export default function MealCard({
   meal,
+  preferences,
   onSwap,
 }: {
   meal: Meal;
+  preferences?: UserPreferences;
   onSwap?: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const copy = preferences ? describeMeal(meal, preferences) : null;
   const [favourite, setFavourite] = useState(() => isFavourite(meal.name));
   const { format } = useCurrency();
 
@@ -99,6 +103,25 @@ export default function MealCard({
           </svg>
         </div>
       </div>
+
+      {copy && (
+        <div className="border-t border-card-border px-4 py-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-accent">
+            👨‍🍳 Chef AI says
+          </p>
+          <p className="mt-1 text-sm leading-relaxed text-foreground">{copy.description}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {copy.sellingPoints.map((point) => (
+              <span
+                key={point}
+                className="rounded-full bg-background px-2.5 py-1 text-xs text-muted"
+              >
+                {point}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {expanded && (
         <div className="border-t border-card-border px-4 pb-4 pt-3">

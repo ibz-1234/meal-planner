@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { WeeklyPlan } from "@/lib/types";
 import { swapMeal } from "@/lib/plan-generator";
+import { describePlan, isDayLocked } from "@/lib/ai-copy";
+import { isPremium, TIER_CHANGED_EVENT } from "@/lib/subscription";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import ChefAiIntro from "./ChefAiIntro";
+import LockedDay from "./LockedDay";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
 import SupermarketComparison from "./SupermarketComparison";
@@ -40,6 +44,16 @@ export default function PlanResults() {
   };
   const [activeTab, setActiveTab] = useState<TabId>("meals");
   const [selectedDay, setSelectedDay] = useState(0);
+  const [premium, setPremium] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setPremium(isPremium());
+    sync();
+    window.addEventListener(TIER_CHANGED_EVENT, sync);
+    return () => window.removeEventListener(TIER_CHANGED_EVENT, sync);
+  }, []);
+
+  const narrative = useMemo(() => (plan ? describePlan(plan) : null), [plan]);
 
   if (!plan) {
     return (
@@ -63,6 +77,8 @@ export default function PlanResults() {
 
   return (
     <div>
+      {narrative && <ChefAiIntro narrative={narrative} premium={premium} />}
+
       {/* Summary Banner */}
       <div className="mb-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -116,7 +132,10 @@ export default function PlanResults() {
                     : "bg-card border border-card-border text-muted hover:border-accent"
                 }`}
               >
-                <span className="font-semibold">{day.day.slice(0, 3)}</span>
+                <span className="font-semibold">
+                  {isDayLocked(i, premium) && "🔒 "}
+                  {day.day.slice(0, 3)}
+                </span>
                 <span className="mt-0.5 text-xs opacity-80">
                   {format(day.totalCost)}
                 </span>
@@ -157,15 +176,23 @@ export default function PlanResults() {
           </div>
 
           {/* Meals */}
-          <div className="space-y-3">
-            {plan.days[selectedDay].meals.map((meal, i) => (
-              <MealCard
-                key={`${meal.name}-${i}`}
-                meal={meal}
-                onSwap={() => handleSwap(selectedDay, i)}
-              />
-            ))}
-          </div>
+          {isDayLocked(selectedDay, premium) ? (
+            <LockedDay
+              day={plan.days[selectedDay]}
+              preferences={plan.preferences}
+            />
+          ) : (
+            <div className="space-y-3">
+              {plan.days[selectedDay].meals.map((meal, i) => (
+                <MealCard
+                  key={`${meal.name}-${i}`}
+                  meal={meal}
+                  preferences={plan.preferences}
+                  onSwap={() => handleSwap(selectedDay, i)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
