@@ -38,10 +38,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl text-center">
           <div className="animate-fade-in-up">
             <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-card-border bg-white px-4 py-1.5 text-xs font-semibold text-primary shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-accent" /> AI meal planner + UK supermarket prices
+              <span className="h-2 w-2 rounded-full bg-secondary" /> AI meal planner + UK supermarket prices
             </p>
             <h1 className="font-serif text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
-              Dinner, <span className="text-primary">beautifully sorted.</span>
+              Dinner, <span className="text-primary italic">beautifully sorted.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
               7 dinners, one smart shopping basket, and the cheapest UK supermarket — planned in seconds.
@@ -58,7 +58,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-muted">
-              <span className="flex items-center gap-1 font-medium text-amber-600">
+              <span className="flex items-center gap-1 font-medium text-secondary">
                 <Star className="h-4 w-4 fill-current" /> 4.9
               </span>
               <span>10,000+ UK home cooks</span>
@@ -72,8 +72,8 @@ export default function Home() {
             style={{ animationDelay: "0.15s" }}
           >
             <Image
-              src="/meal-stirfry.jpg"
-              alt="A vibrant chef-prepared chicken stir-fry with colourful vegetables and rice"
+              src="/meal-fish.jpg"
+              alt="Pan-seared salmon with new potatoes, asparagus and lemon"
               fill
               priority
               sizes="100vw"
@@ -84,7 +84,7 @@ export default function Home() {
               <div>
                 <p className="text-xs font-semibold text-muted">This week&apos;s basket</p>
                 <p className="font-serif text-3xl font-bold text-primary">{format(38.6)}</p>
-                <p className="text-xs font-medium text-accent">at Aldi</p>
+                <p className="text-xs font-medium text-secondary">at Aldi</p>
               </div>
               <div className="hidden sm:block">
                 <p className="text-xs font-semibold text-muted">Potential saving</p>
@@ -138,8 +138,8 @@ export default function Home() {
                 <div className="p-5">
                   <h3 className="font-serif text-lg font-bold leading-tight">{recipe.name}</h3>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-                    <span className="flex items-center gap-1 text-amber-600">
-                      <Star className="h-3.5 w-3.5" /> {recipe.rating}
+                    <span className="flex items-center gap-1 text-secondary">
+                      <Star className="h-3.5 w-3.5 fill-current" /> {recipe.rating}
                     </span>
                     <span>·</span>
                     <span>{recipe.time} min</span>
@@ -187,7 +187,7 @@ export default function Home() {
                   </span>
                   <span className="font-semibold text-base">{s.store}</span>
                   {s.badge && (
-                    <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-white">
+                    <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-bold text-white">
                       {s.badge}
                     </span>
                   )}
@@ -197,7 +197,7 @@ export default function Home() {
                     {format(s.price)}
                   </p>
                   {s.saving > 0 && (
-                    <p className="text-xs text-accent font-medium">Save {format(s.saving)}</p>
+                    <p className="text-xs text-secondary font-medium">Save {format(s.saving)}</p>
                   )}
                 </div>
               </div>

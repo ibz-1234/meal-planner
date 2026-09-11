@@ -17,10 +17,16 @@ const MEAL_IMAGE_BY_NAME: Record<string, string> = {
   "apple with almond butter": "/meal-apple-snack.jpg",
   "trail mix": "/meal-trail-mix.jpg",
   "hummus & veggies": "/meal-hummus.jpg",
+  "szechuan chicken stir-fry": "/meal-stirfry.jpg",
+  "miso glazed salmon bowl": "/meal-fish.jpg",
+  "roasted sweet potato buddha bowl": "/meal-buddha-bowl.jpg",
+  "smoky black bean tacos": "/meal-tacos.jpg",
 };
 
 const KEYWORD_IMAGES: [string, string][] = [
   // specific dishes first
+  ["stir-fry", "/meal-stirfry.jpg"],
+  ["buddha bowl", "/meal-buddha-bowl.jpg"],
   ["mushroom pasta", "/meal-mushroom-pasta.jpg"],
   ["spaghetti", "/meal-quick.jpg"],
   ["greek bowl", "/meal-greek-bowl.jpg"],
