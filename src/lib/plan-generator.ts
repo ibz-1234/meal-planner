@@ -5,8 +5,17 @@ import type {
   Meal,
   ShoppingListItem,
   SupermarketPrice,
+  UKStore,
+  BasketProduct,
 } from "./types";
-import { ALL_MEALS, SUPERMARKETS, WASTE_REDUCTION_TIPS } from "./meal-data";
+import { ALL_MEALS, WASTE_REDUCTION_TIPS } from "./meal-data";
+import {
+  calculatePlanBasket,
+  comparePlanStores,
+  basketTotal,
+  cheapestStoreForPlan,
+} from "./grocery-prices";
+import { getStoresForCountry } from "./stores";
 
 const DAYS = [
   "Monday",
@@ -17,6 +26,13 @@ const DAYS = [
   "Saturday",
   "Sunday",
 ];
+
+function makeId(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
 
 function filterMealsByPreferences(
   meals: Meal[],
@@ -153,63 +169,74 @@ function selectMealsForDay(
   }));
 }
 
-function generateShoppingList(days: DayPlan[]): ShoppingListItem[] {
-  const ingredientMap = new Map<
-    string,
-    { totalCost: number; quantities: string[]; unit: string; category: string }
-  >();
+function buildSupermarketPrices(
+  days: DayPlan[],
+  householdSize: number,
+  useLoyalty: boolean
+): SupermarketPrice[] {
+  const totals = comparePlanStores(days, householdSize, useLoyalty);
+  const dearest = totals[totals.length - 1]?.total ?? 0;
+  const storeInfo = getStoresForCountry("GB");
+  const meta = new Map(storeInfo.map((s) => [s.name, s]));
 
-  for (const day of days) {
-    for (const meal of day.meals) {
-      for (const ing of meal.ingredients) {
-        const key = ing.name.toLowerCase();
-        const existing = ingredientMap.get(key);
-        if (existing) {
-          existing.totalCost += ing.estimatedCost;
-          existing.quantities.push(`${ing.quantity} ${ing.unit}`);
-        } else {
-          ingredientMap.set(key, {
-            totalCost: ing.estimatedCost,
-            quantities: [`${ing.quantity} ${ing.unit}`],
-            unit: ing.unit,
-            category: ing.category,
-          });
-        }
-      }
-    }
-  }
+  return totals.map((t) => {
+    const info = meta.get(t.store);
+    return {
+      store: t.store,
+      totalEstimatedCost: t.total,
+      savings: Math.round((dearest - t.total) * 100) / 100,
+      logo: info?.logo ?? "🏪",
+      affiliateUrl: info?.website ?? "#",
+    };
+  });
+}
 
-  return Array.from(ingredientMap.entries()).map(([name, data]) => ({
-    ingredient: name.charAt(0).toUpperCase() + name.slice(1),
-    totalQuantity: data.quantities.join(" + "),
-    unit: data.unit,
-    category: data.category,
-    estimatedCost: Math.round(data.totalCost * 100) / 100,
+function buildShoppingList(basket: BasketProduct[]): ShoppingListItem[] {
+  return basket.map((item) => ({
+    ingredient: item.ingredient,
+    totalQuantity: `${item.packsNeeded} x ${item.product.packSize}`,
+    unit: item.product.unit,
+    category: item.product.category,
+    estimatedCost: item.totalPrice,
     checked: false,
   }));
 }
 
-function generateSupermarketComparison(
-  baseCost: number
-): SupermarketPrice[] {
-  const priceMultipliers: Record<string, number> = {
-    Walmart: 0.92,
-    Aldi: 0.85,
-    Kroger: 0.95,
-    Costco: 0.82,
-    Target: 1.0,
-  };
+function buildPlan(
+  preferences: UserPreferences,
+  days: DayPlan[],
+  selectedStore: UKStore,
+  priceModel: "regular" | "loyalty"
+): WeeklyPlan {
+  const basket = calculatePlanBasket(
+    days,
+    preferences.householdSize,
+    selectedStore,
+    priceModel === "loyalty"
+  );
+  const totalWeeklyCost = basketTotal(basket);
+  const shoppingList = buildShoppingList(basket);
+  const supermarketComparison = buildSupermarketPrices(
+    days,
+    preferences.householdSize,
+    priceModel === "loyalty"
+  );
 
-  return SUPERMARKETS.map((store) => {
-    const multiplier = priceMultipliers[store.store] ?? 1;
-    const estimatedCost =
-      Math.round(baseCost * multiplier * 100) / 100;
-    return {
-      ...store,
-      totalEstimatedCost: estimatedCost,
-      savings: Math.round((baseCost - estimatedCost) * 100) / 100,
-    };
-  }).sort((a, b) => a.totalEstimatedCost - b.totalEstimatedCost);
+  return {
+    id: makeId(),
+    createdAt: new Date().toISOString(),
+    preferences,
+    days,
+    totalWeeklyCost,
+    selectedStore,
+    priceModel,
+    basket,
+    shoppingList,
+    supermarketComparison,
+    wasteReductionTips: [...WASTE_REDUCTION_TIPS]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 5),
+  };
 }
 
 export function swapMeal(
@@ -229,12 +256,15 @@ export function swapMeal(
   );
   const fresh = pool.filter((m) => !usedNames.has(m.name));
   const candidates = fresh.length > 0 ? fresh : pool;
-  const replacement = candidates[Math.floor(Math.random() * candidates.length)];
+  const replacement =
+    candidates[Math.floor(Math.random() * candidates.length)];
 
   const scaleFactor = plan.preferences.householdSize;
   const days = plan.days.map((day, di) => {
     if (di !== dayIndex) return day;
-    const meals = day.meals.map((m, mi) => (mi === mealIndex ? replacement : m));
+    const meals = day.meals.map((m, mi) =>
+      mi === mealIndex ? replacement : m
+    );
     const totalCost =
       meals.reduce(
         (sum, meal) =>
@@ -249,28 +279,18 @@ export function swapMeal(
     };
   });
 
-  const totalWeeklyCost =
-    Math.round(days.reduce((sum, d) => sum + d.totalCost, 0) * 100) / 100;
-
-  const shoppingList = generateShoppingList(days).map((item) => ({
-    ...item,
-    estimatedCost: Math.round(item.estimatedCost * scaleFactor * 100) / 100,
-  }));
-
-  return {
-    ...plan,
+  return buildPlan(
+    plan.preferences,
     days,
-    totalWeeklyCost,
-    shoppingList,
-    supermarketComparison: generateSupermarketComparison(totalWeeklyCost),
-  };
+    plan.selectedStore,
+    plan.priceModel
+  );
 }
 
 export function generateWeeklyPlan(
   preferences: UserPreferences
 ): WeeklyPlan {
   const usedMeals = new Set<string>();
-  const scaleFactor = preferences.householdSize;
 
   const days: DayPlan[] = DAYS.map((day) => {
     const meals = selectMealsForDay(preferences, usedMeals);
@@ -278,10 +298,9 @@ export function generateWeeklyPlan(
     const totalCost =
       meals.reduce(
         (sum, meal) =>
-          sum +
-          meal.ingredients.reduce((s, i) => s + i.estimatedCost, 0),
+          sum + meal.ingredients.reduce((s, i) => s + i.estimatedCost, 0),
         0
-      ) * scaleFactor;
+      ) * preferences.householdSize;
 
     return {
       day,
@@ -291,32 +310,11 @@ export function generateWeeklyPlan(
     };
   });
 
-  const totalWeeklyCost = Math.round(
-    days.reduce((sum, d) => sum + d.totalCost, 0) * 100
-  ) / 100;
-
-  const shoppingList = generateShoppingList(days).map((item) => ({
-    ...item,
-    estimatedCost:
-      Math.round(item.estimatedCost * scaleFactor * 100) / 100,
-  }));
-
-  const supermarketComparison =
-    generateSupermarketComparison(totalWeeklyCost);
-
-  const shuffledTips = [...WASTE_REDUCTION_TIPS].sort(
-    () => Math.random() - 0.5
-  );
-  const wasteReductionTips = shuffledTips.slice(0, 5);
-
-  return {
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-    preferences,
+  const { store } = cheapestStoreForPlan(
     days,
-    totalWeeklyCost,
-    shoppingList,
-    supermarketComparison,
-    wasteReductionTips,
-  };
+    preferences.householdSize,
+    false
+  );
+
+  return buildPlan(preferences, days, store, "regular");
 }

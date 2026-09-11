@@ -8,6 +8,7 @@ export interface MealCopy {
   headline: string;
   description: string;
   sellingPoints: string[];
+  rationale: string;
 }
 
 export interface PlanNarrative {
@@ -134,6 +135,13 @@ export function describeMeal(meal: Meal, prefs: UserPreferences): MealCopy {
   const closer = pick(seed + "c", CLOSERS);
   const cost = meal.ingredients.reduce((s, i) => s + i.estimatedCost, 0);
 
+  const rationales = [
+    `Chef chose this because ${prefs.fitnessGoal.toLowerCase()} plans work best with ${voice.macro}-forward ${meal.type}s that don't break the budget.`,
+    `This fits your ${prefs.cookingSkill} cooking level and keeps prep under ${meal.prepTime} minutes.`,
+    `It reuses staples you're already buying this week, so less goes to waste.`,
+    `A ${voice.adjective} option that still feels like a treat at the end of the day.`,
+  ];
+
   const headline = pick(seed + "h", [
     `${texture.charAt(0).toUpperCase() + texture.slice(1)} ${meal.name.toLowerCase()}`,
     `${meal.name}, the ${voice.adjective} way`,
@@ -152,7 +160,7 @@ export function describeMeal(meal: Meal, prefs: UserPreferences): MealCopy {
     `About ${Math.round(cost * 100) / 100 < 3 ? "a third" : "half"} the price of the same dish eaten out`,
   ];
 
-  return { headline, description, sellingPoints };
+  return { headline, description, sellingPoints, rationale: pick(seed + "r", rationales) };
 }
 
 const TAKEAWAY_PER_MEAL_GBP = 9.5;
@@ -224,6 +232,58 @@ export const FREE_DAYS_UNLOCKED = 2;
 
 export function isDayLocked(dayIndex: number, premium: boolean): boolean {
   return !premium && dayIndex >= FREE_DAYS_UNLOCKED;
+}
+
+export interface ChefScore {
+  overall: number;
+  nutrition: number;
+  budget: number;
+  waste: number;
+  convenience: number;
+  summary: string;
+}
+
+export function chefScore(plan: WeeklyPlan, formatAmount: (n: number) => string = formatCurrency): ChefScore {
+  const prefs = plan.preferences;
+  const weeklyBudget =
+    prefs.budgetPeriod === "weekly" ? prefs.budget : prefs.budget / 4.33;
+
+  const totalMeals = plan.days.reduce((s, d) => s + d.meals.length, 0);
+  const avgProtein =
+    plan.days.reduce((s, d) => s + d.meals.reduce((m, x) => m + x.protein, 0), 0) /
+    totalMeals;
+  const avgPrep =
+    plan.days.reduce((s, d) => s + d.meals.reduce((m, x) => m + x.prepTime, 0), 0) /
+    totalMeals;
+
+  const nutrition = Math.min(100, Math.round(70 + (avgProtein / 35) * 30));
+
+  const budgetRatio = plan.totalWeeklyCost / Math.max(weeklyBudget, 1);
+  const budget = Math.max(0, Math.round(100 - Math.max(0, budgetRatio - 1) * 40));
+
+  const ingredientNames = plan.shoppingList.map((i) => i.ingredient.toLowerCase());
+  const unique = new Set(ingredientNames).size;
+  const total = ingredientNames.length || 1;
+  const waste = Math.min(100, Math.round((unique / total) * 90 + (total < 25 ? 10 : 0)));
+
+  const convenience =
+    avgPrep <= 20 ? 95 : avgPrep <= 35 ? 85 : avgPrep <= 50 ? 75 : 65;
+
+  const overall = Math.round((nutrition + budget + waste + convenience) / 4);
+
+  const diff = Math.abs(weeklyBudget - plan.totalWeeklyCost);
+  const under = plan.totalWeeklyCost <= weeklyBudget;
+  const summary = under
+    ? `Excellent plan. You're ${formatAmount(diff)} under budget and using ${Math.round(
+        (unique / total) * 100
+      )}% of your ingredients.`
+    : `Good plan, but you're ${formatAmount(diff)} over your weekly budget. Swap a meal or two to lock it in.`;
+
+  return { overall, nutrition, budget, waste, convenience, summary };
+}
+
+function formatCurrency(amount: number): string {
+  return `£${amount.toFixed(2)}`;
 }
 
 export function dayTeaser(day: DayPlan, prefs: UserPreferences): string {

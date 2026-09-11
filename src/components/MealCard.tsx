@@ -3,10 +3,24 @@
 import Image from "next/image";
 import { useState } from "react";
 import { isFavourite, toggleFavourite } from "@/lib/favourites";
-import type { Meal, UserPreferences } from "@/lib/types";
+import type { Meal, UKStore, UserPreferences } from "@/lib/types";
 import { describeMeal } from "@/lib/ai-copy";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getMealImage } from "@/lib/meal-images";
+import {
+  getProduct,
+  getIngredientFraction,
+  productPrice,
+  formatProductAmount,
+} from "@/lib/grocery-prices";
+
+const RATINGS = [4.7, 4.8, 4.9, 4.6, 5.0];
+
+function ratingFor(name: string) {
+  let sum = 0;
+  for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+  return RATINGS[sum % RATINGS.length].toFixed(1);
+}
 
 function difficultyLabel(prepTime: number): string {
   if (prepTime <= 10) return "Easy";
@@ -18,35 +32,36 @@ export default function MealCard({
   meal,
   preferences,
   onSwap,
+  selectedStore,
+  useLoyalty = false,
 }: {
   meal: Meal;
   preferences?: UserPreferences;
   onSwap?: () => void;
+  selectedStore?: UKStore;
+  useLoyalty?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const copy = preferences ? describeMeal(meal, preferences) : null;
   const [favourite, setFavourite] = useState(() => isFavourite(meal.name));
   const { format } = useCurrency();
+  const householdSize = preferences?.householdSize ?? 1;
 
-  const mealTypeColors: Record<string, string> = {
-    breakfast: "bg-secondary-light text-secondary",
-    lunch: "bg-primary-light text-primary",
-    dinner: "bg-accent-light text-accent",
-    snack: "bg-danger-light text-danger",
-  };
-
-  const totalCost = meal.ingredients.reduce((sum, i) => sum + i.estimatedCost, 0);
+  const totalCost = meal.ingredients.reduce((sum, i) => sum + i.estimatedCost, 0) * householdSize;
+  const rating = ratingFor(meal.name);
+  const highProtein = meal.protein >= 20;
 
   return (
-    <div className="rounded-xl border border-card-border bg-card transition-shadow hover:shadow-md">
-      <div className="relative aspect-[16/9] overflow-hidden rounded-t-xl bg-background">
+    <article className="card overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="relative aspect-[16/10] overflow-hidden">
         <Image
           src={getMealImage(meal.type, meal.name)}
           alt={meal.name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover"
+          className="object-cover transition-transform duration-500 hover:scale-105"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         <button
           type="button"
           aria-label={favourite ? "Remove from favourites" : "Save to favourites"}
@@ -54,7 +69,7 @@ export default function MealCard({
             e.stopPropagation();
             setFavourite(toggleFavourite(meal.name));
           }}
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-sm transition-transform hover:scale-110"
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-muted shadow-sm transition hover:scale-110"
         >
           <svg
             className={`h-5 w-5 ${favourite ? "fill-danger text-danger" : "fill-none text-muted"}`}
@@ -69,125 +84,162 @@ export default function MealCard({
             />
           </svg>
         </button>
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
-          {difficultyLabel(meal.prepTime)}
-        </span>
-      </div>
-      <div
-        className="flex cursor-pointer items-center justify-between p-4"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-center gap-3">
-          <span
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${mealTypeColors[meal.type] ?? ""}`}
-          >
-            {meal.type}
+        <div className="absolute left-3 top-3 flex gap-2">
+          <span className="rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
+            {difficultyLabel(meal.prepTime)}
           </span>
-          <div>
-            <h4 className="font-semibold text-foreground">{meal.name}</h4>
-            <p className="text-xs text-muted">
-              {meal.prepTime} min prep · {format(totalCost)} per serving
-            </p>
-          </div>
+          {highProtein && (
+            <span className="rounded-full bg-accent-light px-2.5 py-1 text-xs font-semibold text-accent shadow-sm">
+              High protein
+            </span>
+          )}
         </div>
-        <div className="flex items-center gap-4 text-sm">
-          <span className="font-medium text-primary">{format(totalCost)}</span>
-          <span className="text-muted">{meal.calories} cal</span>
-          <svg
-            className={`h-5 w-5 text-muted transition-transform ${expanded ? "rotate-180" : ""}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between text-white">
+          <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
+            {meal.type.charAt(0).toUpperCase() + meal.type.slice(1)}
+          </span>
+          <span className="text-sm font-medium">{meal.prepTime} min</span>
         </div>
       </div>
 
-      {copy && (
-        <div className="border-t border-card-border px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-            👨‍🍳 Chef AI says
-          </p>
-          <p className="mt-1 text-sm leading-relaxed text-foreground">{copy.description}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {copy.sellingPoints.map((point) => (
-              <span
-                key={point}
-                className="rounded-full bg-background px-2.5 py-1 text-xs text-muted"
-              >
-                {point}
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h4 className="font-serif text-lg font-semibold leading-tight text-foreground">
+              {copy?.headline ?? meal.name}
+            </h4>
+            <div className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-muted">
+              <span className="flex items-center gap-1 text-amber-600">
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                {rating}
               </span>
-            ))}
+              <span>·</span>
+              <span>{meal.prepTime} min</span>
+              <span>·</span>
+              <span>{meal.calories} kcal</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="font-serif text-xl font-bold text-primary">{format(totalCost)}</p>
+            <p className="text-xs text-muted">per meal</p>
           </div>
         </div>
-      )}
 
-      {expanded && (
-        <div className="border-t border-card-border px-4 pb-4 pt-3">
-          {/* Macros */}
-          <div className="mb-4 grid grid-cols-3 gap-3">
-            <div className="rounded-lg bg-background p-2 text-center">
-              <p className="text-xs text-muted">Protein</p>
-              <p className="text-sm font-bold text-primary">{meal.protein}g</p>
-            </div>
-            <div className="rounded-lg bg-background p-2 text-center">
-              <p className="text-xs text-muted">Carbs</p>
-              <p className="text-sm font-bold text-secondary">{meal.carbs}g</p>
-            </div>
-            <div className="rounded-lg bg-background p-2 text-center">
-              <p className="text-xs text-muted">Fat</p>
-              <p className="text-sm font-bold text-accent">{meal.fat}g</p>
-            </div>
-          </div>
+        {copy && (
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            {copy.description}
+          </p>
+        )}
 
-          {/* Ingredients */}
-          <div className="mb-3">
-            <h5 className="mb-2 text-sm font-semibold">Ingredients</h5>
-            <ul className="space-y-1">
-              {meal.ingredients.map((ing, i) => (
-                <li key={i} className="flex items-center justify-between text-sm">
-                  <span className="text-muted">
-                    {ing.quantity} {ing.unit} {ing.name}
-                  </span>
-                  <span className="text-xs font-medium text-primary">{format(ing.estimatedCost)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {copy?.sellingPoints.map((point) => (
+            <span
+              key={point}
+              className="rounded-full bg-primary-light/60 px-3 py-1 text-xs font-medium text-primary"
+            >
+              {point}
+            </span>
+          ))}
+        </div>
 
-          {/* Instructions */}
-          <div className="mb-3">
-            <h5 className="mb-2 text-sm font-semibold">Instructions</h5>
-            <ol className="list-inside list-decimal space-y-1 text-sm text-muted">
-              {meal.instructions.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
-            </ol>
-          </div>
-
+        <div className="mt-5 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="flex-1 rounded-full border border-card-border py-2.5 text-sm font-semibold transition hover:border-primary hover:text-primary"
+          >
+            {expanded ? "Close recipe" : "View recipe"}
+          </button>
           {onSwap && (
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSwap();
-              }}
-              className="mb-3 w-full rounded-lg border border-primary/40 bg-primary-light/40 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
+              onClick={onSwap}
+              className="flex-1 rounded-full bg-primary-light py-2.5 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
             >
-              ⇄ Swap this meal
+              Swap
             </button>
           )}
-
-          {/* Waste Tip */}
-          {meal.wasteReductionTip && (
-            <div className="rounded-lg bg-primary-light/50 p-3">
-              <p className="text-xs font-semibold text-primary">♻️ Waste Reduction Tip</p>
-              <p className="mt-1 text-xs text-muted">{meal.wasteReductionTip}</p>
-            </div>
-          )}
         </div>
-      )}
-    </div>
+
+        {expanded && copy && (
+          <div className="mt-5 border-t border-card-border pt-4">
+            <div className="mb-4 rounded-xl bg-primary-light/40 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Chef&apos;s note
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-foreground">
+                {copy.rationale}
+              </p>
+            </div>
+
+            <div className="mb-4 grid grid-cols-3 gap-3">
+              <div className="rounded-xl bg-primary-light/30 p-2 text-center">
+                <p className="text-xs text-muted">Protein</p>
+                <p className="text-sm font-bold text-primary">{meal.protein}g</p>
+              </div>
+              <div className="rounded-xl bg-secondary-light/40 p-2 text-center">
+                <p className="text-xs text-muted">Carbs</p>
+                <p className="text-sm font-bold text-secondary">{meal.carbs}g</p>
+              </div>
+              <div className="rounded-xl bg-accent-light/40 p-2 text-center">
+                <p className="text-xs text-muted">Fat</p>
+                <p className="text-sm font-bold text-accent">{meal.fat}g</p>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <h5 className="mb-2 text-sm font-semibold">Ingredients</h5>
+              <ul className="space-y-2">
+                {meal.ingredients.map((ing, i) => {
+                  const product = selectedStore ? getProduct(ing.name, selectedStore) : null;
+                  const fraction = getIngredientFraction(ing.name);
+                  const perMeal = product
+                    ? product.packAmount * fraction * householdSize
+                    : 0;
+                  const packPrice = product ? productPrice(product, useLoyalty) : null;
+
+                  return (
+                    <li key={i} className="text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted">
+                          {ing.quantity} {ing.unit} {ing.name}
+                        </span>
+                        <span className="text-xs font-medium text-primary">
+                          {format(ing.estimatedCost * householdSize)}
+                        </span>
+                      </div>
+                      {product && (
+                        <p className="mt-0.5 text-xs text-muted">
+                          {product.productName} — {formatProductAmount(perMeal, product.unit)} used
+                          {packPrice !== null && ` · ${format(packPrice)} pack`}
+                        </p>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="mb-3">
+              <h5 className="mb-2 text-sm font-semibold">Instructions</h5>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-muted">
+                {meal.instructions.map((step, i) => (
+                  <li key={i}>{step}</li>
+                ))}
+              </ol>
+            </div>
+
+            {meal.wasteReductionTip && (
+              <div className="rounded-xl bg-primary-light/30 p-3">
+                <p className="text-xs font-semibold text-primary">Waste-saver tip</p>
+                <p className="mt-1 text-xs text-muted">{meal.wasteReductionTip}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
   );
 }

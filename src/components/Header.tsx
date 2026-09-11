@@ -25,17 +25,19 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="border-b border-card-border bg-card">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Chef.ai logo" width={36} height={36} className="h-9 w-9" />
-          <span className="text-xl font-bold text-foreground">
+    <header className="sticky top-0 z-40 border-b border-card-border bg-card/85 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/logo.png" alt="Chef.ai logo" width={32} height={32} className="h-8 w-8" />
+          <span className="font-serif text-xl font-bold tracking-tight text-foreground">
             Chef<span className="text-primary">.ai</span>
           </span>
         </Link>
-        <nav className="flex items-center gap-3">
-          <LanguageSelector />
-          <CurrencySelector />
+        <nav className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:flex sm:items-center sm:gap-2">
+            <LanguageSelector />
+            <CurrencySelector />
+          </div>
           {user ? (
             <>
               <span className="hidden text-sm font-medium sm:inline">
@@ -63,14 +65,14 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
-              className="text-sm font-medium text-muted hover:text-foreground"
+              className="text-sm font-medium text-muted hover:text-foreground hidden sm:inline"
             >
               {t("nav.login")}
             </Link>
           )}
           <Link
             href="/preview"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark"
           >
             {t("nav.getStarted")}
           </Link>

@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf8f5;
-  --foreground: #2c2416;
-  --primary: #b45309;
-  --primary-dark: #92400e;
-  --primary-light: #fde9d0;
-  --secondary: #d97706;
-  --secondary-light: #fef3c7;
-  --accent: #4d7c0f;
-  --accent-light: #ecfccb;
-  --card: #ffffff;
-  --card-border: #e8e0d4;
-  --muted: #6f6350;
-  --danger: #b91c1c;
-  --danger-light: #fee2e2;
+  --background: #F8F6F0;
+  --foreground: #171714;
+  --primary: #24352A;
+  --primary-dark: #1A2720;
+  --primary-light: #DDE5D8;
+  --secondary: #C49A6C;
+  --secondary-light: #F5EBDC;
+  --accent: #5A7D62;
+  --accent-light: #E8EFE9;
+  --card: #FFFFFF;
+  --card-border: #E8E6E0;
+  --muted: #6A6A64;
+  --danger: #B54242;
+  --danger-light: #FCEAEA;
 }
 
 @theme inline {
@@ -39,55 +39,55 @@
 
 body {
   background-color: var(--background);
-  background-image: radial-gradient(#e8e0d4 0.65px, transparent 0.65px);
-  background-size: 26px 26px;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-}
-
-.font-hand {
-  font-family: var(--font-hand), "Comic Sans MS", cursive;
-}
-
-.hand-underline {
-  position: relative;
-  white-space: nowrap;
-}
-
-.hand-underline::after {
-  content: "";
-  position: absolute;
-  left: -2%;
-  right: -2%;
-  bottom: -0.12em;
-  height: 0.28em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8 C 20 4, 40 10, 60 6 S 100 4, 118 7' fill='none' stroke='%23e11d2e' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")
-    no-repeat center / 100% 100%;
-}
-
-.tape::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 84px;
-  height: 22px;
-  transform: translateX(-50%) rotate(-3deg);
-  background: rgba(233, 214, 160, 0.75);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  z-index: 10;
-}
-
-.wobbly {
-  border-radius: 62% 38% 55% 45% / 45% 55% 42% 58%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 * {
   box-sizing: border-box;
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 4px 14px rgba(36, 53, 42, 0.18);
+
+  &:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(36, 53, 42, 0.22);
+  }
+}
+
+@utility card {
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px rgba(23, 23, 20, 0.04);
+}
+
+@utility pill {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
 }

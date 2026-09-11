@@ -72,7 +72,7 @@ export default function PricingSection() {
     <section id="pricing" className="py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold">{t("pricing.title")}</h2>
+          <h2 className="font-serif text-3xl font-bold">{t("pricing.title")}</h2>
           <p className="mt-3 text-muted">{t("pricing.subtitle")}</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-3">
@@ -94,10 +94,10 @@ export default function PricingSection() {
                   {t(plan.badge)}
                 </div>
               )}
-              <h3 className="text-xl font-bold">{plan.name}</h3>
+              <h3 className="font-serif text-xl font-bold">{plan.name}</h3>
               <p className="mt-1 text-sm text-muted">{plan.tagline}</p>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold">
+                <span className="font-serif text-4xl font-extrabold">
                   {plan.priceGBP === 0 ? format(0) : format(plan.priceGBP)}
                 </span>
                 <span className="text-muted">{plan.period}</span>

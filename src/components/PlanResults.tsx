@@ -1,12 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import type { WeeklyPlan } from "@/lib/types";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import type {
+  WeeklyPlan,
+  BasketProduct,
+  UKStore,
+  ShoppingListItem,
+} from "@/lib/types";
 import { swapMeal } from "@/lib/plan-generator";
-import { describePlan, isDayLocked } from "@/lib/ai-copy";
+import { describePlan, isDayLocked, chefScore } from "@/lib/ai-copy";
 import { isPremium, TIER_CHANGED_EVENT } from "@/lib/subscription";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import {
+  calculatePlanBasket,
+  comparePlanStores,
+  basketTotal,
+  UK_STORES,
+  UK_PRICE_TABLE_UPDATED,
+} from "@/lib/grocery-prices";
 import ChefAiIntro from "./ChefAiIntro";
 import LockedDay from "./LockedDay";
 import MealCard from "./MealCard";
@@ -26,13 +38,56 @@ const TABS: { id: TabId; label: string; icon: string }[] = [
 function getPlanFromStorage(): WeeklyPlan | null {
   if (typeof window === "undefined") return null;
   const stored = sessionStorage.getItem("mealPlan");
-  return stored ? (JSON.parse(stored) as WeeklyPlan) : null;
+  try {
+    return stored ? (JSON.parse(stored) as WeeklyPlan) : null;
+  } catch {
+    return null;
+  }
+}
+
+function basketToShoppingList(basket: BasketProduct[]): ShoppingListItem[] {
+  return basket.map((item) => ({
+    ingredient: item.ingredient,
+    totalQuantity: `${item.packsNeeded} x ${item.product.packSize}`,
+    unit: item.product.unit,
+    category: item.product.category,
+    estimatedCost: item.totalPrice,
+    checked: false,
+  }));
 }
 
 export default function PlanResults() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { format } = useCurrency();
   const [plan, setPlan] = useState<WeeklyPlan | null>(getPlanFromStorage);
+  const initialTab: TabId =
+    (searchParams?.get("tab") as TabId) && TABS.some((t) => t.id === searchParams?.get("tab"))
+      ? (searchParams?.get("tab") as TabId)
+      : "meals";
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [premium, setPremium] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<UKStore | null>(() => {
+    const saved =
+      typeof window !== "undefined"
+        ? localStorage.getItem("mmp-preferred-store")
+        : null;
+    const p = getPlanFromStorage();
+    if (saved && UK_STORES.includes(saved as UKStore)) return saved as UKStore;
+    return p?.selectedStore ?? null;
+  });
+  const [useLoyalty, setUseLoyalty] = useState(() => {
+    const p = getPlanFromStorage();
+    return p?.priceModel === "loyalty";
+  });
+
+  useEffect(() => {
+    const sync = () => setPremium(isPremium());
+    sync();
+    window.addEventListener(TIER_CHANGED_EVENT, sync);
+    return () => window.removeEventListener(TIER_CHANGED_EVENT, sync);
+  }, []);
 
   const handleSwap = (dayIndex: number, mealIndex: number) => {
     setPlan((current) => {
@@ -42,72 +97,173 @@ export default function PlanResults() {
       return updated;
     });
   };
-  const [activeTab, setActiveTab] = useState<TabId>("meals");
-  const [selectedDay, setSelectedDay] = useState(0);
-  const [premium, setPremium] = useState(false);
 
-  useEffect(() => {
-    const sync = () => setPremium(isPremium());
-    sync();
-    window.addEventListener(TIER_CHANGED_EVENT, sync);
-    return () => window.removeEventListener(TIER_CHANGED_EVENT, sync);
-  }, []);
+  const handleSelectStore = (store: UKStore) => {
+    setSelectedStore(store);
+    setPlan((current) => {
+      if (!current) return current;
+      const updated = { ...current, selectedStore: store };
+      sessionStorage.setItem("mealPlan", JSON.stringify(updated));
+      return updated;
+    });
+    try {
+      localStorage.setItem("mmp-preferred-store", store);
+    } catch (err) {
+      console.warn("[stores] Could not persist preferred store:", err);
+    }
+  };
 
-  const narrative = useMemo(() => (plan ? describePlan(plan) : null), [plan]);
+  const handleToggleLoyalty = (value: boolean) => {
+    setUseLoyalty(value);
+    setPlan((current) => {
+      if (!current) return current;
+      const updated = { ...current, priceModel: (value ? "loyalty" : "regular") as WeeklyPlan["priceModel"] };
+      sessionStorage.setItem("mealPlan", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const comparison = useMemo(() => {
+    if (!plan) return [];
+    return comparePlanStores(plan.days, plan.preferences.householdSize, useLoyalty);
+  }, [plan, useLoyalty]);
+
+  const effectiveStore: UKStore =
+    selectedStore ?? plan?.selectedStore ?? comparison[0]?.store ?? "Aldi";
+
+  const currentBasket = useMemo(() => {
+    if (!plan) return [];
+    return calculatePlanBasket(
+      plan.days,
+      plan.preferences.householdSize,
+      effectiveStore,
+      useLoyalty
+    );
+  }, [plan, effectiveStore, useLoyalty]);
+
+  const totalWeeklyCost = basketTotal(currentBasket);
+
+  const scoredPlan = useMemo(() => {
+    if (!plan) return null;
+    return {
+      ...plan,
+      totalWeeklyCost,
+      shoppingList: basketToShoppingList(currentBasket),
+    } as WeeklyPlan;
+  }, [plan, totalWeeklyCost, currentBasket]);
+
+  const narrative = useMemo(
+    () => (scoredPlan ? describePlan(scoredPlan) : null),
+    [scoredPlan]
+  );
+  const score = useMemo(
+    () => (scoredPlan ? chefScore(scoredPlan, format) : null),
+    [scoredPlan, format]
+  );
 
   if (!plan) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <svg className="mx-auto h-8 w-8 animate-spin text-primary" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p className="mt-2 text-muted">Loading your plan...</p>
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="card max-w-md p-8 text-center">
+          <p className="font-serif text-2xl font-bold">No plan yet</p>
+          <p className="mt-2 text-muted">
+            Build your first week in under a minute and Chef AI will take care of the rest.
+          </p>
           <button
-            onClick={() => router.push("/")}
-            className="mt-4 text-sm text-primary underline"
+            onClick={() => router.push("/preview")}
+            className="btn-primary mt-6 w-full"
           >
-            Create a new plan
+            Build my week →
           </button>
         </div>
       </div>
     );
   }
 
+  const weeklyBudget =
+    plan.preferences.budgetPeriod === "weekly"
+      ? plan.preferences.budget
+      : plan.preferences.budget / 4.33;
+  const underBudget = totalWeeklyCost <= weeklyBudget;
+  const budgetDiff = Math.abs(totalWeeklyCost - weeklyBudget);
+  const mealCount = plan.days.reduce((s, d) => s + d.meals.length, 0);
+
   return (
-    <div>
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       {narrative && <ChefAiIntro narrative={narrative} premium={premium} />}
 
-      {/* Summary Banner */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Dashboard header */}
+      <div className="card mb-6 p-5 sm:p-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Your Weekly Meal Plan</h2>
-            <p className="mt-1 opacity-90">
-              {plan.preferences.fitnessGoal} · {plan.preferences.householdSize}{" "}
-              {plan.preferences.householdSize === 1 ? "person" : "people"} ·{" "}
+            <p className="text-sm font-medium text-muted">Your week</p>
+            <h1 className="font-serif text-2xl font-bold sm:text-3xl">
+              {mealCount} meals · {plan.preferences.householdSize}{" "}
+              {plan.preferences.householdSize === 1 ? "person" : "people"}
+            </h1>
+            <p className="mt-1 text-sm text-muted">
+              {plan.preferences.fitnessGoal} ·{" "}
               {plan.preferences.dietaryRestrictions.length > 0
                 ? plan.preferences.dietaryRestrictions.join(", ")
                 : "No restrictions"}
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-3xl font-bold">{format(plan.totalWeeklyCost)}</p>
-            <p className="text-sm opacity-90">estimated weekly cost</p>
+          <div className="flex flex-wrap gap-4 sm:justify-end">
+            <div className="min-w-[7rem] rounded-2xl bg-primary-light/40 p-3 text-center">
+              <p className="text-xs font-semibold text-primary">Estimated</p>
+              <p className="font-serif text-xl font-bold text-foreground">{format(totalWeeklyCost)}</p>
+            </div>
+            <div className="min-w-[7rem] rounded-2xl bg-primary-light/40 p-3 text-center">
+              <p className="text-xs font-semibold text-primary">
+                {underBudget ? "Under budget" : "Over budget"}
+              </p>
+              <p className={`font-serif text-xl font-bold ${underBudget ? "text-accent" : "text-danger"}`}>
+                {format(budgetDiff)}
+              </p>
+            </div>
+            {score && (
+              <div className="min-w-[7rem] rounded-2xl bg-primary p-3 text-center text-white">
+                <p className="text-xs font-semibold text-primary-light">Chef Score</p>
+                <p className="font-serif text-2xl font-bold">{score.overall}</p>
+              </div>
+            )}
           </div>
         </div>
+
+        {score && (
+          <div className="mt-5 grid gap-3 border-t border-card-border pt-5 sm:grid-cols-4">
+            {[
+              { label: "Nutrition", value: score.nutrition, color: "bg-accent" },
+              { label: "Budget", value: score.budget, color: "bg-primary" },
+              { label: "Waste", value: score.waste, color: "bg-secondary" },
+              { label: "Convenience", value: score.convenience, color: "bg-amber-500" },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="mb-1 flex items-center justify-between text-sm">
+                  <span className="text-muted">{s.label}</span>
+                  <span className="font-semibold">{s.value}</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-primary-light/40">
+                  <div
+                    className={`h-full rounded-full ${s.color} transition-all`}
+                    style={{ width: `${Math.min(100, Math.max(0, s.value))}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+      <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+            className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
               activeTab === tab.id
-                ? "bg-primary text-white shadow-md"
+                ? "bg-primary text-white shadow-sm"
                 : "bg-card border border-card-border text-muted hover:border-primary"
             }`}
           >
@@ -117,78 +273,62 @@ export default function PlanResults() {
         ))}
       </div>
 
-      {/* Tab Content */}
       {activeTab === "meals" && (
         <div>
-          {/* Day Selector */}
+          {/* Week strip */}
           <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
             {plan.days.map((day, i) => (
               <button
                 key={day.day}
                 onClick={() => setSelectedDay(i)}
-                className={`flex shrink-0 flex-col items-center rounded-xl px-4 py-3 text-sm transition-all ${
+                className={`flex shrink-0 flex-col items-center rounded-2xl px-4 py-3 text-sm transition-all ${
                   selectedDay === i
-                    ? "bg-accent text-white shadow-md"
-                    : "bg-card border border-card-border text-muted hover:border-accent"
+                    ? "bg-primary text-white shadow-md"
+                    : "bg-card border border-card-border text-muted hover:border-primary"
                 }`}
               >
                 <span className="font-semibold">
                   {isDayLocked(i, premium) && "🔒 "}
                   {day.day.slice(0, 3)}
                 </span>
-                <span className="mt-0.5 text-xs opacity-80">
-                  {format(day.totalCost)}
-                </span>
+                <span className="mt-0.5 text-xs opacity-80">{format(day.totalCost)}</span>
               </button>
             ))}
           </div>
 
-          {/* Day Summary */}
-          <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-xl bg-card border border-card-border p-3 text-center">
-              <p className="text-xs text-muted">Calories</p>
-              <p className="text-lg font-bold text-foreground">
-                {plan.days[selectedDay].totalCalories}
+          {/* Selected day */}
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                {plan.days[selectedDay].day}
+              </p>
+              <p className="font-serif text-lg font-bold">
+                {plan.days[selectedDay].meals.reduce((s, m) => s + m.calories, 0)} kcal ·{" "}
+                {plan.days[selectedDay].meals.reduce((s, m) => s + m.prepTime, 0)} min
               </p>
             </div>
-            <div className="rounded-xl bg-card border border-card-border p-3 text-center">
-              <p className="text-xs text-muted">Meals</p>
-              <p className="text-lg font-bold text-foreground">
-                {plan.days[selectedDay].meals.length}
-              </p>
-            </div>
-            <div className="rounded-xl bg-card border border-card-border p-3 text-center">
-              <p className="text-xs text-muted">Cost</p>
-              <p className="text-lg font-bold text-primary">
-                {format(plan.days[selectedDay].totalCost)}
-              </p>
-            </div>
-            <div className="rounded-xl bg-card border border-card-border p-3 text-center">
-              <p className="text-xs text-muted">Prep Time</p>
-              <p className="text-lg font-bold text-foreground">
-                {plan.days[selectedDay].meals.reduce(
-                  (sum, m) => sum + m.prepTime,
-                  0
-                )}{" "}
-                min
-              </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => router.push("/preview")}
+                className="rounded-full bg-primary-light px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+              >
+                Regenerate week
+              </button>
             </div>
           </div>
 
-          {/* Meals */}
           {isDayLocked(selectedDay, premium) ? (
-            <LockedDay
-              day={plan.days[selectedDay]}
-              preferences={plan.preferences}
-            />
+            <LockedDay day={plan.days[selectedDay]} preferences={plan.preferences} />
           ) : (
-            <div className="space-y-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {plan.days[selectedDay].meals.map((meal, i) => (
                 <MealCard
                   key={`${meal.name}-${i}`}
                   meal={meal}
                   preferences={plan.preferences}
                   onSwap={() => handleSwap(selectedDay, i)}
+                  selectedStore={effectiveStore}
+                  useLoyalty={useLoyalty}
                 />
               ))}
             </div>
@@ -196,31 +336,25 @@ export default function PlanResults() {
         </div>
       )}
 
-      {activeTab === "shopping" && <ShoppingList items={plan.shoppingList} />}
-
-      {activeTab === "stores" && (
-        <SupermarketComparison
-          weeklyBasketGBP={plan.totalWeeklyCost}
-          items={plan.shoppingList.map((item) => ({
-            ingredient: item.ingredient,
-            estimatedCost: item.estimatedCost,
-          }))}
+      {activeTab === "shopping" && (
+        <ShoppingList
+          basket={currentBasket}
+          priceDate={UK_PRICE_TABLE_UPDATED}
         />
       )}
 
-      {activeTab === "waste" && (
-        <WasteReductionTips tips={plan.wasteReductionTips} />
+      {activeTab === "stores" && (
+        <SupermarketComparison
+          comparison={comparison}
+          selectedStore={effectiveStore}
+          onSelectStore={handleSelectStore}
+          useLoyalty={useLoyalty}
+          onToggleLoyalty={handleToggleLoyalty}
+          priceDate={UK_PRICE_TABLE_UPDATED}
+        />
       )}
 
-      {/* Generate New Plan */}
-      <div className="mt-8 text-center">
-        <button
-          onClick={() => router.push("/")}
-          className="rounded-xl border border-card-border bg-card px-8 py-3 font-semibold text-muted transition-all hover:border-primary hover:text-primary"
-        >
-          Generate New Plan
-        </button>
-      </div>
+      {activeTab === "waste" && <WasteReductionTips tips={plan.wasteReductionTips} />}
     </div>
   );
 }
