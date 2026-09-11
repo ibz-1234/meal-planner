@@ -104,6 +104,9 @@ export const UK_PRICE_TABLE: Record<string, IngredientPrice> = {
   Cumin: { pack: "43g jar", prices: [1.0, 0.79, 0.85, 0.92, 0.95, 1.1] },
   "Salt & Pepper": { pack: "set", prices: [1.2, 0.95, 0.99, 1.1, 1.15, 1.3] },
   "Vegetable Broth": { pack: "1L", prices: [1.1, 0.89, 0.92, 1.0, 1.05, 1.2] },
+  "Miso Paste": { pack: "200g", prices: [2.5, 1.99, 2.05, 2.25, 2.35, 2.6] },
+  "Ginger": { pack: "100g", prices: [0.75, 0.55, 0.58, 0.65, 0.68, 0.75] },
+  "Chilli Flakes": { pack: "40g", prices: [1.2, 0.95, 0.99, 1.05, 1.1, 1.25] },
 };
 
 // Typical fraction of a pack used per person in one meal.
@@ -177,6 +180,9 @@ export const PORTION_OF_PACK: Record<string, number> = {
   Cumin: 0.08,
   "Salt & Pepper": 0.02,
   "Vegetable Broth": 0.5,
+  "Miso Paste": 0.15,
+  "Ginger": 0.2,
+  "Chilli Flakes": 0.05,
 };
 
 const PORTION_BY_LOWER = new Map(

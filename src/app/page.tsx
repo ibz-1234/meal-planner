@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getRecipeImage } from "@/lib/meal-images";
+import { slugify } from "@/lib/meal-data";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import PricingSection from "@/components/PricingSection";
 
@@ -34,68 +35,69 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-20">
-        <div className="mx-auto max-w-7xl text-center">
+      <section className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden">
+        <Image
+          src="/meal-fish.jpg"
+          alt="Pan-seared salmon with new potatoes, asparagus and lemon"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover animate-slow-zoom"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-20 pb-40 text-center text-white sm:px-6">
           <div className="animate-fade-in-up">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-card-border bg-white px-4 py-1.5 text-xs font-semibold text-primary shadow-sm">
+            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-sm">
               <span className="h-2 w-2 rounded-full bg-secondary" /> AI meal planner + UK supermarket prices
             </p>
-            <h1 className="font-serif text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
-              Dinner, <span className="text-primary italic">beautifully sorted.</span>
+            <h1 className="font-serif text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-8xl">
+              Dinner, <span className="italic text-white/95">beautifully sorted.</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
               7 dinners, one smart shopping basket, and the cheapest UK supermarket — planned in seconds.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/preview" className="btn-primary !px-8 !py-4 text-lg">
+              <Link
+                href="/preview"
+                className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary shadow-xl transition hover:bg-white/90 hover:scale-[1.02]"
+              >
                 Build my week →
               </Link>
               <Link
                 href="/plan"
-                className="inline-flex items-center justify-center rounded-full border border-card-border bg-card px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-primary hover:bg-white hover:shadow-sm"
+                className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 View demo plan
               </Link>
             </div>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-muted">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-white/75">
               <span className="flex items-center gap-1 font-medium text-secondary">
                 <Star className="h-4 w-4 fill-current" /> 4.9
               </span>
               <span>10,000+ UK home cooks</span>
-              <span className="hidden text-muted sm:inline">·</span>
+              <span className="hidden sm:inline">·</span>
               <span>No credit card</span>
             </div>
           </div>
+        </div>
 
-          <div
-            className="relative mt-14 aspect-[16/9] overflow-hidden rounded-[2.5rem] shadow-2xl animate-fade-in"
-            style={{ animationDelay: "0.15s" }}
-          >
-            <Image
-              src="/meal-fish.jpg"
-              alt="Pan-seared salmon with new potatoes, asparagus and lemon"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover animate-slow-zoom"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4 rounded-2xl bg-white/95 p-5 shadow-xl backdrop-blur-sm sm:bottom-8 sm:left-8 sm:right-8">
-              <div>
-                <p className="text-xs font-semibold text-muted">This week&apos;s basket</p>
-                <p className="font-serif text-3xl font-bold text-primary">{format(38.6)}</p>
-                <p className="text-xs font-medium text-secondary">at Aldi</p>
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-xs font-semibold text-muted">Potential saving</p>
-                <p className="font-serif text-2xl font-bold text-foreground">{format(8.4)}</p>
-                <p className="text-xs font-medium text-muted">vs Tesco</p>
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-xs font-semibold text-muted">Days planned</p>
-                <p className="font-serif text-2xl font-bold text-foreground">7</p>
-                <p className="text-xs font-medium text-muted">dinners</p>
-              </div>
+        <div className="absolute bottom-8 left-1/2 z-20 w-[calc(100%-2rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-white/10 p-5 text-white shadow-2xl backdrop-blur-md sm:bottom-10 sm:w-auto sm:min-w-[40rem] animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-xs font-semibold text-white/70">This week&apos;s basket</p>
+              <p className="font-serif text-2xl font-bold sm:text-3xl">{format(38.6)}</p>
+              <p className="text-xs font-medium text-secondary">at Aldi</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white/70">Potential saving</p>
+              <p className="font-serif text-2xl font-bold sm:text-3xl">{format(8.4)}</p>
+              <p className="text-xs font-medium text-white/70">vs Tesco</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white/70">Days planned</p>
+              <p className="font-serif text-2xl font-bold sm:text-3xl">7</p>
+              <p className="text-xs font-medium text-white/70">dinners</p>
             </div>
           </div>
         </div>
@@ -118,40 +120,43 @@ export default function Home() {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURED_RECIPES.map((recipe) => (
-              <article
+              <Link
                 key={recipe.name}
-                className="card group cursor-pointer overflow-hidden hover:-translate-y-1 hover:shadow-xl"
+                href={`/recipe/${slugify(recipe.name)}`}
+                className="block group"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={getRecipeImage(recipe.name)}
-                    alt={recipe.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                  <div className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
-                    {recipe.tag}
+                <article className="card h-full overflow-hidden transition hover:-translate-y-1 hover:shadow-xl">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={getRecipeImage(recipe.name)}
+                      alt={recipe.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                    <div className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-sm">
+                      {recipe.tag}
+                    </div>
                   </div>
-                </div>
-                <div className="p-5">
-                  <h3 className="font-serif text-lg font-bold leading-tight">{recipe.name}</h3>
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-                    <span className="flex items-center gap-1 text-secondary">
-                      <Star className="h-3.5 w-3.5 fill-current" /> {recipe.rating}
-                    </span>
-                    <span>·</span>
-                    <span>{recipe.time} min</span>
-                    <span>·</span>
-                    <span>{recipe.protein}g protein</span>
+                  <div className="p-5">
+                    <h3 className="font-serif text-lg font-bold leading-tight group-hover:text-primary transition-colors">{recipe.name}</h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+                      <span className="flex items-center gap-1 text-secondary">
+                        <Star className="h-3.5 w-3.5 fill-current" /> {recipe.rating}
+                      </span>
+                      <span>·</span>
+                      <span>{recipe.time} min</span>
+                      <span>·</span>
+                      <span>{recipe.protein}g protein</span>
+                    </div>
+                    <div className="mt-5 flex items-center justify-between">
+                      <p className="font-serif text-2xl font-bold text-primary">{format(recipe.cost)}</p>
+                      <span className="text-xs text-muted">per serving</span>
+                    </div>
                   </div>
-                  <div className="mt-5 flex items-center justify-between">
-                    <p className="font-serif text-2xl font-bold text-primary">{format(recipe.cost)}</p>
-                    <span className="text-xs text-muted">per serving</span>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </div>
         </div>

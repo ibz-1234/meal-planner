@@ -382,6 +382,113 @@ const DINNER_MEALS: Meal[] = [
       "Bake for 35-40 minutes until chicken reaches 165°F",
     ],
   },
+  {
+    name: "Szechuan Chicken Stir-Fry",
+    type: "dinner",
+    calories: 490,
+    protein: 34,
+    carbs: 42,
+    fat: 18,
+    prepTime: 25,
+    ingredients: [
+      { name: "Chicken Breast", quantity: "180", unit: "g", estimatedCost: 2.5, category: "Meat" },
+      { name: "Mixed Stir-Fry Vegetables", quantity: "2", unit: "cups", estimatedCost: 1.5, category: "Produce" },
+      { name: "Soy Sauce", quantity: "2", unit: "tbsp", estimatedCost: 0.2, category: "Pantry" },
+      { name: "Jasmine Rice", quantity: "0.5", unit: "cup", estimatedCost: 0.3, category: "Grains" },
+      { name: "Sesame Oil", quantity: "1", unit: "tsp", estimatedCost: 0.15, category: "Pantry" },
+      { name: "Garlic", quantity: "2", unit: "cloves", estimatedCost: 0.1, category: "Produce" },
+      { name: "Chilli Flakes", quantity: "0.5", unit: "tsp", estimatedCost: 0.05, category: "Pantry" },
+    ],
+    instructions: [
+      "Cook jasmine rice according to package",
+      "Slice chicken breast into thin strips",
+      "Stir-fry chicken in sesame oil until golden and cooked through",
+      "Add garlic, vegetables, soy sauce and chilli flakes",
+      "Toss over high heat for 3-4 minutes and serve over rice",
+    ],
+    wasteReductionTip: "Use up any odds and ends from the veg drawer in this stir-fry.",
+  },
+  {
+    name: "Miso Glazed Salmon Bowl",
+    type: "dinner",
+    calories: 560,
+    protein: 32,
+    carbs: 48,
+    fat: 22,
+    prepTime: 20,
+    ingredients: [
+      { name: "Salmon Fillet", quantity: "150", unit: "g", estimatedCost: 4.5, category: "Seafood" },
+      { name: "Brown Rice", quantity: "0.5", unit: "cup", estimatedCost: 0.3, category: "Grains" },
+      { name: "Broccoli", quantity: "1", unit: "cup", estimatedCost: 0.8, category: "Produce" },
+      { name: "Miso Paste", quantity: "1", unit: "tbsp", estimatedCost: 0.4, category: "Pantry" },
+      { name: "Soy Sauce", quantity: "1", unit: "tbsp", estimatedCost: 0.1, category: "Pantry" },
+      { name: "Ginger", quantity: "1", unit: "tbsp", estimatedCost: 0.15, category: "Produce" },
+      { name: "Sesame Oil", quantity: "1", unit: "tsp", estimatedCost: 0.08, category: "Pantry" },
+      { name: "Lemon", quantity: "0.5", unit: "whole", estimatedCost: 0.15, category: "Produce" },
+    ],
+    instructions: [
+      "Cook brown rice according to package",
+      "Whisk miso paste, soy sauce, ginger, sesame oil and lemon juice",
+      "Brush glaze over salmon and grill for 4-5 minutes per side",
+      "Steam broccoli until bright green",
+      "Serve salmon over rice with broccoli and a final drizzle of glaze",
+    ],
+    wasteReductionTip: "Leftover miso glaze keeps for a week — perfect for tofu or chicken tomorrow.",
+  },
+  {
+    name: "Roasted Sweet Potato Buddha Bowl",
+    type: "dinner",
+    calories: 520,
+    protein: 18,
+    carbs: 68,
+    fat: 16,
+    prepTime: 30,
+    ingredients: [
+      { name: "Sweet Potato", quantity: "1", unit: "large", estimatedCost: 0.8, category: "Produce" },
+      { name: "Chickpeas", quantity: "0.5", unit: "cup", estimatedCost: 0.5, category: "Canned" },
+      { name: "Quinoa", quantity: "0.5", unit: "cup", estimatedCost: 0.8, category: "Grains" },
+      { name: "Kale", quantity: "1", unit: "cup", estimatedCost: 0.7, category: "Produce" },
+      { name: "Tahini", quantity: "1", unit: "tbsp", estimatedCost: 0.25, category: "Pantry" },
+      { name: "Lemon", quantity: "0.5", unit: "whole", estimatedCost: 0.15, category: "Produce" },
+      { name: "Garlic", quantity: "1", unit: "clove", estimatedCost: 0.05, category: "Produce" },
+      { name: "Olive Oil", quantity: "1", unit: "tbsp", estimatedCost: 0.1, category: "Pantry" },
+    ],
+    instructions: [
+      "Roast cubed sweet potato and chickpeas with olive oil and garlic at 200°C for 25 minutes",
+      "Cook quinoa according to package",
+      "Massage kale with a drizzle of olive oil and lemon juice",
+      "Whisk tahini with lemon, garlic and a splash of water for dressing",
+      "Assemble bowl with quinoa, roasted veg, kale and tahini drizzle",
+    ],
+    wasteReductionTip: "Roast extra sweet potato and use it in tomorrow's lunch wrap.",
+  },
+  {
+    name: "Smoky Black Bean Tacos",
+    type: "dinner",
+    calories: 460,
+    protein: 22,
+    carbs: 58,
+    fat: 14,
+    prepTime: 35,
+    ingredients: [
+      { name: "Black Beans", quantity: "1", unit: "can", estimatedCost: 0.8, category: "Canned" },
+      { name: "Corn Tortillas", quantity: "3", unit: "small", estimatedCost: 0.4, category: "Bakery" },
+      { name: "Avocado", quantity: "0.5", unit: "whole", estimatedCost: 0.5, category: "Produce" },
+      { name: "Salsa", quantity: "0.25", unit: "cup", estimatedCost: 0.3, category: "Pantry" },
+      { name: "Cumin", quantity: "1", unit: "tsp", estimatedCost: 0.05, category: "Pantry" },
+      { name: "Lime", quantity: "0.5", unit: "whole", estimatedCost: 0.15, category: "Produce" },
+      { name: "Cilantro", quantity: "2", unit: "tbsp", estimatedCost: 0.2, category: "Produce" },
+      { name: "Cherry Tomatoes", quantity: "0.5", unit: "cup", estimatedCost: 0.4, category: "Produce" },
+    ],
+    instructions: [
+      "Warm black beans with cumin and a squeeze of lime",
+      "Toast corn tortillas in a dry pan",
+      "Mash avocado with a pinch of salt and lime",
+      "Top tortillas with beans, salsa, tomatoes, cilantro and mashed avocado",
+      "Serve with extra lime wedges",
+    ],
+    wasteReductionTip: "Leftover tortillas make crispy tostadas for tomorrow's snack.",
+  },
 ];
 
 const SNACK_MEALS: Meal[] = [
@@ -449,6 +556,37 @@ export const ALL_MEALS = {
   dinner: repriceMeals(DINNER_MEALS),
   snack: repriceMeals(SNACK_MEALS),
 };
+
+export function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function getMealByName(name: string): Meal | undefined {
+  const all = [
+    ...ALL_MEALS.breakfast,
+    ...ALL_MEALS.lunch,
+    ...ALL_MEALS.dinner,
+    ...ALL_MEALS.snack,
+  ];
+  return all.find((m) => m.name.toLowerCase() === name.toLowerCase());
+}
+
+export function getMealBySlug(slug: string): Meal | undefined {
+  const all = [
+    ...ALL_MEALS.breakfast,
+    ...ALL_MEALS.lunch,
+    ...ALL_MEALS.dinner,
+    ...ALL_MEALS.snack,
+  ];
+  return all.find((m) => slugify(m.name) === slug);
+}
+
+export const MEAL_SLUGS = Object.values(ALL_MEALS)
+  .flat()
+  .map((m) => slugify(m.name));
 
 export const SUPERMARKETS: SupermarketPrice[] = [
   {
