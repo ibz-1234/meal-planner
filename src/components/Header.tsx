@@ -25,10 +25,10 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-card-border bg-card/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-card-border/60 bg-card/80 backdrop-blur-xl shadow-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Chef.ai logo" width={32} height={32} className="h-8 w-8" />
+          <Image src="/logo.png" alt="Chef.ai logo" width={34} height={34} className="h-8 w-8 rounded-full" />
           <span className="font-serif text-xl font-bold tracking-tight text-foreground">
             Chef<span className="text-primary">.ai</span>
           </span>
@@ -72,7 +72,7 @@ export default function Header() {
           )}
           <Link
             href="/preview"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark hover:shadow-md"
           >
             {t("nav.getStarted")}
           </Link>

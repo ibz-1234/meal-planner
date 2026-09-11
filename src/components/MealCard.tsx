@@ -52,14 +52,14 @@ export default function MealCard({
   const highProtein = meal.protein >= 20;
 
   return (
-    <article className="card overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+    <article className="card group overflow-hidden hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-[16/10] overflow-hidden">
         <Image
           src={getMealImage(meal.type, meal.name)}
           alt={meal.name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-500 hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         <button

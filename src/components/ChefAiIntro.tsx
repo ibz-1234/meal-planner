@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { PlanNarrative } from "@/lib/ai-copy";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -39,9 +40,9 @@ export default function ChefAiIntro({
         <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-white/5" />
         <div className="absolute bottom-0 left-0 h-24 w-24 -translate-x-6 translate-y-6 rounded-full bg-white/5" />
         <div className="relative flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-2xl backdrop-blur-sm">
-            👨‍🍳
-          </span>
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 p-1.5 backdrop-blur-sm">
+            <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
+          </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-light">
               Chef AI

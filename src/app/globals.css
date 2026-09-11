@@ -58,31 +58,65 @@ h4 {
   box-sizing: border-box;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out forwards;
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.7s ease-out forwards;
+}
+
+@utility animate-slow-zoom {
+  animation: slowZoom 20s ease-in-out infinite alternate;
+}
+
 @utility btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
   background-color: var(--primary);
-  padding: 0.875rem 1.75rem;
+  padding: 0.95rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
   transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
-  box-shadow: 0 4px 14px rgba(36, 53, 42, 0.18);
+  box-shadow: 0 6px 18px rgba(36, 53, 42, 0.2);
 
   &:hover {
     background-color: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(36, 53, 42, 0.22);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(36, 53, 42, 0.26);
   }
 }
 
 @utility card {
   background-color: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 1.25rem;
-  box-shadow: 0 1px 3px rgba(23, 23, 20, 0.04);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 14px rgba(23, 23, 20, 0.04);
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 @utility pill {

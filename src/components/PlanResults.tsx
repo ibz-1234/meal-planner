@@ -28,11 +28,11 @@ import WasteReductionTips from "./WasteReductionTips";
 
 type TabId = "meals" | "shopping" | "stores" | "waste";
 
-const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: "meals", label: "Meal Plan", icon: "🍽️" },
-  { id: "shopping", label: "Shopping List", icon: "📝" },
-  { id: "stores", label: "Compare Stores", icon: "🏪" },
-  { id: "waste", label: "Reduce Waste", icon: "♻️" },
+const TABS: { id: TabId; label: string }[] = [
+  { id: "meals", label: "Meals" },
+  { id: "shopping", label: "Shopping" },
+  { id: "stores", label: "Stores" },
+  { id: "waste", label: "Waste" },
 ];
 
 function getPlanFromStorage(): WeeklyPlan | null {
@@ -193,19 +193,23 @@ export default function PlanResults() {
       {narrative && <ChefAiIntro narrative={narrative} premium={premium} />}
 
       {/* Dashboard header */}
-      <div className="card mb-6 p-5 sm:p-6">
+      <div className="card mb-6 p-5 sm:p-6 animate-fade-in-up">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-muted">Your week</p>
-            <h1 className="font-serif text-2xl font-bold sm:text-3xl">
+            <div className="mb-2 flex items-center gap-2">
+              <span className="rounded-full bg-primary-light px-2.5 py-1 text-xs font-bold text-primary">{plan.preferences.fitnessGoal}</span>
+              {plan.preferences.dietaryRestrictions.length > 0 && (
+                <span className="rounded-full bg-accent-light px-2.5 py-1 text-xs font-bold text-accent">
+                  {plan.preferences.dietaryRestrictions.join(", ")}
+                </span>
+              )}
+            </div>
+            <h1 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl">
               {mealCount} meals · {plan.preferences.householdSize}{" "}
               {plan.preferences.householdSize === 1 ? "person" : "people"}
             </h1>
-            <p className="mt-1 text-sm text-muted">
-              {plan.preferences.fitnessGoal} ·{" "}
-              {plan.preferences.dietaryRestrictions.length > 0
-                ? plan.preferences.dietaryRestrictions.join(", ")
-                : "No restrictions"}
+            <p className="mt-2 text-sm text-muted">
+              Estimated weekly shop for your household
             </p>
           </div>
           <div className="flex flex-wrap gap-4 sm:justify-end">
@@ -261,13 +265,12 @@ export default function PlanResults() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
+            className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
               activeTab === tab.id
                 ? "bg-primary text-white shadow-sm"
-                : "bg-card border border-card-border text-muted hover:border-primary"
+                : "bg-card border border-card-border text-muted hover:border-primary hover:text-foreground"
             }`}
           >
-            <span>{tab.icon}</span>
             {tab.label}
           </button>
         ))}

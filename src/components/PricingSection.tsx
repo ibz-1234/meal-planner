@@ -79,10 +79,10 @@ export default function PricingSection() {
           {PLANS.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl border p-6 transition-all hover:shadow-lg ${
+              className={`relative rounded-3xl border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
                 plan.featured
-                  ? "border-primary bg-card shadow-md sm:scale-105"
-                  : "border-card-border bg-card"
+                  ? "border-primary bg-card shadow-lg sm:scale-105"
+                  : "border-card-border bg-card hover:border-primary/50"
               }`}
             >
               {plan.badge && (
@@ -94,10 +94,10 @@ export default function PricingSection() {
                   {t(plan.badge)}
                 </div>
               )}
-              <h3 className="font-serif text-xl font-bold">{plan.name}</h3>
+              <h3 className="font-serif text-2xl font-bold">{plan.name}</h3>
               <p className="mt-1 text-sm text-muted">{plan.tagline}</p>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-serif text-4xl font-extrabold">
+              <div className="mt-5 flex items-baseline gap-1">
+                <span className="font-serif text-5xl font-extrabold tracking-tight">
                   {plan.priceGBP === 0 ? format(0) : format(plan.priceGBP)}
                 </span>
                 <span className="text-muted">{plan.period}</span>
@@ -124,10 +124,10 @@ export default function PricingSection() {
               </ul>
               <Link
                 href={plan.priceGBP === 0 ? "/signup" : "/upgrade"}
-                className={`mt-6 block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
+                className={`mt-8 block w-full rounded-full py-3.5 text-center text-sm font-bold transition-all ${
                   plan.featured
-                    ? "bg-primary text-white hover:bg-primary-dark"
-                    : "border border-card-border text-foreground hover:border-primary hover:text-primary"
+                    ? "bg-primary text-white shadow-md hover:bg-primary-dark hover:shadow-lg"
+                    : "border border-card-border text-foreground hover:border-primary hover:text-primary hover:shadow-sm"
                 }`}
               >
                 {plan.cta}

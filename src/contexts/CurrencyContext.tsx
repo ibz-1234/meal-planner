@@ -11,7 +11,6 @@ import {
 import {
   COUNTRIES,
   DEFAULT_COUNTRY,
-  detectCountry,
   fetchLiveRates,
   formatMoney,
   hasLiveRates,
@@ -54,9 +53,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       setRatesLive(ok && hasLiveRates());
       setRatesVersion((v) => v + 1);
     });
-    detectCountry().then((detected) => {
-      if (detected) setCountryState(detected);
-    });
+    // Default to GBP (UK). Users can change via CurrencySelector.
   }, []);
 
   const setCountry = useCallback((c: CountryInfo) => {
