@@ -14,10 +14,10 @@ const SUGGESTED_STORES = [
 ];
 
 const FEATURED_RECIPES = [
-  { name: "Crispy Tofu & Sesame Greens", tag: "Plant-based", time: 30, cost: 2.84, protein: 18, rating: 4.8 },
-  { name: "Creamy Tuscan Chicken", tag: "High protein", time: 25, cost: 3.4, protein: 36, rating: 4.9 },
-  { name: "Salmon & Miso Rice Bowl", tag: "Pescatarian", time: 20, cost: 3.75, protein: 32, rating: 4.7 },
-  { name: "Spicy Chicken Fajita Bowls", tag: "Family favourite", time: 35, cost: 3.1, protein: 34, rating: 4.8 },
+  { name: "Szechuan Chicken Stir-Fry", tag: "High protein", time: 25, cost: 3.1, protein: 34, rating: 4.8 },
+  { name: "Miso Glazed Salmon Bowl", tag: "Pescatarian", time: 20, cost: 3.75, protein: 32, rating: 4.7 },
+  { name: "Roasted Sweet Potato Buddha Bowl", tag: "Plant-based", time: 30, cost: 2.84, protein: 18, rating: 4.8 },
+  { name: "Smoky Black Bean Tacos", tag: "Family favourite", time: 35, cost: 2.6, protein: 22, rating: 4.9 },
 ];
 
 function Star({ className }: { className?: string }) {
@@ -34,26 +34,20 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero */}
-      <section className="relative px-4 pb-16 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:pb-28">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -right-40 -top-40 h-[40rem] w-[40rem] rounded-full bg-primary-light/40 blur-3xl" />
-          <div className="absolute -left-20 top-1/2 h-[30rem] w-[30rem] rounded-full bg-accent-light/40 blur-3xl" />
-        </div>
-
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <section className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-20">
+        <div className="mx-auto max-w-7xl text-center">
           <div className="animate-fade-in-up">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-primary shadow-sm">
+            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-card-border bg-white px-4 py-1.5 text-xs font-semibold text-primary shadow-sm">
               <span className="h-2 w-2 rounded-full bg-accent" /> AI meal planner + UK supermarket prices
             </p>
-            <h1 className="font-serif text-5xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Your whole week of food.{" "}
-              <span className="text-primary">Sorted.</span>
+            <h1 className="font-serif text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+              Dinner, <span className="text-primary">beautifully sorted.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-              AI meal plans, real UK supermarket prices and less food waste — all in one beautiful dashboard.
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+              7 dinners, one smart shopping basket, and the cheapest UK supermarket — planned in seconds.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/preview" className="btn-primary">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/preview" className="btn-primary !px-8 !py-4 text-lg">
                 Build my week →
               </Link>
               <Link
@@ -63,46 +57,45 @@ export default function Home() {
                 View demo plan
               </Link>
             </div>
-
-            <div className="mt-10 grid max-w-lg grid-cols-3 gap-2 border-t border-card-border pt-8">
-              {[
-                { label: "Estimated shop", value: format(42.6) },
-                { label: "Days planned", value: "7" },
-                { label: "Potential saving", value: format(8.4) },
-              ].map((stat, i) => (
-                <div key={stat.label} className={`${i > 0 ? "border-l border-card-border pl-4" : ""}`}>
-                  <p className="font-serif text-2xl font-bold text-foreground sm:text-3xl">{stat.value}</p>
-                  <p className="mt-1 text-xs font-medium text-muted">{stat.label}</p>
-                </div>
-              ))}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-muted">
+              <span className="flex items-center gap-1 font-medium text-amber-600">
+                <Star className="h-4 w-4 fill-current" /> 4.9
+              </span>
+              <span>10,000+ UK home cooks</span>
+              <span className="hidden text-muted sm:inline">·</span>
+              <span>No credit card</span>
             </div>
-
-            <p className="mt-6 text-xs text-muted">
-              No credit card · Cancel anytime · 2-day full preview
-            </p>
           </div>
 
-          <div className="relative animate-fade-in" style={{ animationDelay: "0.15s" }}>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[2.5rem] shadow-2xl">
-              <Image
-                src="/meal-greek-bowl.jpg"
-                alt="A colourful chef-prepared Greek bowl with chicken, rice and fresh vegetables"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover animate-slow-zoom"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-            </div>
-            <div className="absolute -bottom-8 -left-6 hidden rounded-2xl bg-card p-5 shadow-xl sm:block animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
-              <p className="text-xs font-semibold text-muted">This week&apos;s basket</p>
-              <p className="font-serif text-3xl font-bold text-primary">{format(38.6)}</p>
-              <p className="text-xs text-accent font-medium">at Aldi</p>
-            </div>
-            <div className="absolute -right-4 top-8 hidden rounded-2xl bg-primary p-4 text-white shadow-xl sm:block animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
-              <p className="text-xs font-semibold text-primary-light">Chef found a saving</p>
-              <p className="font-serif text-2xl font-bold">{format(4.2)}</p>
-              <p className="text-xs text-primary-light">vs Tesco</p>
+          <div
+            className="relative mt-14 aspect-[16/9] overflow-hidden rounded-[2.5rem] shadow-2xl animate-fade-in"
+            style={{ animationDelay: "0.15s" }}
+          >
+            <Image
+              src="/meal-stirfry.jpg"
+              alt="A vibrant chef-prepared chicken stir-fry with colourful vegetables and rice"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover animate-slow-zoom"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4 rounded-2xl bg-white/95 p-5 shadow-xl backdrop-blur-sm sm:bottom-8 sm:left-8 sm:right-8">
+              <div>
+                <p className="text-xs font-semibold text-muted">This week&apos;s basket</p>
+                <p className="font-serif text-3xl font-bold text-primary">{format(38.6)}</p>
+                <p className="text-xs font-medium text-accent">at Aldi</p>
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-semibold text-muted">Potential saving</p>
+                <p className="font-serif text-2xl font-bold text-foreground">{format(8.4)}</p>
+                <p className="text-xs font-medium text-muted">vs Tesco</p>
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-xs font-semibold text-muted">Days planned</p>
+                <p className="font-serif text-2xl font-bold text-foreground">7</p>
+                <p className="text-xs font-medium text-muted">dinners</p>
+              </div>
             </div>
           </div>
         </div>
