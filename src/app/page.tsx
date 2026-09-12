@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getRecipeImage } from "@/lib/meal-images";
-import { slugify } from "@/lib/meal-data";
+import { slugify, getMealBySlug } from "@/lib/meal-data";
+import { recipeServingCostGBP } from "@/lib/grocery-prices";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import PricingSection from "@/components/PricingSection";
 
@@ -88,6 +89,13 @@ function Clock({ className }: { className?: string }) {
 
 export default function Home() {
   const { format } = useCurrency();
+
+  // Costs are computed from the same pack-price data as the recipe pages, so
+  // the homepage figures can never drift from the detail view.
+  const servingCost = (name: string): number | null => {
+    const meal = getMealBySlug(slugify(name));
+    return meal ? recipeServingCostGBP(meal) : null;
+  };
 
   return (
     <div className="overflow-hidden">
@@ -180,7 +188,7 @@ export default function Home() {
                     <h3 className="mt-3 font-serif text-2xl font-bold group-hover:text-primary transition-colors">{recipe.name}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted">{recipe.description}</p>
                     <div className="mt-5 flex items-center justify-between">
-                      <p className="font-serif text-2xl font-bold text-foreground">{format(recipe.cost)} <span className="text-sm font-normal text-muted">/ serving</span></p>
+                      <p className="font-serif text-2xl font-bold text-foreground">{format(servingCost(recipe.name) ?? recipe.cost)} <span className="text-sm font-normal text-muted">/ serving</span></p>
                       <span className="rounded-lg border border-card-border px-3 py-1.5 text-xs font-semibold text-foreground transition group-hover:border-primary group-hover:text-primary">View recipe</span>
                     </div>
                   </div>

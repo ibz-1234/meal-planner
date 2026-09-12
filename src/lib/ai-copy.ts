@@ -168,6 +168,7 @@ const TAKEAWAY_PER_MEAL_GBP = 9.5;
 export function describePlan(plan: WeeklyPlan): PlanNarrative {
   const prefs = plan.preferences;
   const voice = GOAL_VOICE[prefs.fitnessGoal] ?? GOAL_VOICE["General Wellness"];
+  const goalLabel = prefs.fitnessGoal ? prefs.fitnessGoal.toLowerCase() : "balanced eating";
   const seed = plan.id;
   const mealCount = plan.days.reduce((s, d) => s + d.meals.length, 0);
   const avgCalories = Math.round(
@@ -203,9 +204,9 @@ export function describePlan(plan: WeeklyPlan): PlanNarrative {
     title: pick(seed + "title", [
       `Your ${voice.adjective} week, ${householdWord}`,
       `Seven days. ${mealCount} meals. Zero decisions.`,
-      `The ${prefs.fitnessGoal.toLowerCase()} week that tastes like a treat`,
+      `The ${goalLabel} week that tastes like a treat`,
     ]),
-    coachNote: `Chef AI read your brief — ${prefs.fitnessGoal.toLowerCase()}, ${
+    coachNote: `Chef AI read your brief — ${goalLabel}, ${
       prefs.cookingSkill
     } in the kitchen, ${restrictions} — and built ${mealCount} meals around roughly ${avgCalories} kcal a day. Expect ${
       dinners[0]?.toLowerCase() ?? "big flavours"
@@ -213,16 +214,16 @@ export function describePlan(plan: WeeklyPlan): PlanNarrative {
       dinners[dinners.length - 1]?.toLowerCase() ?? "a Sunday feast"
     } to close it. Total hands-on time: about ${Math.round(totalPrep / 60)} hours across the whole week.`,
     whyItWorks: [
-      `Every meal is weighted towards ${voice.macro}, the lever that matters most for ${prefs.fitnessGoal.toLowerCase()}.`,
+      `Every meal is weighted towards ${voice.macro}, the lever that matters most for ${goalLabel}.`,
       `Ingredients repeat on purpose — one bag of spinach works three shifts, so nothing rots in the drawer.`,
       `Nothing takes longer than ${Math.max(...plan.days.flatMap((d) => d.meals.map((m) => m.prepTime)))} minutes, matched to a ${prefs.cookingSkill} cook.`,
     ],
     premiumHook: pick(seed + "hook", [
-      `Premium members get this plan re-written every Monday as prices shift — Chef AI already found a version about ${
+      `Chef.ai+ members get this plan re-written every Monday as prices shift — Chef AI already found a version about ${
         12 + (hash(seed) % 9)
       }% cheaper at a different store.`,
       `Unlock the full seven days plus a four-week progression that adjusts portions as your goal moves.`,
-      `Your taste profile is 40% learned. Premium finishes the job with weekly swaps you will actually want to eat.`,
+      `Your taste profile is 40% learned. Chef.ai+ finishes the job with weekly swaps you will actually want to eat.`,
     ]),
     projectedMonthlySaving,
   };

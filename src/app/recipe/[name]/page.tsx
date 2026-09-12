@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMealBySlug, MEAL_SLUGS } from "@/lib/meal-data";
 import { getMealImage } from "@/lib/meal-images";
-import { getProduct } from "@/lib/grocery-prices";
+import { getProduct, ingredientServingCostGBP, recipeServingCostGBP } from "@/lib/grocery-prices";
 
 const formatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -21,8 +21,8 @@ export default async function RecipePage({ params }: { params: Promise<{ name: s
     notFound();
   }
 
-  const totalCost = meal.ingredients.reduce((sum, ing) => sum + ing.estimatedCost, 0);
   const selectedStore = "Aldi";
+  const totalCost = recipeServingCostGBP(meal, selectedStore);
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,7 +131,7 @@ export default async function RecipePage({ params }: { params: Promise<{ name: s
                         )}
                       </div>
                       <span className="whitespace-nowrap font-serif text-lg font-bold text-primary">
-                        {formatter.format(ing.estimatedCost)}
+                        {formatter.format(ingredientServingCostGBP(ing.name, ing.estimatedCost, selectedStore))}
                       </span>
                     </li>
                   );

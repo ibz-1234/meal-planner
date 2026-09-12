@@ -354,6 +354,30 @@ export function formatProductAmount(
   return `${Math.round(amount)}${unit}`;
 }
 
+/** Per-serving cost of one ingredient at a given store (pack price × portion used). */
+export function ingredientServingCostGBP(
+  name: string,
+  fallbackCost: number,
+  store: UKStore
+): number {
+  const product = getProduct(name, store);
+  const fraction = getIngredientFraction(name);
+  if (!product || fraction === 0) return fallbackCost;
+  return Math.round(product.price * fraction * 100) / 100;
+}
+
+/** Per-serving recipe cost built from real pack prices at a given store. */
+export function recipeServingCostGBP(
+  meal: { ingredients: { name: string; estimatedCost: number }[] },
+  store: UKStore = "Aldi"
+): number {
+  const total = meal.ingredients.reduce(
+    (sum, ing) => sum + ingredientServingCostGBP(ing.name, ing.estimatedCost, store),
+    0
+  );
+  return Math.round(total * 100) / 100;
+}
+
 /** Per-use cost (six-store average price × typical portion of pack), GBP. */
 export function portionCostGBP(name: string): number | null {
   const byStore = PRODUCT_CATALOG_BY_LOWER.get(name.toLowerCase());
