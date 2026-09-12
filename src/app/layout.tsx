@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Inter, Fraunces, Caveat } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import Header from "@/components/Header";
@@ -13,15 +13,22 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Chef.ai – Dinner, intelligently planned",
+  title: "Chef.ai – Plan dinner. Sort the shopping.",
   description:
-    "Weekly meal plans built around your calories, budget, allergies and goals. Chef AI writes recipes, shopping lists and local supermarket price comparisons.",
+    "Weekly meal plans and shopping lists built around your budget, household and the supermarkets you actually shop at.",
   keywords: [
     "meal planner",
     "meal plan",
@@ -41,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${sourceSerif.variable} h-full antialiased`}
+      className={`${inter.variable} ${fraunces.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LanguageProvider>

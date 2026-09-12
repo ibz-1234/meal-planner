@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8F6F0;
-  --foreground: #171714;
-  --primary: #24352A;
-  --primary-dark: #1A2720;
-  --primary-light: #DDE5D8;
-  --secondary: #C49A6C;
-  --secondary-light: #F5EBDC;
-  --accent: #5A7D62;
-  --accent-light: #E8EFE9;
+  --background: #F6F3EC;
+  --foreground: #23221F;
+  --primary: #C84C2E;
+  --primary-dark: #A63A1F;
+  --primary-light: #F7E4DD;
+  --secondary: #3A5A40;
+  --secondary-light: #E4EBE4;
+  --accent: #D98A36;
+  --accent-light: #F8EAD6;
   --card: #FFFFFF;
-  --card-border: #E8E6E0;
-  --muted: #6A6A64;
+  --card-border: #E5E1D8;
+  --muted: #6B675C;
   --danger: #B54242;
   --danger-light: #FCEAEA;
 }
@@ -33,7 +33,7 @@
   --color-danger: var(--danger);
   --color-danger-light: var(--danger-light);
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-source-serif);
+  --font-serif: var(--font-fraunces);
   --font-hand: var(--font-caveat);
 }
 
@@ -95,26 +95,26 @@ h4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 0.625rem;
   background-color: var(--primary);
   padding: 0.95rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
   transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
-  box-shadow: 0 6px 18px rgba(36, 53, 42, 0.2);
+  box-shadow: 0 4px 12px rgba(200, 76, 46, 0.2);
 
   &:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(36, 53, 42, 0.26);
+    box-shadow: 0 8px 20px rgba(200, 76, 46, 0.28);
   }
 }
 
 @utility card {
   background-color: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 1.5rem;
+  border-radius: 0.875rem;
   box-shadow: 0 4px 14px rgba(23, 23, 20, 0.04);
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
@@ -124,4 +124,8 @@ h4 {
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+@utility hand {
+  font-family: var(--font-hand), cursive;
 }
