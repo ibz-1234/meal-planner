@@ -30,14 +30,14 @@ const en: Dict = {
   "hero.perMonth": "/month",
   "menu.suffix": "menu",
   "menu.subtitle": "Built for smaller screens too",
-  "pricing.title": "Pick the plan that pays for itself",
+  "pricing.title": "Upgrade to the full Chef AI experience",
   "pricing.subtitle":
-    "Most members save more on their weekly shop than the subscription costs.",
+    "Most Premium members save more on their weekly shop than the subscription costs.",
   "pricing.mostPopular": "Most popular",
   "pricing.bestValue": "Best value for families",
   "pricing.guarantee": "Cancel anytime. 14-day money-back guarantee.",
   "footer.tagline":
-    "Warm, practical meal planning with local shops, progress tracking, and shopping lists that fit real life.",
+    "AI-powered meal planning by Chef.ai. Local shop prices, smart shopping lists and recipes that fit real life.",
 };
 
 const fr: Dict = {

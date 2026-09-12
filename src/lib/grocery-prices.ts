@@ -1,21 +1,32 @@
-// Per-supermarket UK ingredient price table (GBP), benchmarked against
-// PriceRunner listings and each chain's online shop. Prices are per pack;
-// baskets are costed by scaling each ingredient's average cost by the
-// selected store's price relative to the six-store average.
-// Refreshed manually — last update noted below.
+// Product-level UK supermarket price catalog. Each ingredient maps to one
+// own-brand product per store with pack size, regular price and a loyalty
+// price where that store runs a loyalty scheme. Baskets are calculated by
+// buying whole packs and carrying leftover portions across the week.
+// These prices are curated static estimates, not live feeds.
 
-export const UK_PRICE_TABLE_UPDATED = "2026-07-01";
+import type { UKStore, Product, BasketProduct, DayPlan } from "./types";
 
-export const UK_STORES = [
+export const UK_PRICE_TABLE_UPDATED = "2026-09-11";
+
+export const UK_STORES: UKStore[] = [
   "Tesco",
   "Aldi",
   "Lidl",
   "Asda",
   "Morrisons",
   "Sainsbury's",
-] as const;
+];
 
-export type UKStore = (typeof UK_STORES)[number];
+const LOYALTY_STORES = new Set<UKStore>(["Tesco", "Sainsbury's"]);
+
+const STORE_PREFIX: Record<UKStore, string> = {
+  Tesco: "Tesco",
+  Aldi: "Aldi Everyday Essentials",
+  Lidl: "Lidl Deluxe",
+  Asda: "Asda Just Essentials",
+  Morrisons: "Morrisons Savers",
+  "Sainsbury's": "Sainsbury's",
+};
 
 export interface IngredientPrice {
   pack: string;
@@ -93,19 +104,21 @@ export const UK_PRICE_TABLE: Record<string, IngredientPrice> = {
   Cumin: { pack: "43g jar", prices: [1.0, 0.79, 0.85, 0.92, 0.95, 1.1] },
   "Salt & Pepper": { pack: "set", prices: [1.2, 0.95, 0.99, 1.1, 1.15, 1.3] },
   "Vegetable Broth": { pack: "1L", prices: [1.1, 0.89, 0.92, 1.0, 1.05, 1.2] },
+  "Miso Paste": { pack: "200g", prices: [2.5, 1.99, 2.05, 2.25, 2.35, 2.6] },
+  "Ginger": { pack: "100g", prices: [0.75, 0.55, 0.58, 0.65, 0.68, 0.75] },
+  "Chilli Flakes": { pack: "40g", prices: [1.2, 0.95, 0.99, 1.05, 1.1, 1.25] },
 };
 
-// Typical fraction of a pack used per recipe serving (2 people), so a
-// per-use cost can be derived from real pack prices.
+// Typical fraction of a pack used per person in one meal.
 export const PORTION_OF_PACK: Record<string, number> = {
-  "Chicken Breast": 0.6,
-  "Chicken Thighs": 0.5,
-  "Salmon Fillet": 1.0,
+  "Chicken Breast": 0.35,
+  "Chicken Thighs": 0.25,
+  "Salmon Fillet": 0.5,
   "Canned Tuna": 0.25,
   "Turkey Slices": 0.8,
   Eggs: 0.17,
   Milk: 0.13,
-  "Greek Yogurt": 0.5,
+  "Greek Yogurt": 0.25,
   "Parmesan Cheese": 0.15,
   "Almond Milk": 0.25,
   "Whole Wheat Bread": 0.1,
@@ -167,74 +180,331 @@ export const PORTION_OF_PACK: Record<string, number> = {
   Cumin: 0.08,
   "Salt & Pepper": 0.02,
   "Vegetable Broth": 0.5,
+  "Miso Paste": 0.15,
+  "Ginger": 0.2,
+  "Chilli Flakes": 0.05,
 };
 
-const PRICE_TABLE_BY_LOWER = new Map(
-  Object.entries(UK_PRICE_TABLE).map(([k, v]) => [k.toLowerCase(), v])
-);
 const PORTION_BY_LOWER = new Map(
   Object.entries(PORTION_OF_PACK).map(([k, v]) => [k.toLowerCase(), v])
 );
 
-function lookupEntry(name: string): IngredientPrice | undefined {
-  return UK_PRICE_TABLE[name] ?? PRICE_TABLE_BY_LOWER.get(name.toLowerCase());
+function parsePack(pack: string): { amount: number; unit: "g" | "ml" | "item" } {
+  const lower = pack.toLowerCase().replace(/,/g, "");
+
+  const multi = lower.match(
+    /^(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)\s*(g|ml|kg|litres?|liters?|l)\b/
+  );
+  if (multi) {
+    const multiplier = Number(multi[1]);
+    const base = Number(multi[2]);
+    const suffix = multi[3];
+    const total = multiplier * base;
+    if (suffix === "kg") return { amount: total * 1000, unit: "g" };
+    if (suffix.startsWith("l")) return { amount: total * 1000, unit: "ml" };
+    return { amount: total, unit: suffix as "g" | "ml" };
+  }
+
+  const single = lower.match(
+    /(\d+(?:\.\d+)?)\s*(g|ml|kg|litres?|liters?|l)\b/
+  );
+  if (single) {
+    const value = Number(single[1]);
+    const suffix = single[2];
+    if (suffix === "kg") return { amount: value * 1000, unit: "g" };
+    if (suffix.startsWith("l")) return { amount: value * 1000, unit: "ml" };
+    return { amount: value, unit: suffix as "g" | "ml" };
+  }
+
+  const count = lower.match(/(\d+)\s*(pack|medium|large|small|bulbs|pieces|pcs)\b/);
+  if (count) {
+    return { amount: Number(count[1]), unit: "item" };
+  }
+
+  if (/\beach\b|\bset\b|\bpot each\b/.test(lower)) {
+    return { amount: 1, unit: "item" };
+  }
+
+  return { amount: 1, unit: "item" };
+}
+
+function productCategory(name: string): string {
+  const n = name.toLowerCase();
+  if (
+    ["chicken", "salmon", "tuna", "turkey", "beef", "pork", "fish"].some((m) =>
+      n.includes(m)
+    )
+  )
+    return "Meat & Fish";
+  if (["milk", "yogurt", "cheese", "eggs", "butter", "cream"].some((d) => n.includes(d)))
+    return "Dairy & Eggs";
+  if (
+    ["bread", "pasta", "tortilla", "oats", "rice", "quinoa", "granola", "croutons"].some(
+      (g) => n.includes(g)
+    )
+  )
+    return "Bakery & Grains";
+  if (
+    [
+      "oil",
+      "sauce",
+      "honey",
+      "seeds",
+      "nuts",
+      "cumin",
+      "salt",
+      "broth",
+      "tahini",
+      "peanut butter",
+      "almond butter",
+      "dressing",
+      "hummus",
+      "salsa",
+      "olives",
+      "dried fruit",
+      "lemon juice",
+    ].some((p) => n.includes(p))
+  )
+    return "Pantry";
+  return "Produce";
+}
+
+function pricePerUnit(price: number, amount: number, unit: "g" | "ml" | "item"): number {
+  if (amount === 0) return price;
+  if (unit === "item") return Math.round((price / amount) * 100) / 100;
+  // price per 100 g / 100 ml
+  return Math.round((price / amount) * 100 * 100) / 100;
+}
+
+function loyaltyPriceFor(store: UKStore, price: number): number | undefined {
+  if (!LOYALTY_STORES.has(store)) return undefined;
+  return Math.round(price * 0.85 * 100) / 100;
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+const PRODUCT_CATALOG_BY_LOWER = new Map<string, Record<UKStore, Product>>();
+
+function buildProductCatalog() {
+  for (const [ingredient, entry] of Object.entries(UK_PRICE_TABLE)) {
+    const byStore = {} as Record<UKStore, Product>;
+    for (const store of UK_STORES) {
+      const idx = UK_STORES.indexOf(store);
+      const price = entry.prices[idx];
+      const parsed = parsePack(entry.pack);
+      const productName = `${STORE_PREFIX[store]} ${ingredient} ${entry.pack}`.replace(/\s+/g, " ");
+      const loyalty = loyaltyPriceFor(store, price);
+      const product: Product = {
+        id: `${slugify(store)}-${slugify(ingredient)}`,
+        ingredient,
+        supermarket: store,
+        productName,
+        category: productCategory(ingredient),
+        packSize: entry.pack,
+        packAmount: parsed.amount,
+        unit: parsed.unit,
+        price,
+        loyaltyPrice: loyalty,
+        pricePerUnit: pricePerUnit(price, parsed.amount, parsed.unit),
+        lastUpdated: UK_PRICE_TABLE_UPDATED,
+      };
+      byStore[store] = product;
+    }
+    PRODUCT_CATALOG_BY_LOWER.set(ingredient.toLowerCase(), byStore);
+  }
+}
+buildProductCatalog();
+
+export function storeHasLoyalty(store: UKStore): boolean {
+  return LOYALTY_STORES.has(store);
+}
+
+export function getProduct(
+  ingredientName: string,
+  store: UKStore
+): Product | null {
+  const byStore = PRODUCT_CATALOG_BY_LOWER.get(ingredientName.toLowerCase());
+  return byStore?.[store] ?? null;
+}
+
+export function getIngredientFraction(ingredientName: string): number {
+  return (
+    PORTION_OF_PACK[ingredientName] ??
+    PORTION_BY_LOWER.get(ingredientName.toLowerCase()) ??
+    0
+  );
+}
+
+export function productPrice(product: Product, useLoyalty: boolean): number {
+  if (useLoyalty && product.loyaltyPrice !== undefined) return product.loyaltyPrice;
+  return product.price;
+}
+
+export function formatProductAmount(
+  amount: number,
+  unit: "g" | "ml" | "item"
+): string {
+  if (unit === "item") return `${Math.round(amount)}`;
+  if (amount >= 1000) return `${(amount / 1000).toFixed(1)}${unit === "g" ? "kg" : "L"}`;
+  return `${Math.round(amount)}${unit}`;
+}
+
+/** Per-serving cost of one ingredient at a given store (pack price × portion used). */
+export function ingredientServingCostGBP(
+  name: string,
+  fallbackCost: number,
+  store: UKStore
+): number {
+  const product = getProduct(name, store);
+  const fraction = getIngredientFraction(name);
+  if (!product || fraction === 0) return fallbackCost;
+  return Math.round(product.price * fraction * 100) / 100;
+}
+
+/** Per-serving recipe cost built from real pack prices at a given store. */
+export function recipeServingCostGBP(
+  meal: { ingredients: { name: string; estimatedCost: number }[] },
+  store: UKStore = "Aldi"
+): number {
+  const total = meal.ingredients.reduce(
+    (sum, ing) => sum + ingredientServingCostGBP(ing.name, ing.estimatedCost, store),
+    0
+  );
+  return Math.round(total * 100) / 100;
 }
 
 /** Per-use cost (six-store average price × typical portion of pack), GBP. */
 export function portionCostGBP(name: string): number | null {
-  const entry = lookupEntry(name);
-  const fraction =
-    PORTION_OF_PACK[name] ?? PORTION_BY_LOWER.get(name.toLowerCase());
-  if (!entry || fraction === undefined) return null;
-  const avg = entry.prices.reduce((s, p) => s + p, 0) / entry.prices.length;
+  const byStore = PRODUCT_CATALOG_BY_LOWER.get(name.toLowerCase());
+  const fraction = getIngredientFraction(name);
+  if (!byStore || fraction === 0) return null;
+  const avg =
+    UK_STORES.reduce((sum, store) => sum + byStore[store].price, 0) /
+    UK_STORES.length;
   return Math.round(avg * fraction * 100) / 100;
 }
 
-// Fallback relative index for ingredients not in the table
-const STORE_FALLBACK_INDEX: Record<UKStore, number> = {
-  Tesco: 1.0,
-  Aldi: 0.84,
-  Lidl: 0.86,
-  Asda: 0.93,
-  Morrisons: 0.96,
-  "Sainsbury's": 1.06,
-};
-
-function storeIdx(store: UKStore): number {
-  return UK_STORES.indexOf(store);
+export interface BasketItem {
+  ingredient: string;
+  estimatedCost: number;
 }
 
-/** How this store's price for an ingredient compares to the six-store average (1 = average). */
+export function calculatePlanBasket(
+  days: DayPlan[],
+  householdSize: number,
+  store: UKStore,
+  useLoyalty = false
+): BasketProduct[] {
+  const usage = new Map<string, number>();
+  const perMeal = new Map<string, number>();
+
+  for (const day of days) {
+    for (const meal of day.meals) {
+      for (const ingredient of meal.ingredients) {
+        const fraction = getIngredientFraction(ingredient.name);
+        perMeal.set(ingredient.name, fraction);
+        usage.set(
+          ingredient.name,
+          (usage.get(ingredient.name) ?? 0) + fraction * householdSize
+        );
+      }
+    }
+  }
+
+  const products: BasketProduct[] = [];
+  for (const [ingredient, totalFraction] of usage) {
+    const product = getProduct(ingredient, store);
+    if (!product) continue;
+
+    const packPrice = productPrice(product, useLoyalty);
+    const packsNeeded = Math.max(1, Math.ceil(totalFraction));
+    const totalUsed = totalFraction * product.packAmount;
+    const leftover = packsNeeded * product.packAmount - totalUsed;
+    const perMealFraction = perMeal.get(ingredient) ?? 0;
+
+    products.push({
+      product,
+      ingredient,
+      packsNeeded,
+      totalUsed,
+      leftover,
+      totalPrice: Math.round(packPrice * packsNeeded * 100) / 100,
+      displayUnit: product.unit,
+      perMealAmount: product.packAmount * perMealFraction * householdSize,
+    });
+  }
+
+  return products.sort((a, b) =>
+    a.product.category.localeCompare(b.product.category)
+  );
+}
+
+export function basketTotal(basket: BasketProduct[]): number {
+  return Math.round(basket.reduce((sum, item) => sum + item.totalPrice, 0) * 100) / 100;
+}
+
+export interface StoreBasketTotal {
+  store: UKStore;
+  total: number;
+  isCheapest: boolean;
+}
+
+export function comparePlanStores(
+  days: DayPlan[],
+  householdSize: number,
+  useLoyalty = false
+): StoreBasketTotal[] {
+  const totals = UK_STORES.map((store) => ({
+    store,
+    total: basketTotal(calculatePlanBasket(days, householdSize, store, useLoyalty)),
+  }));
+  totals.sort((a, b) => a.total - b.total);
+  const cheapest = totals[0]?.total ?? 0;
+  return totals.map((t) => ({
+    ...t,
+    isCheapest: t.total === cheapest,
+  }));
+}
+
+export function cheapestStoreForPlan(
+  days: DayPlan[],
+  householdSize: number,
+  useLoyalty = false
+): { store: UKStore; total: number } {
+  const sorted = comparePlanStores(days, householdSize, useLoyalty);
+  return sorted[0] ?? { store: "Aldi", total: 0 };
+}
+
+// Legacy helpers kept for compatibility with older components.
 export function ingredientStoreFactor(name: string, store: UKStore): number {
-  const entry = lookupEntry(name);
-  if (!entry) return STORE_FALLBACK_INDEX[store] / 0.94; // 0.94 ≈ avg of fallback indices
-  const avg = entry.prices.reduce((s, p) => s + p, 0) / entry.prices.length;
-  return entry.prices[storeIdx(store)] / avg;
+  const byStore = PRODUCT_CATALOG_BY_LOWER.get(name.toLowerCase());
+  if (!byStore) return 1;
+  const avg =
+    UK_STORES.reduce((sum, s) => sum + byStore[s].price, 0) / UK_STORES.length;
+  return byStore[store].price / avg;
 }
 
 export function ingredientPackPrice(
   name: string
 ): { pack: string; prices: Record<UKStore, number> } | null {
-  const entry = lookupEntry(name);
-  if (!entry) return null;
+  const byStore = PRODUCT_CATALOG_BY_LOWER.get(name.toLowerCase());
+  if (!byStore) return null;
   return {
-    pack: entry.pack,
+    pack: byStore["Tesco"].packSize,
     prices: Object.fromEntries(
-      UK_STORES.map((s) => [s, entry.prices[storeIdx(s)]])
+      UK_STORES.map((s) => [s, byStore[s].price])
     ) as Record<UKStore, number>,
   };
 }
 
-export interface BasketItem {
-  ingredient: string;
-  estimatedCost: number; // average-price GBP cost for the quantity used
-}
-
-/** Cost of the basket if every item were bought at the given store. */
 export function basketCostAtStore(items: BasketItem[], store: UKStore): number {
   const total = items.reduce(
-    (sum, item) =>
-      sum + item.estimatedCost * ingredientStoreFactor(item.ingredient, store),
+    (sum, item) => sum + item.estimatedCost * ingredientStoreFactor(item.ingredient, store),
     0
   );
   return Math.round(total * 100) / 100;

@@ -1,7 +1,7 @@
 const FAQS = [
   {
-    q: "How does Mealsmith work?",
-    a: "Tell us your budget, household size and dietary needs, and we generate a full week of meals with a shopping list in seconds. Every plan is priced against Tesco, Aldi, Lidl, Asda, Morrisons and Sainsbury's so you can see the cheapest place to shop.",
+    q: "How does Chef.ai work?",
+    a: "Tell us your budget, household size and dietary needs, and Chef AI generates a full week of meals with a shopping list in seconds. Every plan is priced against Tesco, Aldi, Lidl, Asda, Morrisons and Sainsbury's so you can see the cheapest place to shop.",
   },
   {
     q: "Do I need an account to try it?",
@@ -20,12 +20,12 @@ const FAQS = [
     a: "Vegetarian, vegan, gluten-free, dairy-free and more, plus common allergy filters like nuts. Set them once in the plan builder.",
   },
   {
-    q: "Is Mealsmith free?",
+    q: "Is Chef.ai free?",
     a: "The Starter plan is free — 3 meal plans per month with shopping lists and price comparison. Premium unlocks unlimited plans, price-drop alerts, macro tracking and more.",
   },
   {
     q: "Which countries are supported?",
-    a: "The supermarket price comparison is built for the UK. You can still use Mealsmith elsewhere — prices convert to your local currency with a store comparison for your country.",
+    a: "The supermarket price comparison is built for the UK. You can still use Chef.ai elsewhere — prices convert to your local currency with a store comparison for your country.",
   },
 ];
 

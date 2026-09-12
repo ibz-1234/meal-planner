@@ -9,10 +9,10 @@ export default function ContactPage() {
       <div className="mt-8 rounded-2xl border border-card-border bg-card p-6 shadow-sm">
         <p className="text-sm text-muted">Email us at</p>
         <a
-          href="mailto:hello@mealsmith.surge.sh"
+          href="mailto:hello@chef.ai"
           className="mt-1 block text-lg font-semibold text-primary"
         >
-          hello@mealsmith.surge.sh
+          hello@chef.ai
         </a>
         <p className="mt-4 text-sm text-muted">
           We aim to reply within two working days.

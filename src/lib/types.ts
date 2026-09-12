@@ -1,3 +1,11 @@
+export type UKStore =
+  | "Tesco"
+  | "Aldi"
+  | "Lidl"
+  | "Asda"
+  | "Morrisons"
+  | "Sainsbury's";
+
 export interface UserPreferences {
   budget: number;
   budgetPeriod: "weekly" | "monthly";
@@ -37,12 +45,43 @@ export interface DayPlan {
   totalCost: number;
 }
 
+export interface Product {
+  id: string;
+  ingredient: string;
+  supermarket: UKStore;
+  productName: string;
+  brand?: string;
+  category: string;
+  packSize: string;
+  packAmount: number;
+  unit: "g" | "ml" | "item";
+  price: number;
+  loyaltyPrice?: number;
+  pricePerUnit: number;
+  lastUpdated: string;
+  productUrl?: string;
+}
+
+export interface BasketProduct {
+  product: Product;
+  ingredient: string;
+  packsNeeded: number;
+  totalUsed: number;
+  leftover: number;
+  totalPrice: number;
+  displayUnit: "g" | "ml" | "item";
+  perMealAmount: number; // amount used by one meal for the whole household
+}
+
 export interface WeeklyPlan {
   id: string;
   createdAt: string;
   preferences: UserPreferences;
   days: DayPlan[];
   totalWeeklyCost: number;
+  selectedStore: UKStore;
+  priceModel: "regular" | "loyalty";
+  basket: BasketProduct[];
   shoppingList: ShoppingListItem[];
   supermarketComparison: SupermarketPrice[];
   wasteReductionTips: string[];

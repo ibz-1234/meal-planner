@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import type { ShoppingListItem } from "@/lib/types";
+import type { BasketProduct } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { formatProductAmount } from "@/lib/grocery-prices";
 
-export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
+export default function ShoppingList({
+  basket,
+  priceDate,
+}: {
+  basket: BasketProduct[];
+  priceDate?: string;
+}) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const { format } = useCurrency();
 
@@ -18,51 +25,68 @@ export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
     setCheckedItems(next);
   };
 
-  const categories = Array.from(new Set(items.map((i) => i.category)));
-  const totalCost = items.reduce((sum, i) => sum + i.estimatedCost, 0);
+  const categories = Array.from(new Set(basket.map((i) => i.product.category)));
+  const totalCost = basket.reduce((sum, i) => sum + i.totalPrice, 0);
   const checkedCount = checkedItems.size;
 
   return (
     <div className="rounded-xl border border-card-border bg-card p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-bold">Shopping List</h3>
-        <div className="text-sm text-muted">
-          {checkedCount}/{items.length} items ·{" "}
-          <span className="font-semibold text-primary">{format(totalCost)}</span>
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-lg font-bold">Your basket</h3>
+          <p className="text-sm text-muted">
+            {basket.reduce((sum, i) => sum + i.packsNeeded, 0)} products
+            {priceDate ? ` · prices checked ${priceDate}` : ""}
+          </p>
         </div>
+        <div className="text-xl font-bold text-primary">{format(totalCost)}</div>
       </div>
 
-      {/* Progress bar */}
       <div className="mb-6 h-2 overflow-hidden rounded-full bg-background">
         <div
           className="h-full rounded-full bg-primary transition-all"
           style={{
-            width: `${items.length > 0 ? (checkedCount / items.length) * 100 : 0}%`,
+            width: `${basket.length > 0 ? (checkedCount / basket.length) * 100 : 0}%`,
           }}
         />
       </div>
 
       {categories.map((category) => (
-        <div key={category} className="mb-4">
-          <h4 className="mb-2 text-sm font-semibold text-muted uppercase tracking-wide">
+        <div key={category} className="mb-5">
+          <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
             {category}
           </h4>
-          <ul className="space-y-1">
-            {items
-              .filter((i) => i.category === category)
+          <ul className="space-y-2">
+            {basket
+              .filter((i) => i.product.category === category)
               .map((item) => {
                 const isChecked = checkedItems.has(item.ingredient);
+                const usedDisplay = formatProductAmount(
+                  item.totalUsed,
+                  item.displayUnit
+                );
+                const packDisplay = formatProductAmount(
+                  item.product.packAmount,
+                  item.product.unit
+                );
+                const leftoverDisplay = formatProductAmount(
+                  item.leftover,
+                  item.displayUnit
+                );
+
                 return (
                   <li
                     key={item.ingredient}
-                    className={`flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-background ${
-                      isChecked ? "opacity-50" : ""
+                    className={`flex cursor-pointer flex-col rounded-xl border p-3 transition-colors hover:bg-background sm:flex-row sm:items-center sm:justify-between ${
+                      isChecked
+                        ? "border-primary-light/50 bg-primary-light/20 opacity-60"
+                        : "border-card-border"
                     }`}
                     onClick={() => toggleCheck(item.ingredient)}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start gap-3">
                       <div
-                        className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
                           isChecked
                             ? "border-primary bg-primary"
                             : "border-card-border"
@@ -84,24 +108,37 @@ export default function ShoppingList({ items }: { items: ShoppingListItem[] }) {
                           </svg>
                         )}
                       </div>
-                      <span
-                        className={`text-sm ${
-                          isChecked ? "line-through text-muted" : "text-foreground"
-                        }`}
-                      >
-                        {item.ingredient}
-                      </span>
-                      <span className="text-xs text-muted">
-                        ({item.totalQuantity})
-                      </span>
+                      <div>
+                        <p
+                          className={`text-sm font-medium ${
+                            isChecked ? "line-through text-muted" : "text-foreground"
+                          }`}
+                        >
+                          {item.packsNeeded} x {item.product.productName}
+                        </p>
+                        <p className="text-xs text-muted">
+                          Uses {usedDisplay} of {packDisplay} · {leftoverDisplay} left over
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-sm font-medium text-primary">{format(item.estimatedCost)}</span>
+                    <span
+                      className={`mt-2 text-right text-sm font-semibold sm:mt-0 ${
+                        isChecked ? "text-muted" : "text-primary"
+                      }`}
+                    >
+                      {format(item.totalPrice)}
+                    </span>
                   </li>
                 );
               })}
           </ul>
         </div>
       ))}
+
+      <p className="text-xs text-muted">
+        Whole-pack pricing is how much you actually spend at the till. Chef carries
+        leftover portions from one meal to the next where possible.
+      </p>
     </div>
   );
 }

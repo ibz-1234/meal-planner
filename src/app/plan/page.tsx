@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import PlanResults from "@/components/PlanResults";
 
 export default function PlanPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-      <PlanResults />
+    <div className="min-h-screen">
+      <Suspense fallback={<div className="p-8 text-center text-muted">Loading your plan…</div>}>
+        <PlanResults />
+      </Suspense>
     </div>
   );
 }
