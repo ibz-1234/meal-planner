@@ -39,6 +39,11 @@ export default function Header() {
           {user ? (
             <>
               <Link href="/plan" className="text-sm font-medium text-muted hover:text-foreground">{t("nav.myPlan")}</Link>
+              {user.role === "admin" && (
+                <Link href="/admin" className="rounded-md bg-secondary px-2.5 py-1 text-xs font-semibold text-white">
+                  Admin
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => {
