@@ -13,7 +13,7 @@ const FEATURED_RECIPES = [
     tag: "High protein",
     note: "Our pick",
     time: 25,
-    cost: 3.1,
+    cost: 2.98,
     protein: 34,
     rating: 4.8,
     description: "Crispy chicken, colourful veg and a sticky soy-chilli glaze over jasmine rice.",
@@ -23,7 +23,7 @@ const FEATURED_RECIPES = [
     tag: "Pescatarian",
     note: "Good for leftovers",
     time: 20,
-    cost: 3.75,
+    cost: 3.58,
     protein: 32,
     rating: 4.7,
     description: "Pan-seared salmon with miso, sesame greens and a bed of short-grain rice.",
@@ -33,7 +33,7 @@ const FEATURED_RECIPES = [
     tag: "Plant-based",
     note: "Under £3",
     time: 30,
-    cost: 2.84,
+    cost: 2.69,
     protein: 18,
     rating: 4.8,
     description: "Roasted sweet potato, chickpeas, avocado and a lemon-tahini dressing.",
@@ -43,7 +43,7 @@ const FEATURED_RECIPES = [
     tag: "Family favourite",
     note: "Quick",
     time: 35,
-    cost: 2.6,
+    cost: 3.32,
     protein: 22,
     rating: 4.9,
     description: "Spiced black beans, quick salsa and pickled cabbage in warm tortillas.",
@@ -222,7 +222,7 @@ export default function Home() {
           <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-xl bg-card p-5 shadow-sm sm:flex-row">
             <div>
               <p className="text-sm text-muted">Switching to Aldi would save</p>
-              <p className="font-serif text-3xl font-bold text-primary">{format(8.4)} <span className="text-base font-normal text-muted">vs Tesco</span></p>
+              <p className="font-serif text-3xl font-bold text-primary">{format(7.6)} <span className="text-base font-normal text-muted">vs Tesco</span></p>
             </div>
             <Link href="/plan" className="rounded-lg border border-card-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary">
               See my shopping list →

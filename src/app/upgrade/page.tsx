@@ -7,33 +7,27 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 
 const OPTIONS: { tier: Tier; name: string; priceGBP: number; blurb: string; perks: string[] }[] = [
   {
-    tier: "premium",
-    name: "Premium",
-    priceGBP: 7.99,
-    blurb: "Chef AI plans, prices and writes your week, every week.",
+    tier: "starter",
+    name: "Free",
+    priceGBP: 0,
+    blurb: "Try the kitchen before you commit.",
     perks: [
-      "All seven days unlocked with full AI recipe descriptions",
-      "Plans re-priced every Monday at your supermarket",
-      "Unlimited regenerations and one-tap smart swaps",
-      "Four-week progression that follows your goal",
-      "Macro, calorie and nutrition dashboard",
-      "Pantry \"use-it-up\" planner to cut waste",
-      "PDF export of plans, lists & recipes",
+      "3 plans every month",
+      "Shopping list",
+      "Basic price comparison",
     ],
   },
   {
-    tier: "family",
-    name: "Family",
-    priceGBP: 12.99,
-    blurb: "One plan that feeds the whole table, with portions for everyone.",
+    tier: "premium",
+    name: "Chef.ai+",
+    priceGBP: 7.99,
+    blurb: "For people who want the weekly shop handled.",
     perks: [
-      "Everything in Premium",
-      "Up to 8 profiles with custom portions",
-      "Kid-friendly swaps written by Chef AI",
-      "Shared shopping list updated in real time",
-      "Batch-cook mode with bulk scaling",
-      "Per-person nutrition targets",
-      "Dedicated family support",
+      "Unlimited plans",
+      "Full price comparison across six supermarkets",
+      "Nutrition and macros on every recipe",
+      "Leftover planner that carries ingredients across the week",
+      "One-tap smart swaps",
     ],
   },
 ];
@@ -49,14 +43,14 @@ export default function UpgradePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <p className="text-center text-sm font-semibold uppercase tracking-[0.22em] text-primary">
-        Chef AI Premium
+        Chef.ai+
       </p>
       <h1 className="mt-3 text-center text-3xl font-bold sm:text-4xl">
         Stop deciding what&apos;s for dinner. Forever.
       </h1>
       <p className="mx-auto mt-3 max-w-xl text-center text-muted">
-        Your free plan already shows two days. Premium unlocks the rest, keeps it priced
-        at your shop and rewrites it as your goals change.
+        Your free plan already shows two days. Chef.ai+ unlocks the rest, keeps it priced
+        at your shop and rewrites it as your week changes.
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -75,7 +69,7 @@ export default function UpgradePage() {
               <h2 className="text-xl font-bold">{opt.name}</h2>
               <span className="text-2xl font-extrabold">
                 {format(opt.priceGBP)}
-                <span className="text-sm font-medium text-muted">/mo</span>
+                {opt.priceGBP > 0 && <span className="text-sm font-medium text-muted">/mo</span>}
               </span>
             </div>
             <p className="mt-1 text-sm text-muted">{opt.blurb}</p>
@@ -112,10 +106,10 @@ export default function UpgradePage() {
           }}
           className="mt-5 w-full rounded-xl bg-primary py-3.5 text-base font-bold text-white shadow-md transition-all hover:bg-primary-dark disabled:opacity-70"
         >
-          {confirming ? "Unlocking your week…" : `Start free trial of ${chosen.name}`}
+          {confirming ? "Unlocking your week…" : chosen.priceGBP === 0 ? "Continue with Free" : `Start 14-day trial of ${chosen.name}`}
         </button>
         <p className="mt-3 text-center text-xs text-muted">
-          No card required for the demo. Cancel any time. 30-day money-back guarantee once billing starts.
+          No card required for the demo. 14-day free trial, then cancel any time.
         </p>
       </div>
 
@@ -123,7 +117,7 @@ export default function UpgradePage() {
         <p className="text-sm font-medium text-foreground">
           “I saved more on my first Aldi shop than the whole month costs.”
         </p>
-        <p className="mt-1 text-xs text-muted">Sophie M. · Leeds · Premium member</p>
+        <p className="mt-1 text-xs text-muted">Sophie M. · Leeds · Chef.ai+ member</p>
         <div className="mt-4 flex items-center justify-center gap-1 text-sm font-semibold text-primary">
           <span>⭐ 4.9/5</span>
           <span className="text-muted">from 2,000+ early users</span>

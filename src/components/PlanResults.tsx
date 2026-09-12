@@ -8,7 +8,7 @@ import type {
   UKStore,
   ShoppingListItem,
 } from "@/lib/types";
-import { swapMeal } from "@/lib/plan-generator";
+import { swapMeal, generateWeeklyPlan } from "@/lib/plan-generator";
 import { describePlan, isDayLocked, chefScore } from "@/lib/ai-copy";
 import { isPremium, TIER_CHANGED_EVENT } from "@/lib/subscription";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -35,6 +35,18 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "waste", label: "Waste" },
 ];
 
+// Shown on /plan when the visitor hasn't built a plan yet, so "View demo plan"
+// always lands on a real week instead of an empty state.
+const DEMO_PREFERENCES = {
+  budget: 45,
+  budgetPeriod: "weekly" as const,
+  fitnessGoal: "",
+  dietaryRestrictions: [] as string[],
+  allergies: [] as string[],
+  householdSize: 2,
+  cookingSkill: "intermediate" as const,
+};
+
 function getPlanFromStorage(): WeeklyPlan | null {
   if (typeof window === "undefined") return null;
   const stored = sessionStorage.getItem("mealPlan");
@@ -60,12 +72,13 @@ export default function PlanResults() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { format } = useCurrency();
-  const [plan, setPlan] = useState<WeeklyPlan | null>(getPlanFromStorage);
-  const initialTab: TabId =
-    (searchParams?.get("tab") as TabId) && TABS.some((t) => t.id === searchParams?.get("tab"))
-      ? (searchParams?.get("tab") as TabId)
-      : "meals";
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const [plan, setPlan] = useState<WeeklyPlan | null>(
+    () => getPlanFromStorage() ?? generateWeeklyPlan(DEMO_PREFERENCES)
+  );
+  const urlTab = searchParams?.get("tab");
+  const activeTab: TabId = TABS.some((t) => t.id === urlTab)
+    ? (urlTab as TabId)
+    : "meals";
   const [selectedDay, setSelectedDay] = useState(0);
   const [premium, setPremium] = useState(false);
   const [selectedStore, setSelectedStore] = useState<UKStore | null>(() => {
@@ -165,7 +178,7 @@ export default function PlanResults() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="card max-w-md p-8 text-center">
-          <p className="font-serif text-2xl font-bold">No plan yet</p>
+          <p className="font-serif text-2xl font-bold">Building your demo week…</p>
           <p className="mt-2 text-muted">
             Build your first week in under a minute and Chef AI will take care of the rest.
           </p>
@@ -264,7 +277,7 @@ export default function PlanResults() {
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => router.replace(`/plan?tab=${tab.id}`, { scroll: false })}
             className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
               activeTab === tab.id
                 ? "bg-primary text-white shadow-sm"

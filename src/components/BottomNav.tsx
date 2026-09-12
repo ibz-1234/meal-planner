@@ -19,6 +19,7 @@ export default function BottomNav() {
   function isActive(href: string) {
     if (href.startsWith("/#")) return pathname === "/";
     if (href === "/plan?tab=shopping") return pathname === "/plan" && tab === "shopping";
+    if (href === "/plan") return pathname === "/plan" && tab !== "shopping";
     return pathname === href.split("?")[0];
   }
 

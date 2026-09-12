@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMealBySlug, MEAL_SLUGS } from "@/lib/meal-data";
 import { getMealImage } from "@/lib/meal-images";
-import { getProduct, formatProductAmount, getIngredientFraction } from "@/lib/grocery-prices";
+import { getProduct } from "@/lib/grocery-prices";
 
 const formatter = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -55,7 +55,7 @@ export default async function RecipePage({ params }: { params: Promise<{ name: s
             </h1>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/90">
               <span className="flex items-center gap-1 font-medium">
-                <svg className="h-4 w-4 text-secondary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> 4.8
+                <svg className="h-4 w-4 text-accent-light" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> 4.8
               </span>
               <span className="flex items-center gap-1">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {meal.prepTime} min
@@ -64,7 +64,7 @@ export default async function RecipePage({ params }: { params: Promise<{ name: s
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 7.78 16.67 10.83a4 4 0 011.17-1.17 6 6 0 00-.2 8.196z" /></svg> {meal.calories} kcal
               </span>
               <span>·</span>
-              <span className="font-serif text-lg font-bold text-secondary">{formatter.format(totalCost)}</span>
+              <span className="font-serif text-lg font-bold text-accent-light">{formatter.format(totalCost)}</span>
               <span className="text-white/70">per serving</span>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default async function RecipePage({ params }: { params: Promise<{ name: s
                         </p>
                         {product && (
                           <p className="mt-0.5 text-xs text-muted">
-                            {product.productName} · {formatProductAmount(getIngredientFraction(ing.name) * product.packAmount, product.unit)} used
+                            {product.productName} · {formatter.format(product.price)} per pack
                           </p>
                         )}
                       </div>
