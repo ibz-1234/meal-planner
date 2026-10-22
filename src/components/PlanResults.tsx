@@ -70,7 +70,7 @@ export default function PlanResults() {
   return (
     <div>
       {/* Summary Banner */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
+      <div className="hard mb-6 rounded-xl bg-primary p-6 text-white">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold">Your Weekly Meal Plan</h2>
@@ -90,14 +90,14 @@ export default function PlanResults() {
       </div>
 
       {swapBlocked && (
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-primary/10 p-4">
+        <div className="hard-sm mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-secondary-light p-4">
           <p className="text-sm">
             Meal swapping is a Premium feature — swap any meal with one tap,
             plus unlimited plans every month.
           </p>
           <button
             onClick={() => router.push("/checkout?plan=premium")}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-dark"
+            className="btn btn-primary !px-4 !py-2 !text-sm"
           >
             Upgrade
           </button>

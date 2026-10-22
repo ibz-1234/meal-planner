@@ -26,23 +26,17 @@ function SuccessInner() {
         🎉
       </div>
       <h1 className="mt-6 text-2xl font-bold">
-        Welcome to Mealsmith {PLANS[plan].name}
+        Welcome to Tiffinly {PLANS[plan].name}
       </h1>
       <p className="mt-3 text-muted">
         Your subscription is active — unlimited meal plans, smart shopping
         lists, and every Premium feature are unlocked.
       </p>
       <div className="mt-8 flex flex-col gap-3">
-        <Link
-          href="/"
-          className="rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary-dark"
-        >
+        <Link href="/" className="btn btn-primary">
           Generate a meal plan
         </Link>
-        <Link
-          href="/account"
-          className="rounded-xl border border-card-border py-3 text-sm font-bold hover:border-primary hover:text-primary"
-        >
+        <Link href="/account" className="btn btn-ghost">
           View my subscription
         </Link>
       </div>

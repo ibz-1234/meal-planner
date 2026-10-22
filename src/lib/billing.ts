@@ -1,16 +1,16 @@
-// Subscription billing for Mealsmith.
+// Subscription billing for Tiffinly.
 //
 // Charges run through Stripe Payment Links — Stripe hosts the checkout and
 // handles the card, the recurring subscription, and the customer portal, so
 // the static site needs no server. Paste your live Payment Link URLs into
 // STRIPE_PAYMENT_LINKS below (or set the NEXT_PUBLIC_* env vars at build time)
 // and set each link's confirmation page to:
-//   https://mealsmith.surge.sh/checkout/success?plan=<plan>&source=stripe
+//   https://tiffinly.surge.sh/checkout/success?plan=<plan>&source=stripe
 //
 // Until a link is configured, checkout runs in test mode: the card form is
 // simulated, nothing is charged, and the subscription is marked source "test".
 
-export type PlanId = "starter" | "premium" | "family";
+export type PlanId = "starter" | "premium";
 
 export interface PlanMeta {
   id: PlanId;
@@ -21,17 +21,15 @@ export interface PlanMeta {
 
 export const PLANS: Record<PlanId, PlanMeta> = {
   starter: { id: "starter", name: "Starter", priceGBP: 0, monthlyPlanLimit: 3 },
-  premium: { id: "premium", name: "Premium", priceGBP: 7.99, monthlyPlanLimit: null },
-  family: { id: "family", name: "Family", priceGBP: 12.99, monthlyPlanLimit: null },
+  premium: { id: "premium", name: "Premium", priceGBP: 5.99, monthlyPlanLimit: null },
 };
 
-export const PAID_PLANS: PlanId[] = ["premium", "family"];
+export const PAID_PLANS: PlanId[] = ["premium"];
 
 // ── Stripe configuration ────────────────────────────────────────────────────
 // Fill these in (or set env vars) to take real payments.
 export const STRIPE_PAYMENT_LINKS: Partial<Record<PlanId, string>> = {
   premium: process.env.NEXT_PUBLIC_STRIPE_LINK_PREMIUM || "",
-  family: process.env.NEXT_PUBLIC_STRIPE_LINK_FAMILY || "",
 };
 
 // Stripe customer portal URL (Billing → Portal → "Link to your portal").
@@ -109,7 +107,46 @@ export function cancelSubscription(): void {
 }
 
 export function isValidPlan(value: string | null): value is PlanId {
-  return value === "starter" || value === "premium" || value === "family";
+  return value === "starter" || value === "premium";
+}
+
+// ── React hook: hydration-safe reactive billing state ───────────────────────
+
+import { useSyncExternalStore } from "react";
+
+function subscribeBilling(onChange: () => void): () => void {
+  window.addEventListener("mmp-auth-changed", onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener("mmp-auth-changed", onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+const DEFAULT_SUB: Subscription = {
+  plan: "starter",
+  status: "active",
+  source: "test",
+  startedAt: "",
+  renewsAt: "",
+};
+
+function billingSnapshot(): string {
+  return JSON.stringify({ sub: readSub(), used: readUsage().count });
+}
+
+export function useBillingState(): { sub: Subscription; used: number } {
+  const raw = useSyncExternalStore(
+    subscribeBilling,
+    billingSnapshot,
+    () => JSON.stringify({ sub: null, used: 0 })
+  );
+  try {
+    const parsed = JSON.parse(raw) as { sub: Subscription | null; used: number };
+    return { sub: parsed.sub ?? DEFAULT_SUB, used: parsed.used };
+  } catch {
+    return { sub: DEFAULT_SUB, used: 0 };
+  }
 }
 
 // ── Usage tracking (free tier limit) ────────────────────────────────────────

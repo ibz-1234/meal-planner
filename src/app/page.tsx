@@ -55,7 +55,7 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     count: 15,
     recipes: [
       { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-fish.jpg" },
+      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-salmon-traybake.jpg" },
       { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-tuna-salad.jpg" },
       { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-salmon-salad.jpg" },
     ],
@@ -157,7 +157,7 @@ export default function Home() {
     <div className="bg-background">
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
         <div className="overflow-x-auto pb-3">
-          <div className="flex min-w-max items-center gap-2 rounded-full border border-card-border bg-card p-2 shadow-sm">
+          <div className="hard-sm flex min-w-max items-center gap-2 rounded-full bg-card p-2">
             {CATEGORIES.map((item) => {
               const isActive = item.label === activeCategory;
               return (
@@ -165,10 +165,10 @@ export default function Home() {
                   key={item.label}
                   type="button"
                   onClick={() => setActiveCategory(item.label)}
-                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition ${
                     isActive
-                      ? "bg-[#e11d2e] text-white"
-                      : "bg-transparent text-foreground hover:bg-primary-light/50"
+                      ? "bg-primary text-white"
+                      : "bg-transparent text-foreground hover:bg-secondary-light"
                   }`}
                 >
                   <span>{item.label}</span>
@@ -187,58 +187,47 @@ export default function Home() {
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="kicker text-primary">
               {t("hero.kicker")}
             </p>
-            <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              <span className="hand-underline">{t("hero.title").split(" ")[0]}</span>{" "}
+            <h1 className="mt-4 max-w-2xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+              <span className="mark">{t("hero.title").split(" ")[0]}</span>{" "}
               {t("hero.title").split(" ").slice(1).join(" ")}
             </h1>
-            <p className="mt-4 max-w-2xl text-lg text-muted sm:text-xl">
+            <p className="mt-5 max-w-2xl text-lg font-medium text-muted sm:text-xl">
               {t("hero.subtitle")}
             </p>
-            <p className="font-hand mt-3 -rotate-1 text-2xl text-primary">
-              cooked by you, planned by us — no fuss
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/preview"
-                className="rounded-xl bg-[#e11d2e] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:brightness-95"
-              >
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/preview" className="btn btn-primary">
                 {t("hero.cta")}
               </Link>
-              <Link
-                href="/sample"
-                className="rounded-xl border border-card-border bg-card px-6 py-3.5 text-base font-semibold transition hover:border-primary hover:text-primary"
-              >
+              <Link href="/sample" className="btn btn-ghost">
                 {t("hero.sample")}
               </Link>
             </div>
-            <p className="mt-4 text-sm text-muted">
-              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(7.99)}
+            <p className="mt-5 text-sm font-semibold text-muted">
+              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(5.99)}
               {t("hero.perMonth")}
             </p>
           </div>
 
-          <div className="relative rotate-1 rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5 tape">
-            <div className="flex items-center justify-between border-b border-card-border pb-3">
+          <div className="hard rounded-3xl bg-card p-4 sm:p-5">
+            <div className="flex items-center justify-between border-b-2 border-ink pb-3">
               <div>
-                <p className="text-sm font-semibold">
+                <p className="font-display text-lg font-extrabold">
                   {category.label} {t("menu.suffix")}
                 </p>
-                <p className="text-xs text-muted">{t("menu.subtitle")}</p>
+                <p className="text-xs font-medium text-muted">{t("menu.subtitle")}</p>
               </div>
-              <span className="font-hand -rotate-2 text-xl text-primary">
-                this week’s picks
+              <span className="rounded-full bg-secondary px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-ink">
+                this week
               </span>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {category.recipes.map((recipe, idx) => (
+              {category.recipes.map((recipe) => (
                 <article
                   key={recipe.name}
-                  className={`overflow-hidden rounded-2xl border border-card-border bg-card shadow-sm ${
-                    idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-                  }`}
+                  className="hard-sm overflow-hidden rounded-2xl bg-card"
                 >
                   <Image
                     src={recipe.image}
@@ -252,7 +241,7 @@ export default function Home() {
                       <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
                         {recipe.time}
                       </div>
-                      <div className="rounded-full bg-[#e11d2e] px-2.5 py-1 text-xs font-bold text-white">
+                      <div className="rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
                         {recipe.tag}
                       </div>
                     </div>
@@ -270,12 +259,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-card-border bg-card py-5">
+      <section className="border-y-2 border-ink bg-secondary py-5">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+          <p className="kicker text-center text-ink/60">
             Prices compared across the shops you actually use
           </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-base font-bold text-foreground/70">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-ink">
             {SUPERMARKETS.map((shop) => (
               <span key={shop} className="flex items-center gap-1.5">
                 <span className="text-primary">✓</span> {shop}
@@ -288,10 +277,10 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="kicker text-primary">
               How it works
             </p>
-            <h2 className="mt-3 text-3xl font-bold">Three steps, thirty seconds.</h2>
+            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">Three steps, thirty seconds.</h2>
             <ol className="mt-6 space-y-5">
               {[
                 { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
@@ -299,17 +288,19 @@ export default function Home() {
                 { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
               ].map((item, idx) => (
                 <li key={item.step} className="flex gap-4">
-                  <span className="font-hand mt-0.5 text-3xl leading-none text-primary">{idx + 1}.</span>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-secondary font-display text-lg font-extrabold text-ink">
+                    {idx + 1}
+                  </span>
                   <div>
-                    <p className="font-bold">{item.step}</p>
-                    <p className="font-hand text-lg text-muted">{item.note}</p>
+                    <p className="font-display text-lg font-extrabold">{item.step}</p>
+                    <p className="mt-0.5 text-sm font-medium text-muted">{item.note}</p>
                   </div>
                 </li>
               ))}
             </ol>
           </div>
-          <div className="relative -rotate-1 rounded-3xl border border-card-border bg-card p-6 shadow-lg tape">
-            <p className="text-sm font-semibold">Weekly basket · 21 meals, 2 people</p>
+          <div className="hard rounded-3xl bg-card p-6">
+            <p className="font-display text-lg font-extrabold">Weekly basket · 21 meals, 2 people</p>
             <div className="mt-4 space-y-3">
               {[
                 { shop: "Tesco", priceGBP: 47.2, cheapest: false },
@@ -321,22 +312,24 @@ export default function Home() {
                   key={row.shop}
                   className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
                     row.cheapest
-                      ? "border-primary bg-primary-light/40"
+                      ? "border-2 border-ink bg-accent-light"
                       : "border-card-border"
                   }`}
                 >
-                  <span className="font-semibold">{row.shop}</span>
+                  <span className="font-bold">{row.shop}</span>
                   <span className="flex items-center gap-2">
-                    <span className="font-bold">{format(row.priceGBP)}</span>
+                    <span className="font-display text-lg font-extrabold">{format(row.priceGBP)}</span>
                     {row.cheapest && (
-                      <span className="font-hand -rotate-2 text-lg text-primary">cheapest!</span>
+                      <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-extrabold uppercase text-white">
+                        cheapest
+                      </span>
                     )}
                   </span>
                 </div>
               ))}
             </div>
-            <p className="font-hand mt-4 rotate-1 text-right text-2xl text-primary">
-              you save {format(7.6)} this week
+            <p className="mt-5 rounded-xl bg-secondary px-4 py-3 text-center font-display text-lg font-extrabold text-ink">
+              You save {format(7.6)} this week
             </p>
           </div>
         </div>
@@ -347,13 +340,13 @@ export default function Home() {
           {FEATURES.map((feature, idx) => (
             <div
               key={feature.title}
-              className={`rounded-2xl border border-card-border bg-card p-5 shadow-sm ${
-                idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-              }`}
+              className="hard-sm rounded-2xl bg-card p-5"
             >
-              <span className="font-hand text-3xl text-primary">{idx + 1}.</span>
-              <h3 className="mt-2 text-lg font-bold">{feature.title}</h3>
-              <p className="mt-1 text-sm text-muted">{feature.desc}</p>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-primary font-display text-base font-extrabold text-white">
+                {idx + 1}
+              </span>
+              <h3 className="mt-3 font-display text-lg font-extrabold">{feature.title}</h3>
+              <p className="mt-1 text-sm font-medium text-muted">{feature.desc}</p>
             </div>
           ))}
         </div>
@@ -362,25 +355,23 @@ export default function Home() {
       <section className="bg-card py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="kicker text-primary">
               From our early users
             </p>
-            <h2 className="mt-3 text-3xl font-bold">
+            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">
               ⭐ 4.9/5 from beta testers
             </h2>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {TESTIMONIALS.map((item, idx) => (
+            {TESTIMONIALS.map((item) => (
               <figure
                 key={item.name}
-                className={`rounded-2xl border border-card-border bg-background p-5 shadow-sm ${
-                  idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-                }`}
+                className="hard-sm rounded-2xl bg-card p-5"
               >
-                <blockquote className="text-sm">“{item.quote}”</blockquote>
+                <blockquote className="text-sm font-medium">“{item.quote}”</blockquote>
                 <figcaption className="mt-3">
                   <span className="font-bold">{item.name}</span>
-                  <span className="font-hand ml-2 text-lg text-muted">{item.detail}</span>
+                  <span className="ml-2 text-sm text-muted">{item.detail}</span>
                 </figcaption>
               </figure>
             ))}
@@ -389,13 +380,13 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-        <h2 className="text-center text-3xl font-bold">Why not just use ChatGPT?</h2>
+        <h2 className="text-center font-display text-4xl font-extrabold tracking-tight">Why not just use ChatGPT?</h2>
         <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl border border-card-border bg-card text-sm">
+          <table className="hard w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl bg-card text-sm">
             <thead>
-              <tr className="bg-primary-light/40 text-left">
+              <tr className="border-b-2 border-ink bg-secondary-light text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-bold text-primary">Mealsmith</th>
+                <th className="px-4 py-3 font-extrabold text-primary">Tiffinly</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
                 <th className="px-4 py-3 font-semibold">Recipe websites</th>
               </tr>
@@ -417,10 +408,10 @@ export default function Home() {
       <section className="bg-card py-14">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="kicker text-primary">
               Why people keep using it
             </p>
-            <h2 className="mt-3 text-3xl font-bold">It feels like a menu, not a spreadsheet.</h2>
+            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">It feels like a menu, not a spreadsheet.</h2>
             <p className="mt-3 text-muted">
               The layout stays readable on small phones, stretches naturally on
               tablets and desktops, and keeps the important bits right up top.
@@ -432,9 +423,9 @@ export default function Home() {
               { title: "Save money", desc: "Best local shop first" },
               { title: "Stay on track", desc: "Progress is saved" },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-card-border bg-background p-5">
-                <h3 className="font-bold">{item.title}</h3>
-                <p className="mt-1 text-sm text-muted">{item.desc}</p>
+              <div key={item.title} className="hard-sm rounded-2xl bg-card p-5">
+                <h3 className="font-display font-extrabold">{item.title}</h3>
+                <p className="mt-1 text-sm font-medium text-muted">{item.desc}</p>
               </div>
             ))}
           </div>

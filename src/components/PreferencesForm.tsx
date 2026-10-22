@@ -236,7 +236,7 @@ export default function PreferencesForm() {
       <button
         type="submit"
         disabled={loading || !fitnessGoal}
-        className="w-full rounded-xl bg-primary py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-primary-dark hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+        className="btn btn-primary w-full !py-4 !text-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">

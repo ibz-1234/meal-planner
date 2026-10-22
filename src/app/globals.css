@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf8f5;
-  --foreground: #2c2416;
-  --primary: #b45309;
-  --primary-dark: #92400e;
-  --primary-light: #fde9d0;
-  --secondary: #d97706;
-  --secondary-light: #fef3c7;
-  --accent: #4d7c0f;
-  --accent-light: #ecfccb;
-  --card: #ffffff;
-  --card-border: #e8e0d4;
-  --muted: #6f6350;
+  --background: #f5efe2;
+  --foreground: #17120c;
+  --ink: #17120c;
+  --primary: #d92d20;
+  --primary-dark: #b32217;
+  --primary-light: #fbd9d2;
+  --secondary: #f2b134;
+  --secondary-light: #fdeec9;
+  --accent: #0d5c46;
+  --accent-light: #d3ecdf;
+  --card: #fffdf6;
+  --card-border: #17120c;
+  --muted: #5c5344;
   --danger: #b91c1c;
   --danger-light: #fee2e2;
 }
@@ -20,6 +21,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
@@ -33,59 +35,107 @@
   --color-danger: var(--danger);
   --color-danger-light: var(--danger-light);
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-source-serif);
-  --font-hand: var(--font-caveat);
+  --font-display: var(--font-bricolage);
 }
 
 body {
   background-color: var(--background);
-  background-image: radial-gradient(#e8e0d4 0.65px, transparent 0.65px);
-  background-size: 26px 26px;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-}
-
-.font-hand {
-  font-family: var(--font-hand), "Comic Sans MS", cursive;
-}
-
-.hand-underline {
-  position: relative;
-  white-space: nowrap;
-}
-
-.hand-underline::after {
-  content: "";
-  position: absolute;
-  left: -2%;
-  right: -2%;
-  bottom: -0.12em;
-  height: 0.28em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8 C 20 4, 40 10, 60 6 S 100 4, 118 7' fill='none' stroke='%23e11d2e' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")
-    no-repeat center / 100% 100%;
-}
-
-.tape::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 84px;
-  height: 22px;
-  transform: translateX(-50%) rotate(-3deg);
-  background: rgba(233, 214, 160, 0.75);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  z-index: 10;
-}
-
-.wobbly {
-  border-radius: 62% 38% 55% 45% / 45% 55% 42% 58%;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Bold editorial cards: ink border + hard offset shadow */
+.hard {
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.hard-sm {
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* Chunky buttons that press down on hover */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 9999px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--ink);
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-light);
+}
+
+.btn-ghost {
+  background: var(--card);
+  color: var(--ink);
+}
+
+.btn-ghost:hover {
+  background: var(--primary-light);
+}
+
+/* Thick marker underline for hero words */
+.mark {
+  background-image: linear-gradient(
+    transparent 62%,
+    var(--secondary) 62%,
+    var(--secondary) 96%,
+    transparent 96%
+  );
+  padding: 0 0.1em;
+}
+
+.kicker {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
 }
 
 * {

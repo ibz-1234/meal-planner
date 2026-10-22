@@ -1,32 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   PAID_PLANS,
   PLANS,
   STRIPE_PORTAL_URL,
   cancelSubscription,
-  currentSubscription,
-  plansRemaining,
-  plansUsedThisMonth,
+  useBillingState,
 } from "@/lib/billing";
-import { currentUser, type User } from "@/lib/auth";
+import { useCurrentUser } from "@/lib/auth";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function AccountPage() {
   const { format } = useCurrency();
-  const [user, setUser] = useState<User | null>(null);
-  const [sub, setSub] = useState(currentSubscription);
+  const user = useCurrentUser();
+  const { sub, used } = useBillingState();
   const plan = PLANS[sub.plan];
-  const remaining = plansRemaining();
-  const used = plansUsedThisMonth();
+  const limit = plan.monthlyPlanLimit;
+  const remaining = limit === null ? null : Math.max(0, limit - used);
   const [confirmCancel, setConfirmCancel] = useState(false);
-
-  useEffect(() => {
-    setUser(currentUser());
-    setSub(currentSubscription());
-  }, []);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
@@ -38,7 +31,7 @@ export default function AccountPage() {
       )}
 
       {/* Current plan */}
-      <section className="mt-6 rounded-2xl border border-card-border bg-card p-6">
+      <section className="hard mt-6 rounded-2xl bg-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-bold">{plan.name} plan</h2>
@@ -58,8 +51,8 @@ export default function AccountPage() {
             <span
               className={`rounded-full px-3 py-1 text-xs font-bold ${
                 sub.source === "stripe"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-amber-100 text-amber-800"
+                  ? "border-2 border-ink bg-accent-light text-ink"
+                  : "border-2 border-ink bg-secondary text-ink"
               }`}
             >
               {sub.source === "stripe" ? "PAID VIA STRIPE" : "TEST MODE"}
@@ -72,7 +65,7 @@ export default function AccountPage() {
             <div className="flex justify-between text-sm">
               <span className="font-medium">Meal plans this month</span>
               <span className="text-muted">
-                {used} of {plan.monthlyPlanLimit} used
+                {used} of {limit} used
               </span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-foreground/10">
@@ -81,7 +74,7 @@ export default function AccountPage() {
                 style={{
                   width: `${Math.min(
                     100,
-                    (used / (plan.monthlyPlanLimit ?? 1)) * 100
+                    (used / (limit ?? 1)) * 100
                   )}%`,
                 }}
               />
@@ -95,13 +88,13 @@ export default function AccountPage() {
         )}
 
         {/* Upgrade CTAs */}
-        {sub.plan !== "family" && (
+        {sub.plan === "starter" && (
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             {PAID_PLANS.filter((p) => p !== sub.plan).map((p) => (
               <Link
                 key={p}
                 href={`/checkout?plan=${p}`}
-                className="flex-1 rounded-xl bg-primary py-3 text-center text-sm font-bold text-white hover:bg-primary-dark"
+                className="btn btn-primary flex-1"
               >
                 Upgrade to {PLANS[p].name} — {format(PLANS[p].priceGBP)}/mo
               </Link>
@@ -127,7 +120,6 @@ export default function AccountPage() {
                 <button
                   onClick={() => {
                     cancelSubscription();
-                    setSub(currentSubscription());
                     setConfirmCancel(false);
                   }}
                   className="rounded-lg bg-red-600 px-3 py-1.5 font-bold text-white"
@@ -153,7 +145,7 @@ export default function AccountPage() {
         )}
       </section>
 
-      <section className="mt-6 rounded-2xl border border-card-border bg-card p-6 text-sm text-muted">
+      <section className="hard-sm mt-6 rounded-2xl bg-card p-6 text-sm text-muted">
         <h2 className="font-bold text-foreground">Need a hand?</h2>
         <p className="mt-1">
           Questions about billing —{" "}

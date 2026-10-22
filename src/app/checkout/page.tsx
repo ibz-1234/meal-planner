@@ -7,10 +7,9 @@ import {
   PLANS,
   checkoutUrlFor,
   isValidPlan,
-  stripeConfigured,
   type PlanId,
 } from "@/lib/billing";
-import { currentUser } from "@/lib/auth";
+import { useCurrentUser } from "@/lib/auth";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 function CheckoutInner() {
@@ -22,13 +21,12 @@ function CheckoutInner() {
     : "premium";
   const reason = params.get("reason");
   const plan = PLANS[planId];
-  const [email, setEmail] = useState<string | null>(null);
+  const user = useCurrentUser();
   const [card, setCard] = useState({ number: "", expiry: "", cvc: "" });
   const [paying, setPaying] = useState(false);
-  const liveUrl = checkoutUrlFor(planId, email);
+  const liveUrl = checkoutUrlFor(planId, user?.email);
 
   useEffect(() => {
-    setEmail(currentUser()?.email ?? null);
     if (planId === "starter") router.replace("/signup");
   }, [planId, router]);
 
@@ -47,12 +45,12 @@ function CheckoutInner() {
         </p>
         <a
           href={liveUrl}
-          className="mt-6 inline-block w-full rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary-dark"
+          className="btn btn-primary mt-6 w-full"
         >
           Continue to Stripe →
         </a>
         <p className="mt-4 text-xs text-muted">
-          Card details are collected by Stripe, never by Mealsmith.
+          Card details are collected by Stripe, never by Tiffinly.
         </p>
       </div>
     );
@@ -70,21 +68,21 @@ function CheckoutInner() {
   return (
     <div className="mx-auto max-w-md px-4 py-12">
       {reason === "limit" && (
-        <div className="mb-6 rounded-xl border border-primary/40 bg-primary/10 p-4 text-sm">
+        <div className="hard-sm mb-6 rounded-xl bg-secondary-light p-4 text-sm font-medium">
           You&apos;ve used your 3 free meal plans this month. Upgrade to keep
           planning — your first 14 days are free.
         </div>
       )}
-      <div className="rounded-2xl border border-card-border bg-card p-6">
+      <div className="hard rounded-2xl bg-card p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold">Mealsmith {plan.name}</h1>
+            <h1 className="text-xl font-bold">Tiffinly {plan.name}</h1>
             <p className="text-sm text-muted">
               {format(plan.priceGBP)}/month · cancel anytime
             </p>
           </div>
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
-            TEST MODE
+          <span className="rounded-full border-2 border-ink bg-secondary px-3 py-1 text-xs font-extrabold uppercase text-ink">
+            Test mode
           </span>
         </div>
 
@@ -97,7 +95,7 @@ function CheckoutInner() {
               placeholder="4242 4242 4242 4242"
               value={card.number}
               onChange={(e) => setCard({ ...card, number: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-card-border bg-background px-3 py-2.5"
+              className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
             />
           </label>
           <div className="grid grid-cols-2 gap-4">
@@ -108,7 +106,7 @@ function CheckoutInner() {
                 placeholder="12 / 28"
                 value={card.expiry}
                 onChange={(e) => setCard({ ...card, expiry: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-card-border bg-background px-3 py-2.5"
+                className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
               />
             </label>
             <label className="block text-sm font-medium">
@@ -119,14 +117,14 @@ function CheckoutInner() {
                 placeholder="123"
                 value={card.cvc}
                 onChange={(e) => setCard({ ...card, cvc: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-card-border bg-background px-3 py-2.5"
+                className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
               />
             </label>
           </div>
           <button
             type="submit"
             disabled={paying}
-            className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-60"
+            className="btn btn-primary w-full disabled:opacity-60"
           >
             {paying ? "Processing…" : `Subscribe — ${format(plan.priceGBP)}/month`}
           </button>
