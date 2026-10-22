@@ -51,8 +51,8 @@ export default function AccountPage() {
             <span
               className={`rounded-full px-3 py-1 text-xs font-bold ${
                 sub.source === "stripe"
-                  ? "border-2 border-ink bg-accent-light text-ink"
-                  : "border-2 border-ink bg-secondary text-ink"
+                  ? "border-2 border-card-border bg-accent-light text-foreground"
+                  : "border-2 border-card-border bg-secondary text-foreground"
               }`}
             >
               {sub.source === "stripe" ? "PAID VIA STRIPE" : "TEST MODE"}

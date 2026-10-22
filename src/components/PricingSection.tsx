@@ -67,8 +67,8 @@ export default function PricingSection() {
             >
               {plan.badge && (
                 <div
-                  className={`absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink px-4 py-1 text-xs font-extrabold uppercase tracking-wide ${
-                    plan.featured ? "bg-primary text-white" : "bg-secondary text-ink"
+                  className={`absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-card-border px-4 py-1 text-xs font-extrabold uppercase tracking-wide ${
+                    plan.featured ? "bg-primary text-white" : "bg-secondary text-foreground"
                   }`}
                 >
                   {t(plan.badge)}

@@ -208,7 +208,7 @@ export default function SupermarketComparison({
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-ink font-display text-base font-extrabold text-white"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-card-border font-display text-base font-extrabold text-white"
                   style={{ backgroundColor: store.color }}
                 >
                   {store.name.charAt(0)}

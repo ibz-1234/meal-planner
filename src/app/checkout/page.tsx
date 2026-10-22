@@ -81,7 +81,7 @@ function CheckoutInner() {
               {format(plan.priceGBP)}/month · cancel anytime
             </p>
           </div>
-          <span className="rounded-full border-2 border-ink bg-secondary px-3 py-1 text-xs font-extrabold uppercase text-ink">
+          <span className="rounded-full border-2 border-card-border bg-secondary px-3 py-1 text-xs font-extrabold uppercase text-foreground">
             Test mode
           </span>
         </div>
@@ -95,7 +95,7 @@ function CheckoutInner() {
               placeholder="4242 4242 4242 4242"
               value={card.number}
               onChange={(e) => setCard({ ...card, number: e.target.value })}
-              className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
+              className="mt-1 w-full rounded-lg border-2 border-card-border bg-background px-3 py-2.5"
             />
           </label>
           <div className="grid grid-cols-2 gap-4">
@@ -106,7 +106,7 @@ function CheckoutInner() {
                 placeholder="12 / 28"
                 value={card.expiry}
                 onChange={(e) => setCard({ ...card, expiry: e.target.value })}
-                className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
+                className="mt-1 w-full rounded-lg border-2 border-card-border bg-background px-3 py-2.5"
               />
             </label>
             <label className="block text-sm font-medium">
@@ -117,7 +117,7 @@ function CheckoutInner() {
                 placeholder="123"
                 value={card.cvc}
                 onChange={(e) => setCard({ ...card, cvc: e.target.value })}
-                className="mt-1 w-full rounded-lg border-2 border-ink bg-background px-3 py-2.5"
+                className="mt-1 w-full rounded-lg border-2 border-card-border bg-background px-3 py-2.5"
               />
             </label>
           </div>

@@ -172,8 +172,8 @@ export default function Home() {
               {t("hero.kicker")}
             </p>
             <h1 className="mt-4 max-w-2xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-              <span className="mark">{t("hero.title").split(" ")[0]}</span>{" "}
-              {t("hero.title").split(" ").slice(1).join(" ")}
+              {t("hero.title").split(" ").slice(0, -1).join(" ")}{" "}
+              <span className="mark">{t("hero.title").split(" ").slice(-1)}</span>
             </h1>
             <p className="mt-5 max-w-2xl text-lg font-medium text-muted sm:text-xl">
               {t("hero.subtitle")}
@@ -193,14 +193,14 @@ export default function Home() {
           </div>
 
           <div className="relative mx-auto w-full max-w-lg pb-10 pl-8">
-            <div className="hard rotate-1 rounded-3xl bg-card p-3">
+            <div className="hard rounded-3xl bg-card p-3">
               <Image
                 src="/meal-katsu.jpg"
                 alt="Chicken Katsu Curry"
                 width={800}
                 height={550}
                 priority
-                className="h-72 w-full rounded-2xl border-2 border-ink object-cover sm:h-80"
+                className="h-72 w-full rounded-2xl border-2 border-card-border object-cover sm:h-80"
               />
               <div className="flex items-center justify-between px-2 pb-1 pt-3">
                 <p className="font-display text-lg font-extrabold">Chicken Katsu Curry</p>
@@ -209,19 +209,19 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="hard-sm absolute -bottom-2 left-0 w-40 -rotate-3 rounded-2xl bg-card p-2 sm:w-48">
+            <div className="hard-sm absolute -bottom-2 left-0 w-40 rounded-2xl bg-card p-2 sm:w-48">
               <Image
                 src="/meal-salmon-traybake.jpg"
                 alt="Salmon and asparagus traybake"
                 width={400}
                 height={260}
-                className="h-24 w-full rounded-xl border-2 border-ink object-cover sm:h-28"
+                className="h-24 w-full rounded-xl border-2 border-card-border object-cover sm:h-28"
               />
               <p className="px-1 pt-1.5 text-xs font-bold leading-tight">
                 Salmon traybake — Wednesday
               </p>
             </div>
-            <div className="hard-sm absolute -right-2 top-6 rotate-2 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
+            <div className="hard-sm absolute -right-2 top-6 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
               save {format(7.6)}/week
             </div>
           </div>
@@ -236,7 +236,7 @@ export default function Home() {
               Pick a craving. We plan the week.
             </h2>
           </div>
-          <span className="rounded-full border-2 border-ink bg-secondary px-4 py-1.5 text-xs font-extrabold uppercase tracking-wide text-ink">
+          <span className="rounded-full border-2 border-card-border bg-secondary px-4 py-1.5 text-xs font-extrabold uppercase tracking-wide text-foreground">
             this week · {category.label}
           </span>
         </div>
@@ -281,7 +281,7 @@ export default function Home() {
                 alt={recipe.name}
                 width={800}
                 height={550}
-                className="h-44 w-full border-b-2 border-ink object-cover"
+                className="h-44 w-full border-b-2 border-card-border object-cover"
               />
               <div className="p-4">
                 <div className="flex items-start justify-between gap-3">
@@ -302,12 +302,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y-2 border-ink bg-secondary py-5">
+      <section className="border-y-2 border-card-border bg-secondary py-5">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <p className="kicker text-center text-ink/60">
+          <p className="kicker text-center text-foreground/60">
             Prices compared across the shops you actually use
           </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-ink">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-foreground">
             {SUPERMARKETS.map((shop) => (
               <span key={shop} className="flex items-center gap-1.5">
                 <IconCheck className="h-4 w-4 text-primary" /> {shop}
@@ -332,7 +332,7 @@ export default function Home() {
                   key={row.shop}
                   className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
                     row.cheapest
-                      ? "border-2 border-ink bg-accent-light"
+                      ? "border-2 border-card-border bg-accent-light"
                       : "border-card-border"
                   }`}
                 >
@@ -348,7 +348,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <p className="mt-5 rounded-xl bg-secondary px-4 py-3 text-center font-display text-lg font-extrabold text-ink">
+            <p className="mt-5 rounded-xl bg-secondary px-4 py-3 text-center font-display text-lg font-extrabold text-foreground">
               You save {format(7.6)} this week
             </p>
           </div>
@@ -364,7 +364,7 @@ export default function Home() {
                 { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
               ].map((item, idx) => (
                 <li key={item.step} className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-secondary font-display text-lg font-extrabold text-ink">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-card-border bg-secondary font-display text-lg font-extrabold text-foreground">
                     {idx + 1}
                   </span>
                   <div>
@@ -385,7 +385,7 @@ export default function Home() {
               key={feature.title}
               className="hard-sm rounded-2xl bg-card p-5"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-ink bg-secondary text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-card-border bg-secondary text-foreground">
                 <feature.Icon />
               </span>
               <h3 className="mt-3 font-display text-lg font-extrabold">{feature.title}</h3>
@@ -434,7 +434,7 @@ export default function Home() {
         <div className="mt-8 overflow-x-auto">
           <table className="hard w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl bg-card text-sm">
             <thead>
-              <tr className="border-b-2 border-ink bg-secondary-light text-left">
+              <tr className="border-b-2 border-card-border bg-secondary-light text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
                 <th className="px-4 py-3 font-extrabold text-primary">Tiffinly</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
@@ -480,7 +480,7 @@ export default function Home() {
               { Icon: IconLeaf, title: "Stay on track", desc: "Progress is saved" },
             ].map((item) => (
               <div key={item.title} className="hard-sm rounded-2xl bg-card p-5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-ink bg-primary text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-card-border bg-primary text-white">
                   <item.Icon className="h-5 w-5" />
                 </span>
                 <h3 className="mt-3 font-display font-extrabold">{item.title}</h3>

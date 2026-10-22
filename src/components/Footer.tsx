@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export default function Footer() {
   const { t } = useLanguage();
   return (
-    <footer className="border-t-2 border-ink bg-card">
+    <footer className="border-t-2 border-card-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
