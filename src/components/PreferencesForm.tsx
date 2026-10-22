@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DIETARY_RESTRICTIONS, FITNESS_GOALS, ALLERGIES } from "@/lib/meal-data";
 import { generateWeeklyPlan } from "@/lib/plan-generator";
+import { recordPlanGeneration } from "@/lib/billing";
 import type { UserPreferences } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { convertToGBP, currencySymbol } from "@/lib/currency";
@@ -40,6 +41,10 @@ export default function PreferencesForm() {
     };
 
     try {
+      if (!recordPlanGeneration()) {
+        router.push("/checkout?plan=premium&reason=limit");
+        return;
+      }
       const plan = generateWeeklyPlan(preferences);
       sessionStorage.setItem("mealPlan", JSON.stringify(plan));
       router.push("/plan");

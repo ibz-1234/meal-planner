@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { WeeklyPlan } from "@/lib/types";
 import { swapMeal } from "@/lib/plan-generator";
+import { isPaid } from "@/lib/billing";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
@@ -29,8 +30,13 @@ export default function PlanResults() {
   const router = useRouter();
   const { format } = useCurrency();
   const [plan, setPlan] = useState<WeeklyPlan | null>(getPlanFromStorage);
+  const [swapBlocked, setSwapBlocked] = useState(false);
 
   const handleSwap = (dayIndex: number, mealIndex: number) => {
+    if (!isPaid()) {
+      setSwapBlocked(true);
+      return;
+    }
     setPlan((current) => {
       if (!current) return current;
       const updated = swapMeal(current, dayIndex, mealIndex);
@@ -82,6 +88,21 @@ export default function PlanResults() {
           </div>
         </div>
       </div>
+
+      {swapBlocked && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-primary/10 p-4">
+          <p className="text-sm">
+            Meal swapping is a Premium feature — swap any meal with one tap,
+            plus unlimited plans every month.
+          </p>
+          <button
+            onClick={() => router.push("/checkout?plan=premium")}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-dark"
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="mb-6 flex gap-2 overflow-x-auto pb-2">

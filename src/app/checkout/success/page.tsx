@@ -1,0 +1,59 @@
+"use client";
+
+import { Suspense, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { activatePlan, isValidPlan, PLANS, type PlanId } from "@/lib/billing";
+
+function SuccessInner() {
+  const params = useSearchParams();
+  const plan: PlanId = isValidPlan(params.get("plan"))
+    ? (params.get("plan") as PlanId)
+    : "premium";
+  const source = params.get("source") === "stripe" ? "stripe" : "test";
+  const activated = useRef(false);
+
+  useEffect(() => {
+    if (!activated.current) {
+      activated.current = true;
+      activatePlan(plan, source);
+    }
+  }, [plan, source]);
+
+  return (
+    <div className="mx-auto max-w-md px-4 py-20 text-center">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-3xl">
+        🎉
+      </div>
+      <h1 className="mt-6 text-2xl font-bold">
+        Welcome to Mealsmith {PLANS[plan].name}
+      </h1>
+      <p className="mt-3 text-muted">
+        Your subscription is active — unlimited meal plans, smart shopping
+        lists, and every Premium feature are unlocked.
+      </p>
+      <div className="mt-8 flex flex-col gap-3">
+        <Link
+          href="/"
+          className="rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary-dark"
+        >
+          Generate a meal plan
+        </Link>
+        <Link
+          href="/account"
+          className="rounded-xl border border-card-border py-3 text-sm font-bold hover:border-primary hover:text-primary"
+        >
+          View my subscription
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense>
+      <SuccessInner />
+    </Suspense>
+  );
+}

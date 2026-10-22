@@ -47,6 +47,12 @@ export default function Header() {
               >
                 {t("nav.myPlan")}
               </Link>
+              <Link
+                href="/account"
+                className="text-sm font-medium text-muted hover:text-foreground"
+              >
+                Account
+              </Link>
               <button
                 type="button"
                 onClick={() => {
