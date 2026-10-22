@@ -9,9 +9,11 @@ import type { UserPreferences } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { convertToGBP, currencySymbol } from "@/lib/currency";
 import { IconAlert, IconCarrot, IconChef, IconDumbbell, IconUsers } from "@/lib/icons";
+import { useCurrentUser } from "@/lib/auth";
 
 export default function PreferencesForm() {
   const router = useRouter();
+  const user = useCurrentUser();
   const { country } = useCurrency();
   const symbol = currencySymbol(country);
   const [loading, setLoading] = useState(false);
@@ -29,6 +31,10 @@ export default function PreferencesForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login?next=/preview");
+      return;
+    }
     setLoading(true);
 
     const preferences: UserPreferences = {

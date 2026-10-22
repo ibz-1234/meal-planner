@@ -23,7 +23,8 @@ export default function SignupPage() {
             return;
           }
           window.dispatchEvent(new Event("mmp-auth-changed"));
-          router.push("/");
+          const next = new URLSearchParams(window.location.search).get("next");
+          router.push(next && next.startsWith("/") ? next : "/");
         }}
         className="rounded-3xl border border-card-border bg-card p-6 shadow-sm sm:p-8"
       >

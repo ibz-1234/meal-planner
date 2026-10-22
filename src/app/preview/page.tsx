@@ -22,7 +22,7 @@ export default function PreviewPage() {
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {[
-              "No signup needed",
+              "Free account",
               "Progress saved locally",
               "Cheapest shop highlighted",
             ].map((item, idx) => (
