@@ -10,14 +10,15 @@ import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
 import SupermarketComparison from "./SupermarketComparison";
 import WasteReductionTips from "./WasteReductionTips";
+import { IconLeaf, IconNote, IconShop, IconUtensils } from "@/lib/icons";
 
 type TabId = "meals" | "shopping" | "stores" | "waste";
 
-const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: "meals", label: "Meal Plan", icon: "🍽️" },
-  { id: "shopping", label: "Shopping List", icon: "📝" },
-  { id: "stores", label: "Compare Stores", icon: "🏪" },
-  { id: "waste", label: "Reduce Waste", icon: "♻️" },
+const TABS: { id: TabId; label: string; Icon: (p: { className?: string }) => React.JSX.Element }[] = [
+  { id: "meals", label: "Meal Plan", Icon: IconUtensils },
+  { id: "shopping", label: "Shopping List", Icon: IconNote },
+  { id: "stores", label: "Compare Stores", Icon: IconShop },
+  { id: "waste", label: "Reduce Waste", Icon: IconLeaf },
 ];
 
 function getPlanFromStorage(): WeeklyPlan | null {
@@ -116,7 +117,7 @@ export default function PlanResults() {
                 : "bg-card border border-card-border text-muted hover:border-primary"
             }`}
           >
-            <span>{tab.icon}</span>
+            <tab.Icon className="h-4 w-4" />
             {tab.label}
           </button>
         ))}

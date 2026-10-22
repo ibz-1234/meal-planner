@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LANGUAGES } from "@/lib/i18n";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { IconGlobe } from "@/lib/icons";
 
 export default function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
@@ -29,7 +30,7 @@ export default function LanguageSelector() {
         title={`Language: ${current.name}`}
         className="flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/40"
       >
-        <span>{current.flag}</span>
+        <IconGlobe className="h-4 w-4 text-muted" />
         <span className="uppercase">{current.code}</span>
         <svg className="h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none">
           <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -49,7 +50,9 @@ export default function LanguageSelector() {
                 l.code === language ? "bg-primary-light/30 font-semibold" : ""
               }`}
             >
-              <span>{l.flag}</span>
+              <span className="w-8 shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 text-center text-xs font-bold uppercase text-muted">
+                {l.code}
+              </span>
               <span className="flex-1">{l.name}</span>
             </button>
           ))}

@@ -6,6 +6,16 @@ import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PricingSection from "@/components/PricingSection";
+import {
+  IconBasket,
+  IconCheck,
+  IconClipboard,
+  IconCross,
+  IconLeaf,
+  IconShop,
+  IconStar,
+  IconTag,
+} from "@/lib/icons";
 
 type Recipe = { name: string; time: string; tag: string; image: string };
 
@@ -103,10 +113,10 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
 ];
 
 const FEATURES = [
-  { icon: "📋", title: "7-day meal structure", desc: "Breakfast, lunch, dinner, and snacks — planned in one place." },
-  { icon: "🏷️", title: "Dietary filters", desc: "Choose vegetarian, gluten-free, dairy-free, halal, and more." },
-  { icon: "🛒", title: "Shopping lists", desc: "Items grouped by aisle so your shop is quicker." },
-  { icon: "🏪", title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
+  { Icon: IconClipboard, title: "7-day meal structure", desc: "Breakfast, lunch, dinner, and snacks — planned in one place." },
+  { Icon: IconTag, title: "Dietary filters", desc: "Choose vegetarian, gluten-free, dairy-free, halal, and more." },
+  { Icon: IconBasket, title: "Shopping lists", desc: "Items grouped by aisle so your shop is quicker." },
+  { Icon: IconShop, title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
 ];
 
 const SUPERMARKETS = [
@@ -138,11 +148,11 @@ const TESTIMONIALS = [
   },
 ];
 
-const COMPARISON_ROWS: { feature: string; us: boolean; gpt: string; sites: string }[] = [
-  { feature: "Weekly plans in one tap", us: true, gpt: "✗", sites: "✗" },
-  { feature: "Shopping lists by aisle", us: true, gpt: "✗", sites: "✗" },
-  { feature: "UK supermarket prices", us: true, gpt: "✗", sites: "✗" },
-  { feature: "Budget optimisation", us: true, gpt: "✗", sites: "✗" },
+const COMPARISON_ROWS: { feature: string; us: boolean; gpt: false | string; sites: false | string }[] = [
+  { feature: "Weekly plans in one tap", us: true, gpt: false, sites: false },
+  { feature: "Shopping lists by aisle", us: true, gpt: false, sites: false },
+  { feature: "UK supermarket prices", us: true, gpt: false, sites: false },
+  { feature: "Budget optimisation", us: true, gpt: false, sites: false },
   { feature: "Dietary preferences", us: true, gpt: "Limited", sites: "Limited" },
 ];
 
@@ -155,8 +165,83 @@ export default function Home() {
 
   return (
     <div className="bg-background">
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
-        <div className="overflow-x-auto pb-3">
+      <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 lg:pt-14">
+        <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <p className="kicker text-primary">
+              {t("hero.kicker")}
+            </p>
+            <h1 className="mt-4 max-w-2xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+              <span className="mark">{t("hero.title").split(" ")[0]}</span>{" "}
+              {t("hero.title").split(" ").slice(1).join(" ")}
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg font-medium text-muted sm:text-xl">
+              {t("hero.subtitle")}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/preview" className="btn btn-primary">
+                {t("hero.cta")}
+              </Link>
+              <Link href="/sample" className="btn btn-ghost">
+                {t("hero.sample")}
+              </Link>
+            </div>
+            <p className="mt-5 text-sm font-semibold text-muted">
+              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(5.99)}
+              {t("hero.perMonth")}
+            </p>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-lg pb-10 pl-8">
+            <div className="hard rotate-1 rounded-3xl bg-card p-3">
+              <Image
+                src="/meal-katsu.jpg"
+                alt="Chicken Katsu Curry"
+                width={800}
+                height={550}
+                priority
+                className="h-72 w-full rounded-2xl border-2 border-ink object-cover sm:h-80"
+              />
+              <div className="flex items-center justify-between px-2 pb-1 pt-3">
+                <p className="font-display text-lg font-extrabold">Chicken Katsu Curry</p>
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                  tonight
+                </span>
+              </div>
+            </div>
+            <div className="hard-sm absolute -bottom-2 left-0 w-40 -rotate-3 rounded-2xl bg-card p-2 sm:w-48">
+              <Image
+                src="/meal-salmon-traybake.jpg"
+                alt="Salmon and asparagus traybake"
+                width={400}
+                height={260}
+                className="h-24 w-full rounded-xl border-2 border-ink object-cover sm:h-28"
+              />
+              <p className="px-1 pt-1.5 text-xs font-bold leading-tight">
+                Salmon traybake — Wednesday
+              </p>
+            </div>
+            <div className="hard-sm absolute -right-2 top-6 rotate-2 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
+              save {format(7.6)}/week
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="kicker text-primary">What&apos;s for dinner</p>
+            <h2 className="mt-3 max-w-xl font-display text-4xl font-extrabold tracking-tight">
+              Pick a craving. We plan the week.
+            </h2>
+          </div>
+          <span className="rounded-full border-2 border-ink bg-secondary px-4 py-1.5 text-xs font-extrabold uppercase tracking-wide text-ink">
+            this week · {category.label}
+          </span>
+        </div>
+
+        <div className="mt-6 overflow-x-auto pb-3">
           <div className="hard-sm flex min-w-max items-center gap-2 rounded-full bg-card p-2">
             {CATEGORIES.map((item) => {
               const isActive = item.label === activeCategory;
@@ -185,77 +270,35 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <p className="kicker text-primary">
-              {t("hero.kicker")}
-            </p>
-            <h1 className="mt-4 max-w-2xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-              <span className="mark">{t("hero.title").split(" ")[0]}</span>{" "}
-              {t("hero.title").split(" ").slice(1).join(" ")}
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg font-medium text-muted sm:text-xl">
-              {t("hero.subtitle")}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/preview" className="btn btn-primary">
-                {t("hero.cta")}
-              </Link>
-              <Link href="/sample" className="btn btn-ghost">
-                {t("hero.sample")}
-              </Link>
-            </div>
-            <p className="mt-5 text-sm font-semibold text-muted">
-              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(5.99)}
-              {t("hero.perMonth")}
-            </p>
-          </div>
-
-          <div className="hard rounded-3xl bg-card p-4 sm:p-5">
-            <div className="flex items-center justify-between border-b-2 border-ink pb-3">
-              <div>
-                <p className="font-display text-lg font-extrabold">
-                  {category.label} {t("menu.suffix")}
-                </p>
-                <p className="text-xs font-medium text-muted">{t("menu.subtitle")}</p>
-              </div>
-              <span className="rounded-full bg-secondary px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-ink">
-                this week
-              </span>
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {category.recipes.map((recipe) => (
-                <article
-                  key={recipe.name}
-                  className="hard-sm overflow-hidden rounded-2xl bg-card"
-                >
-                  <Image
-                    src={recipe.image}
-                    alt={recipe.name}
-                    width={800}
-                    height={550}
-                    className="h-44 w-full object-cover"
-                  />
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
-                        {recipe.time}
-                      </div>
-                      <div className="rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
-                        {recipe.tag}
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <h2 className="text-lg font-bold leading-tight">{recipe.name}</h2>
-                      <p className="mt-2 text-sm text-muted">
-                        Proper food, made in your kitchen.
-                      </p>
-                    </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {category.recipes.map((recipe) => (
+            <article
+              key={recipe.name}
+              className="hard-sm overflow-hidden rounded-2xl bg-card"
+            >
+              <Image
+                src={recipe.image}
+                alt={recipe.name}
+                width={800}
+                height={550}
+                className="h-44 w-full border-b-2 border-ink object-cover"
+              />
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
+                    {recipe.time}
                   </div>
-                </article>
-              ))}
-            </div>
-          </div>
+                  <div className="rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
+                    {recipe.tag}
+                  </div>
+                </div>
+                <h3 className="mt-3 text-lg font-bold leading-tight">{recipe.name}</h3>
+                <p className="mt-2 text-sm text-muted">
+                  Proper food, made in your kitchen.
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -267,7 +310,7 @@ export default function Home() {
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-ink">
             {SUPERMARKETS.map((shop) => (
               <span key={shop} className="flex items-center gap-1.5">
-                <span className="text-primary">✓</span> {shop}
+                <IconCheck className="h-4 w-4 text-primary" /> {shop}
               </span>
             ))}
           </div>
@@ -276,29 +319,6 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid items-center gap-8 lg:grid-cols-2">
-          <div>
-            <p className="kicker text-primary">
-              How it works
-            </p>
-            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">Three steps, thirty seconds.</h2>
-            <ol className="mt-6 space-y-5">
-              {[
-                { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
-                { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
-                { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
-              ].map((item, idx) => (
-                <li key={item.step} className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-secondary font-display text-lg font-extrabold text-ink">
-                    {idx + 1}
-                  </span>
-                  <div>
-                    <p className="font-display text-lg font-extrabold">{item.step}</p>
-                    <p className="mt-0.5 text-sm font-medium text-muted">{item.note}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
           <div className="hard rounded-3xl bg-card p-6">
             <p className="font-display text-lg font-extrabold">Weekly basket · 21 meals, 2 people</p>
             <div className="mt-4 space-y-3">
@@ -332,18 +352,41 @@ export default function Home() {
               You save {format(7.6)} this week
             </p>
           </div>
+          <div>
+            <p className="kicker text-primary">
+              How it works
+            </p>
+            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">Three steps, thirty seconds.</h2>
+            <ol className="mt-6 space-y-5">
+              {[
+                { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
+                { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
+                { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
+              ].map((item, idx) => (
+                <li key={item.step} className="flex gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-secondary font-display text-lg font-extrabold text-ink">
+                    {idx + 1}
+                  </span>
+                  <div>
+                    <p className="font-display text-lg font-extrabold">{item.step}</p>
+                    <p className="mt-0.5 text-sm font-medium text-muted">{item.note}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map((feature, idx) => (
+          {FEATURES.map((feature) => (
             <div
               key={feature.title}
               className="hard-sm rounded-2xl bg-card p-5"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-primary font-display text-base font-extrabold text-white">
-                {idx + 1}
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-ink bg-secondary text-ink">
+                <feature.Icon />
               </span>
               <h3 className="mt-3 font-display text-lg font-extrabold">{feature.title}</h3>
               <p className="mt-1 text-sm font-medium text-muted">{feature.desc}</p>
@@ -358,9 +401,16 @@ export default function Home() {
             <p className="kicker text-primary">
               From our early users
             </p>
-            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">
-              ⭐ 4.9/5 from beta testers
-            </h2>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <span className="flex gap-0.5 text-secondary">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <IconStar key={i} className="h-6 w-6" />
+                ))}
+              </span>
+              <h2 className="font-display text-4xl font-extrabold tracking-tight">
+                4.9/5 from beta testers
+              </h2>
+            </div>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {TESTIMONIALS.map((item) => (
@@ -395,9 +445,15 @@ export default function Home() {
               {COMPARISON_ROWS.map((row) => (
                 <tr key={row.feature} className="border-t border-card-border">
                   <td className="border-t border-card-border px-4 py-3">{row.feature}</td>
-                  <td className="border-t border-card-border px-4 py-3 font-bold text-primary">✓</td>
-                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.gpt}</td>
-                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.sites}</td>
+                  <td className="border-t border-card-border px-4 py-3 font-bold text-primary">
+                    <IconCheck className="h-5 w-5" />
+                  </td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">
+                    {row.gpt === false ? <IconCross className="h-5 w-5 opacity-50" /> : row.gpt}
+                  </td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">
+                    {row.sites === false ? <IconCross className="h-5 w-5 opacity-50" /> : row.sites}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -419,12 +475,15 @@ export default function Home() {
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { title: "Save time", desc: "Meals picked for you" },
-              { title: "Save money", desc: "Best local shop first" },
-              { title: "Stay on track", desc: "Progress is saved" },
+              { Icon: IconClipboard, title: "Save time", desc: "Meals picked for you" },
+              { Icon: IconBasket, title: "Save money", desc: "Best local shop first" },
+              { Icon: IconLeaf, title: "Stay on track", desc: "Progress is saved" },
             ].map((item) => (
               <div key={item.title} className="hard-sm rounded-2xl bg-card p-5">
-                <h3 className="font-display font-extrabold">{item.title}</h3>
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-ink bg-primary text-white">
+                  <item.Icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-3 font-display font-extrabold">{item.title}</h3>
                 <p className="mt-1 text-sm font-medium text-muted">{item.desc}</p>
               </div>
             ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { activatePlan, isValidPlan, PLANS, type PlanId } from "@/lib/billing";
@@ -22,8 +23,8 @@ function SuccessInner() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-20 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-3xl">
-        🎉
+      <div className="hard-sm mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary">
+        <Image src="/logo.svg" alt="Tiffinly" width={40} height={40} />
       </div>
       <h1 className="mt-6 text-2xl font-bold">
         Welcome to Tiffinly {PLANS[plan].name}

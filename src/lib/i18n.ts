@@ -1,11 +1,11 @@
 export type LanguageCode = "en" | "fr" | "de" | "es" | "it";
 
-export const LANGUAGES: { code: LanguageCode; name: string; flag: string }[] = [
-  { code: "en", name: "English", flag: "🇬🇧" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "de", name: "Deutsch", flag: "🇩🇪" },
-  { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "it", name: "Italiano", flag: "🇮🇹" },
+export const LANGUAGES: { code: LanguageCode; name: string }[] = [
+  { code: "en", name: "English" },
+  { code: "fr", name: "Français" },
+  { code: "de", name: "Deutsch" },
+  { code: "es", name: "Español" },
+  { code: "it", name: "Italiano" },
 ];
 
 type Dict = Record<string, string>;

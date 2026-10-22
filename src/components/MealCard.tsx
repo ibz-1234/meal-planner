@@ -6,6 +6,7 @@ import { isFavourite, toggleFavourite } from "@/lib/favourites";
 import type { Meal } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getMealImage } from "@/lib/meal-images";
+import { IconLeaf, IconSwap } from "@/lib/icons";
 
 function difficultyLabel(prepTime: number): string {
   if (prepTime <= 10) return "Easy";
@@ -152,14 +153,16 @@ export default function MealCard({
               }}
               className="mb-3 w-full rounded-lg border border-primary/40 bg-primary-light/40 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
             >
-              ⇄ Swap this meal
+              <IconSwap className="mr-1 inline h-4 w-4" /> Swap this meal
             </button>
           )}
 
           {/* Waste Tip */}
           {meal.wasteReductionTip && (
             <div className="rounded-lg bg-primary-light/50 p-3">
-              <p className="text-xs font-semibold text-primary">♻️ Waste Reduction Tip</p>
+              <p className="flex items-center gap-1 text-xs font-semibold text-primary">
+                <IconLeaf className="h-3.5 w-3.5" /> Waste Reduction Tip
+              </p>
               <p className="mt-1 text-xs text-muted">{meal.wasteReductionTip}</p>
             </div>
           )}
