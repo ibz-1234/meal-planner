@@ -23,6 +23,7 @@ export default function MealCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [favourite, setFavourite] = useState(() => isFavourite(meal.name));
+  const [imageSrc, setImageSrc] = useState(() => getMealImage(meal.type, meal.name));
   const { format } = useCurrency();
 
   const mealTypeColors: Record<string, string> = {
@@ -38,11 +39,12 @@ export default function MealCard({
     <div className="rounded-xl border border-card-border bg-card transition-shadow hover:shadow-md">
       <div className="relative aspect-[16/9] overflow-hidden rounded-t-xl bg-background">
         <Image
-          src={getMealImage(meal.type, meal.name)}
+          src={imageSrc}
           alt={meal.name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover"
+          onError={() => setImageSrc("/meal-chicken.webp")}
         />
         <button
           type="button"
