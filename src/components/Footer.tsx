@@ -7,14 +7,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export default function Footer() {
   const { t } = useLanguage();
   return (
-    <footer className="border-t border-card-border bg-card">
+    <footer className="border-t-2 border-card-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
             <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Mealsmith logo" width={28} height={28} className="h-7 w-7" />
-              <span className="text-lg font-bold">
-                Meal<span className="text-primary">smith</span>
+              <Image src="/logo.svg" alt="Tiffinly logo" width={30} height={30} className="h-7 w-7" />
+              <span className="font-display text-lg font-extrabold tracking-tight">
+                tiffin<span className="text-primary">ly</span>
               </span>
             </div>
             <p className="mt-2 text-sm text-muted">{t("footer.tagline")}</p>
@@ -39,7 +39,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-card-border pt-4 text-center text-sm text-muted">
-          &copy; {new Date().getFullYear()} Mealsmith. All rights reserved.
+          &copy; {new Date().getFullYear()} Tiffinly. All rights reserved.
         </div>
       </div>
     </footer>

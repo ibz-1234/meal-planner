@@ -4,19 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { WeeklyPlan } from "@/lib/types";
 import { swapMeal } from "@/lib/plan-generator";
+import { isPaid } from "@/lib/billing";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
 import SupermarketComparison from "./SupermarketComparison";
 import WasteReductionTips from "./WasteReductionTips";
+import { IconLeaf, IconNote, IconShop, IconUtensils } from "@/lib/icons";
 
 type TabId = "meals" | "shopping" | "stores" | "waste";
 
-const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: "meals", label: "Meal Plan", icon: "🍽️" },
-  { id: "shopping", label: "Shopping List", icon: "📝" },
-  { id: "stores", label: "Compare Stores", icon: "🏪" },
-  { id: "waste", label: "Reduce Waste", icon: "♻️" },
+const TABS: { id: TabId; label: string; Icon: (p: { className?: string }) => React.JSX.Element }[] = [
+  { id: "meals", label: "Meal Plan", Icon: IconUtensils },
+  { id: "shopping", label: "Shopping List", Icon: IconNote },
+  { id: "stores", label: "Compare Stores", Icon: IconShop },
+  { id: "waste", label: "Reduce Waste", Icon: IconLeaf },
 ];
 
 function getPlanFromStorage(): WeeklyPlan | null {
@@ -29,8 +31,13 @@ export default function PlanResults() {
   const router = useRouter();
   const { format } = useCurrency();
   const [plan, setPlan] = useState<WeeklyPlan | null>(getPlanFromStorage);
+  const [swapBlocked, setSwapBlocked] = useState(false);
 
   const handleSwap = (dayIndex: number, mealIndex: number) => {
+    if (!isPaid()) {
+      setSwapBlocked(true);
+      return;
+    }
     setPlan((current) => {
       if (!current) return current;
       const updated = swapMeal(current, dayIndex, mealIndex);
@@ -64,7 +71,7 @@ export default function PlanResults() {
   return (
     <div>
       {/* Summary Banner */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark p-6 text-white">
+      <div className="hard mb-6 rounded-xl bg-primary p-6 text-white">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold">Your Weekly Meal Plan</h2>
@@ -83,6 +90,21 @@ export default function PlanResults() {
         </div>
       </div>
 
+      {swapBlocked && (
+        <div className="hard-sm mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-secondary-light p-4">
+          <p className="text-sm">
+            Meal swapping is a Premium feature — swap any meal with one tap,
+            plus unlimited plans every month.
+          </p>
+          <button
+            onClick={() => router.push("/checkout?plan=premium")}
+            className="btn btn-primary !px-4 !py-2 !text-sm"
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {TABS.map((tab) => (
@@ -95,7 +117,7 @@ export default function PlanResults() {
                 : "bg-card border border-card-border text-muted hover:border-primary"
             }`}
           >
-            <span>{tab.icon}</span>
+            <tab.Icon className="h-4 w-4" />
             {tab.label}
           </button>
         ))}

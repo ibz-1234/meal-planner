@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Source_Serif_4, Caveat } from "next/font/google";
+import { Inter, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,18 +11,13 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
-  subsets: ["latin"],
-});
-
-const caveat = Caveat({
-  variable: "--font-caveat",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Mealsmith – Your personalised meal plan in under 5 minutes",
+  title: "Tiffinly – Your whole week of meals, planned in 30 seconds",
   description:
     "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Includes recipes, shopping lists, nutrition and local supermarket price comparison.",
   keywords: [
@@ -44,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${sourceSerif.variable} ${caveat.variable} h-full antialiased`}
+      className={`${inter.variable} ${bricolage.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LanguageProvider>

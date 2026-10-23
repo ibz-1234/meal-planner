@@ -1,8 +1,10 @@
+import { IconLeaf } from "@/lib/icons";
+
 export default function WasteReductionTips({ tips }: { tips: string[] }) {
   return (
     <div className="rounded-xl border border-card-border bg-card p-6">
       <h3 className="mb-4 text-lg font-bold flex items-center gap-2">
-        <span>♻️</span> Reduce Food Waste
+        <IconLeaf className="text-accent" /> Reduce Food Waste
       </h3>
       <ul className="space-y-3">
         {tips.map((tip, i) => (

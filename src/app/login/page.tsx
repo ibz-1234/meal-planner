@@ -22,7 +22,8 @@ export default function LoginPage() {
             return;
           }
           window.dispatchEvent(new Event("mmp-auth-changed"));
-          router.push("/");
+          const next = new URLSearchParams(window.location.search).get("next");
+          router.push(next && next.startsWith("/") ? next : "/");
         }}
         className="rounded-3xl border border-card-border bg-card p-6 shadow-sm sm:p-8"
       >
@@ -50,7 +51,7 @@ export default function LoginPage() {
           required
         />
         {error && <p className="mt-4 text-sm font-medium text-danger">{error}</p>}
-        <button className="mt-6 w-full rounded-xl bg-primary px-4 py-3 font-bold text-white">
+        <button className="btn btn-primary mt-6 w-full">
           Log in
         </button>
         <p className="mt-4 text-sm text-muted">
