@@ -119,15 +119,15 @@ const FEATURES = [
   { Icon: IconShop, title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
 ];
 
-const SUPERMARKETS = [
-  "Tesco",
-  "Aldi",
-  "Lidl",
-  "Asda",
-  "Morrisons",
-  "Sainsbury's",
-  "Iceland",
-  "Co-op",
+const SUPERMARKETS: { name: string; color: string }[] = [
+  { name: "Tesco", color: "#00539F" },
+  { name: "Aldi", color: "#F28C28" },
+  { name: "Lidl", color: "#E8A100" },
+  { name: "Asda", color: "#78BE20" },
+  { name: "Morrisons", color: "#F5A800" },
+  { name: "Sainsbury's", color: "#F06C00" },
+  { name: "Iceland", color: "#DA291C" },
+  { name: "Co-op", color: "#00B4AA" },
 ];
 
 const TESTIMONIALS = [
@@ -309,8 +309,14 @@ export default function Home() {
           </p>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-foreground">
             {SUPERMARKETS.map((shop) => (
-              <span key={shop} className="flex items-center gap-1.5">
-                <IconCheck className="h-4 w-4 text-primary" /> {shop}
+              <span key={shop.name} className="flex items-center gap-2">
+                <span
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold text-white"
+                  style={{ backgroundColor: shop.color }}
+                >
+                  {shop.name.charAt(0)}
+                </span>
+                {shop.name}
               </span>
             ))}
           </div>
