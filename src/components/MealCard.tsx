@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { isFavourite, toggleFavourite } from "@/lib/favourites";
 import type { Meal } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getMealImage } from "@/lib/meal-images";
+import { recipePageHref } from "@/lib/recipes";
+import { IconLeaf, IconSwap } from "@/lib/icons";
 
 function difficultyLabel(prepTime: number): string {
   if (prepTime <= 10) return "Easy";
@@ -22,6 +25,7 @@ export default function MealCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [favourite, setFavourite] = useState(() => isFavourite(meal.name));
+  const [imageSrc, setImageSrc] = useState(() => getMealImage(meal.type, meal.name));
   const { format } = useCurrency();
 
   const mealTypeColors: Record<string, string> = {
@@ -37,11 +41,12 @@ export default function MealCard({
     <div className="rounded-xl border border-card-border bg-card transition-shadow hover:shadow-md">
       <div className="relative aspect-[16/9] overflow-hidden rounded-t-xl bg-background">
         <Image
-          src={getMealImage(meal.type, meal.name)}
+          src={imageSrc}
           alt={meal.name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover"
+          onError={() => setImageSrc("/meal-chicken.webp")}
         />
         <button
           type="button"
@@ -82,7 +87,14 @@ export default function MealCard({
           <div>
             <h4 className="font-semibold text-foreground">{meal.name}</h4>
             <p className="text-xs text-muted">
-              {meal.prepTime} min prep · {format(totalCost)} per serving
+              {meal.prepTime} min prep · {format(totalCost)} per serving ·{" "}
+              <Link
+                href={recipePageHref(meal.name)}
+                onClick={(e) => e.stopPropagation()}
+                className="font-semibold text-primary underline-offset-2 hover:underline"
+              >
+                full recipe
+              </Link>
             </p>
           </div>
         </div>
@@ -152,14 +164,16 @@ export default function MealCard({
               }}
               className="mb-3 w-full rounded-lg border border-primary/40 bg-primary-light/40 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
             >
-              ⇄ Swap this meal
+              <IconSwap className="mr-1 inline h-4 w-4" /> Swap this meal
             </button>
           )}
 
           {/* Waste Tip */}
           {meal.wasteReductionTip && (
             <div className="rounded-lg bg-primary-light/50 p-3">
-              <p className="text-xs font-semibold text-primary">♻️ Waste Reduction Tip</p>
+              <p className="flex items-center gap-1 text-xs font-semibold text-primary">
+                <IconLeaf className="h-3.5 w-3.5" /> Waste Reduction Tip
+              </p>
               <p className="mt-1 text-xs text-muted">{meal.wasteReductionTip}</p>
             </div>
           )}

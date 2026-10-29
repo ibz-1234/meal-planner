@@ -9,6 +9,7 @@ const PLANS = [
     name: "Starter",
     priceGBP: 0,
     period: "forever",
+    ctaHref: "/signup",
     tagline: "Try the kitchen before you commit.",
     features: [
       "3 meal plans per month",
@@ -22,8 +23,9 @@ const PLANS = [
   },
   {
     name: "Premium",
-    priceGBP: 7.99,
+    priceGBP: 5.99,
     period: "/month",
+    ctaHref: "/checkout?plan=premium",
     tagline: "For people who want the weekly shop handled.",
     features: [
       "Unlimited meal plans, updated weekly",
@@ -40,23 +42,6 @@ const PLANS = [
     featured: true,
     badge: "pricing.mostPopular",
   },
-  {
-    name: "Family",
-    priceGBP: 12.99,
-    period: "/month",
-    tagline: "One plan that feeds the whole table.",
-    features: [
-      "Everything in Premium",
-      "Up to 8 family profiles & portions",
-      "Shared shopping lists in real time",
-      "Batch-cook & bulk recipe scaling",
-      "Kid-friendly meal swaps",
-      "Weekly budget tracking per household",
-    ],
-    cta: "Start 14-day free trial",
-    featured: false,
-    badge: "pricing.bestValue",
-  },
 ];
 
 export default function PricingSection() {
@@ -70,30 +55,30 @@ export default function PricingSection() {
           <h2 className="text-3xl font-bold">{t("pricing.title")}</h2>
           <p className="mt-3 text-muted">{t("pricing.subtitle")}</p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
           {PLANS.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl border p-6 transition-all hover:shadow-lg ${
+              className={`relative rounded-2xl p-6 ${
                 plan.featured
-                  ? "border-primary bg-card shadow-md sm:scale-105"
-                  : "border-card-border bg-card"
+                  ? "hard bg-card"
+                  : "hard-sm bg-card"
               }`}
             >
               {plan.badge && (
                 <div
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-4 py-1 text-xs font-bold text-white ${
-                    plan.featured ? "bg-primary" : "bg-foreground/80"
+                  className={`absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-card-border px-4 py-1 text-xs font-extrabold uppercase tracking-wide ${
+                    plan.featured ? "bg-primary text-white" : "bg-secondary text-foreground"
                   }`}
                 >
                   {t(plan.badge)}
                 </div>
               )}
-              <h3 className="text-xl font-bold">{plan.name}</h3>
+              <h3 className="font-display text-2xl font-extrabold">{plan.name}</h3>
               <p className="mt-1 text-sm text-muted">{plan.tagline}</p>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold">
-                  {plan.priceGBP === 0 ? format(0) : format(plan.priceGBP)}
+                <span className="font-display text-5xl font-extrabold">
+                  {format(plan.priceGBP)}
                 </span>
                 <span className="text-muted">{plan.period}</span>
               </div>
@@ -118,11 +103,9 @@ export default function PricingSection() {
                 ))}
               </ul>
               <Link
-                href="/signup"
-                className={`mt-6 block w-full rounded-xl py-3 text-center text-sm font-bold transition-all ${
-                  plan.featured
-                    ? "bg-primary text-white hover:bg-primary-dark"
-                    : "border border-card-border text-foreground hover:border-primary hover:text-primary"
+                href={plan.ctaHref}
+                className={`mt-6 block w-full text-center ${
+                  plan.featured ? "btn btn-primary" : "btn btn-ghost"
                 }`}
               >
                 {plan.cta}

@@ -4,12 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DIETARY_RESTRICTIONS, FITNESS_GOALS, ALLERGIES } from "@/lib/meal-data";
 import { generateWeeklyPlan } from "@/lib/plan-generator";
+import { recordPlanGeneration } from "@/lib/billing";
 import type { UserPreferences } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { convertToGBP, currencySymbol } from "@/lib/currency";
+import { IconAlert, IconCarrot, IconChef, IconDumbbell, IconUsers } from "@/lib/icons";
+import { useCurrentUser } from "@/lib/auth";
 
 export default function PreferencesForm() {
   const router = useRouter();
+  const user = useCurrentUser();
   const { country } = useCurrency();
   const symbol = currencySymbol(country);
   const [loading, setLoading] = useState(false);
@@ -27,6 +31,10 @@ export default function PreferencesForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login?next=/preview");
+      return;
+    }
     setLoading(true);
 
     const preferences: UserPreferences = {
@@ -40,6 +48,10 @@ export default function PreferencesForm() {
     };
 
     try {
+      if (!recordPlanGeneration()) {
+        router.push("/checkout?plan=premium&reason=limit");
+        return;
+      }
       const plan = generateWeeklyPlan(preferences);
       sessionStorage.setItem("mealPlan", JSON.stringify(plan));
       router.push("/plan");
@@ -108,7 +120,7 @@ export default function PreferencesForm() {
       {/* Fitness Goal */}
       <div className="rounded-xl border border-card-border bg-card p-6">
         <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-light text-accent text-sm">💪</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-light text-accent text-sm"><IconDumbbell className="h-4 w-4" /></span>
           Fitness Goal
         </h3>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -132,7 +144,7 @@ export default function PreferencesForm() {
       {/* Dietary Restrictions */}
       <div className="rounded-xl border border-card-border bg-card p-6">
         <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary-light text-secondary text-sm">🥦</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary-light text-secondary text-sm"><IconCarrot className="h-4 w-4" /></span>
           Dietary Restrictions
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -156,7 +168,7 @@ export default function PreferencesForm() {
       {/* Allergies */}
       <div className="rounded-xl border border-card-border bg-card p-6">
         <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-light text-danger text-sm">⚠️</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-danger-light text-danger text-sm"><IconAlert className="h-4 w-4" /></span>
           Allergies
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -181,7 +193,7 @@ export default function PreferencesForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="rounded-xl border border-card-border bg-card p-6">
           <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary text-sm">👥</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-primary text-sm"><IconUsers className="h-4 w-4" /></span>
             Household Size
           </h3>
           <div className="flex items-center gap-4">
@@ -205,7 +217,7 @@ export default function PreferencesForm() {
 
         <div className="rounded-xl border border-card-border bg-card p-6">
           <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-light text-accent text-sm">👨‍🍳</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-light text-accent text-sm"><IconChef className="h-4 w-4" /></span>
             Cooking Skill
           </h3>
           <div className="flex gap-2">
@@ -231,7 +243,7 @@ export default function PreferencesForm() {
       <button
         type="submit"
         disabled={loading || !fitnessGoal}
-        className="w-full rounded-xl bg-primary py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-primary-dark hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+        className="btn btn-primary w-full !py-4 !text-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
