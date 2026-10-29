@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getStoresForCountry } from "@/lib/stores";
 import { RECIPE_DETAILS } from "@/lib/recipe-details";
+import { recipePageHref } from "@/lib/recipes";
 import { IconCross, IconClock, IconUsers, IconBasket, IconUtensils } from "@/lib/icons";
 
 export type CardRecipe = {
@@ -172,12 +173,20 @@ export default function RecipeDetailModal({
             </p>
           )}
 
-          <a
-            href="/preview"
-            className="btn btn-primary mt-6 w-full"
-          >
-            Plan this week with Tiffinly
-          </a>
+          <div className="mt-6 flex gap-3">
+            <a
+              href={recipePageHref(recipe.name)}
+              className="btn btn-ghost flex-1"
+            >
+              Full recipe page
+            </a>
+            <a
+              href="/preview"
+              className="btn btn-primary flex-1"
+            >
+              Plan this week
+            </a>
+          </div>
         </div>
       </div>
     </div>

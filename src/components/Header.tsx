@@ -34,6 +34,12 @@ export default function Header() {
           </span>
         </Link>
         <nav className="flex items-center gap-3">
+          <Link
+            href="/pantry"
+            className="hidden text-sm font-medium text-muted hover:text-foreground sm:inline"
+          >
+            Pantry
+          </Link>
           <LanguageSelector />
           <CurrencySelector />
           {user ? (

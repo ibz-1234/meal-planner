@@ -152,7 +152,7 @@ function selectMealsForDay(
   }));
 }
 
-function generateShoppingList(days: DayPlan[]): ShoppingListItem[] {
+export function generateShoppingList(days: DayPlan[]): ShoppingListItem[] {
   const ingredientMap = new Map<
     string,
     { totalCost: number; quantities: string[]; unit: string; category: string }

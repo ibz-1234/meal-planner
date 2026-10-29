@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { isFavourite, toggleFavourite } from "@/lib/favourites";
 import type { Meal } from "@/lib/types";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { getMealImage } from "@/lib/meal-images";
+import { recipePageHref } from "@/lib/recipes";
 import { IconLeaf, IconSwap } from "@/lib/icons";
 
 function difficultyLabel(prepTime: number): string {
@@ -85,7 +87,14 @@ export default function MealCard({
           <div>
             <h4 className="font-semibold text-foreground">{meal.name}</h4>
             <p className="text-xs text-muted">
-              {meal.prepTime} min prep · {format(totalCost)} per serving
+              {meal.prepTime} min prep · {format(totalCost)} per serving ·{" "}
+              <Link
+                href={recipePageHref(meal.name)}
+                onClick={(e) => e.stopPropagation()}
+                className="font-semibold text-primary underline-offset-2 hover:underline"
+              >
+                full recipe
+              </Link>
             </p>
           </div>
         </div>
