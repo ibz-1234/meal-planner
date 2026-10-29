@@ -29,7 +29,9 @@ export const PAID_PLANS: PlanId[] = ["premium"];
 // ── Stripe configuration ────────────────────────────────────────────────────
 // Fill these in (or set env vars) to take real payments.
 export const STRIPE_PAYMENT_LINKS: Partial<Record<PlanId, string>> = {
-  premium: process.env.NEXT_PUBLIC_STRIPE_LINK_PREMIUM || "",
+  premium:
+    process.env.NEXT_PUBLIC_STRIPE_LINK_PREMIUM ||
+    "https://buy.stripe.com/test_4gMdR90qT0vN5vB7UB3gk00",
 };
 
 // Stripe customer portal URL (Billing → Portal → "Link to your portal").
