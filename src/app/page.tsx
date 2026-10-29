@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PricingSection from "@/components/PricingSection";
+import RecipeDetailModal, { type CardRecipe } from "@/components/RecipeDetailModal";
 import {
   IconBasket,
   IconCheck,
@@ -160,6 +161,7 @@ export default function Home() {
   const { format } = useCurrency();
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState("Plant-Based");
+  const [selectedRecipe, setSelectedRecipe] = useState<CardRecipe | null>(null);
   const category =
     CATEGORIES.find((c) => c.label === activeCategory) ?? CATEGORIES[0];
 
@@ -276,13 +278,20 @@ export default function Home() {
               key={recipe.name}
               className="hard-sm overflow-hidden rounded-2xl bg-card"
             >
-              <Image
-                src={recipe.image}
-                alt={recipe.name}
-                width={800}
-                height={550}
-                className="h-44 w-full border-b-2 border-card-border object-cover"
-              />
+              <button
+                type="button"
+                onClick={() => setSelectedRecipe(recipe)}
+                className="block w-full cursor-pointer"
+                aria-label={`View ${recipe.name} — ingredients, prices and steps`}
+              >
+                <Image
+                  src={recipe.image}
+                  alt={recipe.name}
+                  width={800}
+                  height={550}
+                  className="h-44 w-full border-b-2 border-card-border object-cover transition-transform duration-200 hover:scale-[1.03]"
+                />
+              </button>
               <div className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
@@ -296,6 +305,13 @@ export default function Home() {
                 <p className="mt-2 text-sm text-muted">
                   Proper food, made in your kitchen.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRecipe(recipe)}
+                  className="mt-3 text-sm font-bold text-primary underline-offset-2 hover:underline"
+                >
+                  View recipe &amp; prices →
+                </button>
               </div>
             </article>
           ))}
@@ -498,6 +514,13 @@ export default function Home() {
       </section>
 
       <PricingSection />
+
+      {selectedRecipe && (
+        <RecipeDetailModal
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+        />
+      )}
     </div>
   );
 }
