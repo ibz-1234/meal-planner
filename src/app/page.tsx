@@ -195,7 +195,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-lg pb-14 pl-8">
+          <div className="relative mx-auto w-full max-w-lg">
             <div className="hard rounded-3xl bg-card p-3">
               <Image
                 src="/meal-katsu.webp"
@@ -212,19 +212,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="hard-sm absolute -bottom-10 -left-2 w-36 rounded-2xl bg-card p-2 sm:w-44">
-              <Image
-                src="/meal-salmon-traybake.webp"
-                alt="Salmon and asparagus traybake"
-                width={400}
-                height={260}
-                className="h-24 w-full rounded-xl border-2 border-card-border object-cover sm:h-28"
-              />
-              <p className="px-1 pt-1.5 text-xs font-bold leading-tight">
-                Salmon traybake — Wednesday
-              </p>
-            </div>
-            <div className="hard-sm absolute -right-2 top-6 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
+            <div className="hard-sm absolute -right-2 -top-4 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
               save {format(7.6)}/week
             </div>
           </div>
