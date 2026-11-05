@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { checkoutUrlFor } from "@/lib/billing";
 
 const PLANS = [
   {
@@ -25,7 +26,7 @@ const PLANS = [
     name: "Premium",
     priceGBP: 5.99,
     period: "/month",
-    ctaHref: "/checkout?plan=premium",
+    ctaHref: checkoutUrlFor("premium") ?? "/checkout?plan=premium",
     tagline: "For people who want the weekly shop handled.",
     features: [
       "Unlimited meal plans, updated weekly",

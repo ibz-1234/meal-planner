@@ -10,7 +10,7 @@ import {
   encodeSharedPlan,
   findMealByName,
 } from "@/lib/recipes";
-import { isPaid } from "@/lib/billing";
+import { checkoutUrlFor, isPaid } from "@/lib/billing";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import MealCard from "./MealCard";
 import ShoppingList from "./ShoppingList";
@@ -191,12 +191,12 @@ export default function PlanResults() {
             Meal swapping is a Premium feature — swap any meal with one tap,
             plus unlimited plans every month.
           </p>
-          <button
-            onClick={() => router.push("/checkout?plan=premium")}
+          <a
+            href={checkoutUrlFor("premium") ?? "/checkout?plan=premium"}
             className="btn btn-primary !px-4 !py-2 !text-sm"
           >
             Upgrade
-          </button>
+          </a>
         </div>
       )}
 

@@ -30,27 +30,46 @@ function CheckoutInner() {
     if (planId === "starter") router.replace("/signup");
   }, [planId, router]);
 
+  // Real Stripe Payment Link configured → go straight to Stripe-hosted checkout.
+  useEffect(() => {
+    if (liveUrl) window.location.replace(liveUrl);
+  }, [liveUrl]);
+
   if (planId === "starter") return null;
 
-  // Real Stripe Payment Link configured → hand off to Stripe-hosted checkout.
   if (liveUrl) {
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold">
+        <svg
+          className="mx-auto h-8 w-8 animate-spin text-primary"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+            fill="none"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
+        </svg>
+        <h1 className="mt-4 text-2xl font-bold">
           Taking you to secure checkout…
         </h1>
         <p className="mt-3 text-muted">
           You&apos;re subscribing to {plan.name} ({format(plan.priceGBP)}/month).
-          Payment is handled by Stripe.
         </p>
-        <a
-          href={liveUrl}
-          className="btn btn-primary mt-6 w-full"
-        >
-          Continue to Stripe →
-        </a>
         <p className="mt-4 text-xs text-muted">
-          Card details are collected by Stripe, never by Tiffinly.
+          Card details are collected by Stripe, never by Tiffinly.{" "}
+          <a href={liveUrl} className="underline">
+            Click here if nothing happens
+          </a>
         </p>
       </div>
     );
