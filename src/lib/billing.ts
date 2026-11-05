@@ -1,11 +1,11 @@
-// Subscription billing for Tiffinly.
+// Subscription billing for CookDeck.
 //
 // Charges run through Stripe Payment Links — Stripe hosts the checkout and
 // handles the card, the recurring subscription, and the customer portal, so
 // the static site needs no server. Paste your live Payment Link URLs into
 // STRIPE_PAYMENT_LINKS below (or set the NEXT_PUBLIC_* env vars at build time)
 // and set each link's confirmation page to:
-//   https://tiffinly.surge.sh/checkout/success?plan=<plan>&source=stripe
+//   https://cookdeck.surge.sh/checkout/success?plan=<plan>&source=stripe
 //
 // Until a link is configured, checkout runs in test mode: the card form is
 // simulated, nothing is charged, and the subscription is marked source "test".

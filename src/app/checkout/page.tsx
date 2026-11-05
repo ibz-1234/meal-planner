@@ -66,7 +66,7 @@ function CheckoutInner() {
           You&apos;re subscribing to {plan.name} ({format(plan.priceGBP)}/month).
         </p>
         <p className="mt-4 text-xs text-muted">
-          Card details are collected by Stripe, never by Tiffinly.{" "}
+          Card details are collected by Stripe, never by CookDeck.{" "}
           <a href={liveUrl} className="underline">
             Click here if nothing happens
           </a>
@@ -95,7 +95,7 @@ function CheckoutInner() {
       <div className="hard rounded-2xl bg-card p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold">Tiffinly {plan.name}</h1>
+            <h1 className="text-xl font-bold">CookDeck {plan.name}</h1>
             <p className="text-sm text-muted">
               {format(plan.priceGBP)}/month · cancel anytime
             </p>

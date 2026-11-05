@@ -28,9 +28,9 @@ export default function Header() {
     <header className="border-b border-card-border bg-card">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Tiffinly logo" width={38} height={38} className="h-9 w-9" />
+          <Image src="/logo.svg" alt="CookDeck logo" width={38} height={38} className="h-9 w-9" />
           <span className="font-display text-2xl font-extrabold tracking-tight text-foreground">
-            tiffin<span className="text-primary">ly</span>
+            cook<span className="text-primary">deck</span>
           </span>
         </Link>
         <nav className="flex items-center gap-3">

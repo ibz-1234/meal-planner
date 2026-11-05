@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrentUser } from "@/lib/auth";
 import PricingSection from "@/components/PricingSection";
 import RecipeDetailModal, { type CardRecipe } from "@/components/RecipeDetailModal";
 import {
@@ -160,10 +162,27 @@ const COMPARISON_ROWS: { feature: string; us: boolean; gpt: false | string; site
 export default function Home() {
   const { format } = useCurrency();
   const { t } = useLanguage();
+  const router = useRouter();
+  const user = useCurrentUser();
   const [activeCategory, setActiveCategory] = useState("Plant-Based");
   const [selectedRecipe, setSelectedRecipe] = useState<CardRecipe | null>(null);
   const category =
     CATEGORIES.find((c) => c.label === activeCategory) ?? CATEGORIES[0];
+
+  useEffect(() => {
+    if (user === null) router.replace("/login");
+  }, [user, router]);
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-24 text-center">
+        <p className="text-lg font-semibold">Welcome to CookDeck</p>
+        <p className="mt-2 text-sm text-muted">
+          Taking you to the login page…
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background">
@@ -447,7 +466,7 @@ export default function Home() {
             <thead>
               <tr className="border-b-2 border-card-border bg-secondary-light text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-extrabold text-primary">Tiffinly</th>
+                <th className="px-4 py-3 font-extrabold text-primary">CookDeck</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
                 <th className="px-4 py-3 font-semibold">Recipe websites</th>
               </tr>

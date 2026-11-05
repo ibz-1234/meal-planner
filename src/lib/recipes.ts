@@ -139,7 +139,7 @@ export function matchMealsByPantry(have: string[]): {
 
 // ── Shareable plans ─────────────────────────────────────────────────────────
 
-import type { WeeklyPlan, DayPlan, UserPreferences } from "./types";
+import type { WeeklyPlan, UserPreferences } from "./types";
 
 export interface SharedPlanPayload {
   preferences: UserPreferences;

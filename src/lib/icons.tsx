@@ -1,5 +1,5 @@
 // Hand-drawn-style brand icons. Ink outlines, rounded caps, slightly
-// imperfect geometry — drawn for Tiffinly, not an emoji set.
+// imperfect geometry — drawn for CookDeck, not an emoji set.
 
 type P = { className?: string };
 
