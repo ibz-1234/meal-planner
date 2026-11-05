@@ -18,7 +18,7 @@ export default function LoginPage() {
       <div className="relative overflow-hidden rounded-3xl">
         <Image
           src="/meal-katsu.webp"
-          alt="Chicken Katsu Curry — a CookDeck weeknight meal"
+          alt="Chicken Katsu Curry — a Tiffinly weeknight meal"
           width={800}
           height={800}
           priority

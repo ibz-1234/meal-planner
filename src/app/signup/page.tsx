@@ -76,7 +76,7 @@ export default function SignupPage() {
       <div className="relative order-1 overflow-hidden rounded-3xl lg:order-2">
         <Image
           src="/meal-salmon-traybake.webp"
-          alt="Salmon traybake — a CookDeck midweek meal"
+          alt="Salmon traybake — a Tiffinly midweek meal"
           width={800}
           height={800}
           priority

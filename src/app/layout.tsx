@@ -17,7 +17,7 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "CookDeck – Your whole week of meals, planned in 30 seconds",
+  title: "Tiffinly – Your whole week of meals, planned in 30 seconds",
   description:
     "Weekly meal plans built around your calories, budget, allergies, cooking ability and goals. Includes recipes, shopping lists, nutrition and local supermarket price comparison.",
   keywords: [

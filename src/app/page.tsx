@@ -176,7 +176,7 @@ export default function Home() {
   if (!user) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <p className="text-lg font-semibold">Welcome to CookDeck</p>
+        <p className="text-lg font-semibold">Welcome to Tiffinly</p>
         <p className="mt-2 text-sm text-muted">
           Taking you to the login page…
         </p>
@@ -186,73 +186,73 @@ export default function Home() {
 
   return (
     <div className="bg-background">
-      <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 lg:pt-14">
-        <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div>
-            <p className="kicker text-primary">
-              {t("hero.kicker")}
-            </p>
-            <h1 className="mt-4 max-w-2xl font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-              {t("hero.title").split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="mark">{t("hero.title").split(" ").slice(-1)}</span>
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg font-medium text-muted sm:text-xl">
-              {t("hero.subtitle")}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/preview" className="btn btn-primary">
-                {t("hero.cta")}
-              </Link>
-              <Link href="/sample" className="btn btn-ghost">
-                {t("hero.sample")}
-              </Link>
-            </div>
-            <p className="mt-5 text-sm font-semibold text-muted">
-              {t("hero.freePreview")} · {t("hero.pricesFrom")}{" "}
-              {format(5.99)}
-              {t("hero.perMonth")}
-            </p>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:px-6 lg:pt-20">
+        <p className="kicker text-primary">
+          {t("hero.kicker")}
+        </p>
+        <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+          {t("hero.title").split(" ").slice(0, -1).join(" ")}{" "}
+          <span className="mark">{t("hero.title").split(" ").slice(-1)}</span>
+        </h1>
+        <p className="mt-6 max-w-xl text-lg text-muted">
+          {t("hero.subtitle")}
+        </p>
+        <div className="mt-9 flex flex-wrap gap-4">
+          <Link href="/preview" className="btn btn-primary">
+            {t("hero.cta")}
+          </Link>
+          <Link href="/sample" className="btn btn-ghost">
+            {t("hero.sample")}
+          </Link>
+        </div>
+        <p className="mt-6 text-sm text-muted">
+          {t("hero.freePreview")} · {t("hero.pricesFrom")}{" "}
+          {format(5.99)}
+          {t("hero.perMonth")}
+        </p>
+      </section>
 
-          <div className="relative mx-auto w-full max-w-lg">
-            <div className="hard rounded-3xl bg-card p-3">
-              <Image
-                src="/meal-katsu.webp"
-                alt="Chicken Katsu Curry"
-                width={800}
-                height={550}
-                priority
-                className="h-72 w-full rounded-2xl border-2 border-card-border object-cover sm:h-80"
-              />
-              <div className="flex items-center justify-between px-2 pb-1 pt-3">
-                <p className="font-display text-lg font-extrabold">Chicken Katsu Curry</p>
-                <span className="rounded-full bg-primary px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
-                  tonight
-                </span>
-              </div>
-            </div>
-            <div className="hard-sm absolute -right-2 -top-4 rounded-full bg-accent px-4 py-2 font-display text-sm font-extrabold text-white">
-              save {format(7.6)}/week
-            </div>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 pb-6 pt-12 sm:px-6">
+        <div className="grid gap-4 sm:grid-cols-[1.5fr_1fr]">
+          <figure className="overflow-hidden rounded-2xl">
+            <Image
+              src="/meal-katsu.webp"
+              alt="Chicken Katsu Curry"
+              width={800}
+              height={550}
+              priority
+              className="h-80 w-full object-cover sm:h-[26rem]"
+            />
+          </figure>
+          <figure className="overflow-hidden rounded-2xl">
+            <Image
+              src="/meal-salmon-traybake.webp"
+              alt="Salmon and asparagus traybake"
+              width={800}
+              height={550}
+              priority
+              className="h-80 w-full object-cover sm:h-[26rem]"
+            />
+          </figure>
+        </div>
+        <div className="mt-3 flex items-baseline justify-between text-sm text-muted">
+          <p>Chicken Katsu Curry · Salmon &amp; Asparagus Traybake — from a real generated week.</p>
+          <p className="hidden sm:block">Estimated {format(7.6)} saved/week</p>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="kicker text-primary">What&apos;s for dinner</p>
-            <h2 className="mt-3 max-w-xl font-display text-4xl font-extrabold tracking-tight">
-              Pick a craving. We plan the week.
-            </h2>
-          </div>
-          <span className="rounded-full border-2 border-card-border bg-secondary px-4 py-1.5 text-xs font-extrabold uppercase tracking-wide text-foreground">
+      <section className="mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-card-border pb-6">
+          <h2 className="max-w-xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Pick a craving. We plan the week.
+          </h2>
+          <span className="text-sm font-medium text-muted">
             this week · {category.label}
           </span>
         </div>
 
-        <div className="mt-6 overflow-x-auto pb-3">
-          <div className="hard-sm flex min-w-max items-center gap-2 rounded-full bg-card p-2">
+        <div className="mt-7 overflow-x-auto pb-2">
+          <div className="flex min-w-max items-center gap-6 border-b border-card-border">
             {CATEGORIES.map((item) => {
               const isActive = item.label === activeCategory;
               return (
@@ -260,32 +260,23 @@ export default function Home() {
                   key={item.label}
                   type="button"
                   onClick={() => setActiveCategory(item.label)}
-                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition ${
+                  className={`-mb-px flex items-center gap-1.5 border-b-2 pb-3 text-sm transition ${
                     isActive
-                      ? "bg-primary text-white"
-                      : "bg-transparent text-foreground hover:bg-secondary-light"
+                      ? "border-primary font-semibold text-foreground"
+                      : "border-transparent text-muted hover:text-foreground"
                   }`}
                 >
-                  <span>{item.label}</span>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                      isActive ? "bg-white/15 text-white" : "bg-black/5 text-muted"
-                    }`}
-                  >
-                    {item.count}
-                  </span>
+                  {item.label}
+                  <span className="text-xs text-muted">({item.count})</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-9 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {category.recipes.map((recipe) => (
-            <article
-              key={recipe.name}
-              className="hard-sm overflow-hidden rounded-2xl bg-card"
-            >
+            <article key={recipe.name}>
               <button
                 type="button"
                 onClick={() => setSelectedRecipe(recipe)}
@@ -297,26 +288,20 @@ export default function Home() {
                   alt={recipe.name}
                   width={800}
                   height={550}
-                  className="h-44 w-full border-b-2 border-card-border object-cover transition-transform duration-200 hover:scale-[1.03]"
+                  className="h-48 w-full rounded-xl object-cover transition-transform duration-300 hover:scale-[1.02]"
                 />
               </button>
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
-                    {recipe.time}
-                  </div>
-                  <div className="rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
-                    {recipe.tag}
-                  </div>
+              <div className="mt-4">
+                <div className="flex items-center gap-3 text-xs text-muted">
+                  <span>{recipe.time}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{recipe.tag}</span>
                 </div>
-                <h3 className="mt-3 text-lg font-bold leading-tight">{recipe.name}</h3>
-                <p className="mt-2 text-sm text-muted">
-                  Proper food, made in your kitchen.
-                </p>
+                <h3 className="mt-2 font-display text-lg font-bold leading-snug">{recipe.name}</h3>
                 <button
                   type="button"
                   onClick={() => setSelectedRecipe(recipe)}
-                  className="mt-3 text-sm font-bold text-primary underline-offset-2 hover:underline"
+                  className="mt-2 text-sm font-semibold text-primary underline-offset-2 hover:underline"
                 >
                   View recipe &amp; prices →
                 </button>
@@ -326,32 +311,49 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y-2 border-card-border bg-secondary py-5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <p className="kicker text-center text-foreground/60">
-            Prices compared across the shops you actually use
-          </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-display text-lg font-extrabold text-foreground">
-            {SUPERMARKETS.map((shop) => (
-              <span key={shop.name} className="flex items-center gap-2">
-                <span
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold text-white"
-                  style={{ backgroundColor: shop.color }}
-                >
-                  {shop.name.charAt(0)}
-                </span>
-                {shop.name}
-              </span>
-            ))}
-          </div>
+      <section className="border-y border-card-border py-5">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-7 gap-y-2 px-4 text-sm text-muted sm:px-6">
+          <span className="font-semibold text-foreground">Prices compared at</span>
+          {SUPERMARKETS.map((shop) => (
+            <span key={shop.name} className="flex items-center gap-2">
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: shop.color }}
+              />
+              {shop.name}
+            </span>
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
-          <div className="hard rounded-3xl bg-card p-6">
-            <p className="font-display text-lg font-extrabold">Weekly basket · 21 meals, 2 people</p>
-            <div className="mt-4 space-y-3">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="grid items-start gap-12 lg:grid-cols-2">
+          <div>
+            <p className="kicker text-primary">
+              How it works
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">Three steps, thirty seconds.</h2>
+            <ol className="mt-8 divide-y divide-card-border border-t border-card-border">
+              {[
+                { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
+                { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
+                { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
+              ].map((item, idx) => (
+                <li key={item.step} className="flex gap-5 py-5">
+                  <span className="font-display text-sm font-bold text-muted">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <p className="font-semibold">{item.step}</p>
+                    <p className="mt-0.5 text-sm text-muted">{item.note}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="border-t border-card-border pt-8 lg:border-t-0 lg:pt-0">
+            <p className="font-semibold">Weekly basket · 21 meals, 2 people</p>
+            <div className="mt-5 divide-y divide-card-border border-y border-card-border">
               {[
                 { shop: "Tesco", priceGBP: 47.2, cheapest: false },
                 { shop: "Sainsbury's", priceGBP: 49.8, cheapest: false },
@@ -360,98 +362,61 @@ export default function Home() {
               ].map((row) => (
                 <div
                   key={row.shop}
-                  className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
-                    row.cheapest
-                      ? "border-2 border-card-border bg-accent-light"
-                      : "border-card-border"
-                  }`}
+                  className="flex items-center justify-between py-4"
                 >
-                  <span className="font-bold">{row.shop}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="font-display text-lg font-extrabold">{format(row.priceGBP)}</span>
+                  <span className={row.cheapest ? "font-semibold" : "font-medium"}>{row.shop}</span>
+                  <span className="flex items-center gap-3">
                     {row.cheapest && (
-                      <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-extrabold uppercase text-white">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-accent">
                         cheapest
                       </span>
                     )}
+                    <span className="font-display text-lg font-bold">{format(row.priceGBP)}</span>
                   </span>
                 </div>
               ))}
             </div>
-            <p className="mt-5 rounded-xl bg-secondary px-4 py-3 text-center font-display text-lg font-extrabold text-foreground">
-              You save {format(7.6)} this week
+            <p className="mt-5 text-sm text-muted">
+              You save about <span className="font-semibold text-foreground">{format(7.6)}</span> this week
+              by cooking the Aldi basket.
             </p>
-          </div>
-          <div>
-            <p className="kicker text-primary">
-              How it works
-            </p>
-            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">Three steps, thirty seconds.</h2>
-            <ol className="mt-6 space-y-5">
-              {[
-                { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
-                { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
-                { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
-              ].map((item, idx) => (
-                <li key={item.step} className="flex gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-card-border bg-secondary font-display text-lg font-extrabold text-foreground">
-                    {idx + 1}
-                  </span>
-                  <div>
-                    <p className="font-display text-lg font-extrabold">{item.step}</p>
-                    <p className="mt-0.5 text-sm font-medium text-muted">{item.note}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+        <div className="grid gap-10 border-t border-card-border pt-12 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature) => (
-            <div
-              key={feature.title}
-              className="hard-sm rounded-2xl bg-card p-5"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-card-border bg-secondary text-foreground">
-                <feature.Icon />
+            <div key={feature.title}>
+              <span className="flex h-10 w-10 items-center justify-center text-primary">
+                <feature.Icon className="h-7 w-7" />
               </span>
-              <h3 className="mt-3 font-display text-lg font-extrabold">{feature.title}</h3>
-              <p className="mt-1 text-sm font-medium text-muted">{feature.desc}</p>
+              <h3 className="mt-4 font-display text-lg font-bold">{feature.title}</h3>
+              <p className="mt-1.5 text-sm text-muted">{feature.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-card py-14">
+      <section className="border-y border-card-border bg-card py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center">
-            <p className="kicker text-primary">
-              From our early users
-            </p>
-            <div className="mt-4 flex items-center justify-center gap-2">
-              <span className="flex gap-0.5 text-secondary">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <IconStar key={i} className="h-6 w-6" />
-                ))}
-              </span>
-              <h2 className="font-display text-4xl font-extrabold tracking-tight">
-                4.9/5 from beta testers
-              </h2>
-            </div>
+          <div className="flex items-center gap-3">
+            <span className="flex gap-0.5 text-secondary">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <IconStar key={i} className="h-4 w-4" />
+              ))}
+            </span>
+            <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              4.9/5 from beta testers
+            </h2>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-10 grid gap-10 border-t border-card-border pt-10 sm:grid-cols-3">
             {TESTIMONIALS.map((item) => (
-              <figure
-                key={item.name}
-                className="hard-sm rounded-2xl bg-card p-5"
-              >
-                <blockquote className="text-sm font-medium">“{item.quote}”</blockquote>
-                <figcaption className="mt-3">
-                  <span className="font-bold">{item.name}</span>
-                  <span className="ml-2 text-sm text-muted">{item.detail}</span>
+              <figure key={item.name}>
+                <blockquote className="text-base leading-relaxed">“{item.quote}”</blockquote>
+                <figcaption className="mt-4 text-sm">
+                  <span className="font-semibold">{item.name}</span>
+                  <span className="text-muted"> — {item.detail}</span>
                 </figcaption>
               </figure>
             ))}
@@ -459,21 +424,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-        <h2 className="text-center font-display text-4xl font-extrabold tracking-tight">Why not just use ChatGPT?</h2>
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Why not just use ChatGPT?</h2>
         <div className="mt-8 overflow-x-auto">
-          <table className="hard w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl bg-card text-sm">
+          <table className="w-full min-w-[560px] border-separate border-spacing-0 rounded-xl border border-card-border bg-card text-sm">
             <thead>
-              <tr className="border-b-2 border-card-border bg-secondary-light text-left">
+              <tr className="bg-secondary-light text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-extrabold text-primary">CookDeck</th>
+                <th className="px-4 py-3 font-bold text-primary">Tiffinly</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
                 <th className="px-4 py-3 font-semibold">Recipe websites</th>
               </tr>
             </thead>
             <tbody>
               {COMPARISON_ROWS.map((row) => (
-                <tr key={row.feature} className="border-t border-card-border">
+                <tr key={row.feature}>
                   <td className="border-t border-card-border px-4 py-3">{row.feature}</td>
                   <td className="border-t border-card-border px-4 py-3 font-bold text-primary">
                     <IconCheck className="h-5 w-5" />
@@ -491,30 +456,27 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-card py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="border-t border-card-border py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="kicker text-primary">
-              Why people keep using it
-            </p>
-            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight">It feels like a menu, not a spreadsheet.</h2>
-            <p className="mt-3 text-muted">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">It feels like a menu, not a spreadsheet.</h2>
+            <p className="mt-4 max-w-md text-muted">
               The layout stays readable on small phones, stretches naturally on
               tablets and desktops, and keeps the important bits right up top.
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-8 border-t border-card-border pt-8 sm:grid-cols-3 lg:border-t-0 lg:pt-0">
             {[
               { Icon: IconClipboard, title: "Save time", desc: "Meals picked for you" },
               { Icon: IconBasket, title: "Save money", desc: "Best local shop first" },
               { Icon: IconLeaf, title: "Stay on track", desc: "Progress is saved" },
             ].map((item) => (
-              <div key={item.title} className="hard-sm rounded-2xl bg-card p-5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-card-border bg-primary text-white">
-                  <item.Icon className="h-5 w-5" />
+              <div key={item.title}>
+                <span className="flex h-9 w-9 items-center justify-center text-primary">
+                  <item.Icon className="h-6 w-6" />
                 </span>
-                <h3 className="mt-3 font-display font-extrabold">{item.title}</h3>
-                <p className="mt-1 text-sm font-medium text-muted">{item.desc}</p>
+                <h3 className="mt-3 font-semibold">{item.title}</h3>
+                <p className="mt-1 text-sm text-muted">{item.desc}</p>
               </div>
             ))}
           </div>

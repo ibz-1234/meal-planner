@@ -24,10 +24,10 @@ function SuccessInner() {
   return (
     <div className="mx-auto max-w-md px-4 py-20 text-center">
       <div className="hard-sm mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary">
-        <Image src="/logo.svg" alt="CookDeck" width={40} height={40} />
+        <Image src="/logo.svg" alt="Tiffinly" width={40} height={40} />
       </div>
       <h1 className="mt-6 text-2xl font-bold">
-        Welcome to CookDeck {PLANS[plan].name}
+        Welcome to Tiffinly {PLANS[plan].name}
       </h1>
       <p className="mt-3 text-muted">
         Your subscription is active — unlimited meal plans, smart shopping
