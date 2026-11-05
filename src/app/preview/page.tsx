@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import PreferencesForm from "@/components/PreferencesForm";
-import { SAMPLE_IMAGES } from "@/lib/meal-images";
+import { IconUsers, IconNote, IconTag } from "@/lib/icons";
 
 export default function PreviewPage() {
   return (
@@ -22,22 +21,18 @@ export default function PreviewPage() {
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {[
-              "No signup needed",
-              "Progress saved locally",
-              "Cheapest shop highlighted",
-            ].map((item, idx) => (
+              { label: "Free account", Icon: IconUsers },
+              { label: "Progress saved locally", Icon: IconNote },
+              { label: "Cheapest shop highlighted", Icon: IconTag },
+            ].map(({ label, Icon }) => (
               <div
-                key={item}
+                key={label}
                 className="overflow-hidden rounded-2xl border border-card-border bg-background"
               >
-                <Image
-                  src={SAMPLE_IMAGES[idx]}
-                  alt={item}
-                  width={600}
-                  height={400}
-                  className="h-28 w-full object-cover"
-                />
-                <div className="px-4 py-3 text-sm font-medium">{item}</div>
+                <div className="flex h-28 items-center justify-center bg-secondary-light">
+                  <Icon className="h-10 w-10 text-primary" />
+                </div>
+                <div className="px-4 py-3 text-sm font-medium">{label}</div>
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { COUNTRIES } from "@/lib/currency";
+import { IconGlobe } from "@/lib/icons";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function CurrencySelector() {
@@ -34,7 +35,7 @@ export default function CurrencySelector() {
         title={`Currency: ${country.currency}${ratesLive ? " (live rates)" : " (offline rates)"}`}
         className="flex items-center gap-1.5 rounded-full border border-card-border bg-card px-3 py-1.5 text-sm font-medium hover:border-primary/40"
       >
-        <span>{country.flag}</span>
+        <IconGlobe className="h-4 w-4 text-muted" />
         <span>{country.currency}</span>
         <span
           className={`h-1.5 w-1.5 rounded-full ${ratesLive ? "bg-green-500" : "bg-amber-400"}`}
@@ -66,7 +67,9 @@ export default function CurrencySelector() {
                   c.code === country.code ? "bg-primary-light/30 font-semibold" : ""
                 }`}
               >
-                <span>{c.flag}</span>
+                <span className="w-9 shrink-0 rounded-md bg-black/5 px-1.5 py-0.5 text-center text-xs font-bold text-muted">
+                  {c.currency}
+                </span>
                 <span className="flex-1">{c.name}</span>
                 <span className="text-xs text-muted">{c.currency}</span>
               </button>

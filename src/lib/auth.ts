@@ -64,3 +64,29 @@ export function currentUser(): User | null {
     return null;
   }
 }
+
+// Hydration-safe reactive current-user hook.
+import { useSyncExternalStore } from "react";
+
+function subscribeSession(onChange: () => void): () => void {
+  window.addEventListener("mmp-auth-changed", onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener("mmp-auth-changed", onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+export function useCurrentUser(): User | null {
+  const raw = useSyncExternalStore(
+    subscribeSession,
+    () => localStorage.getItem(SESSION_KEY) ?? "",
+    () => ""
+  );
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as User;
+  } catch {
+    return null;
+  }
+}

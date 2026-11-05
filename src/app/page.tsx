@@ -2,10 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrentUser } from "@/lib/auth";
 import PricingSection from "@/components/PricingSection";
+import RecipeDetailModal, { type CardRecipe } from "@/components/RecipeDetailModal";
+import {
+  IconBasket,
+  IconCheck,
+  IconClipboard,
+  IconCross,
+  IconLeaf,
+  IconShop,
+  IconStar,
+  IconTag,
+} from "@/lib/icons";
 
 type Recipe = { name: string; time: string; tag: string; image: string };
 
@@ -14,110 +27,110 @@ const CATEGORIES: { label: string; count: number; recipes: Recipe[] }[] = [
     label: "5-Minute Meals",
     count: 8,
     recipes: [
-      { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute", image: "/meal-quick.jpg" },
-      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-parfait.jpg" },
-      { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute", image: "/meal-plant-based.jpg" },
-      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-greek-bowl.jpg" },
+      { name: "Pesto Spaghetti with Burst Tomatoes", time: "5 min", tag: "5-Minute", image: "/meal-pesto-spaghetti.webp" },
+      { name: "Greek Yogurt Berry Bowl", time: "5 min", tag: "5-Minute", image: "/meal-parfait.webp" },
+      { name: "Sesame Tofu Rice Bowl", time: "5 min", tag: "5-Minute", image: "/meal-tofu-rice.webp" },
+      { name: "Chicken & Rice Salad Plate", time: "5 min", tag: "5-Minute", image: "/meal-chicken-rice.webp" },
     ],
   },
   {
     label: "Prepped in 5",
     count: 3,
     recipes: [
-      { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-prepped.jpg" },
-      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-parfait.jpg" },
-      { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-glutenfree.jpg" },
-      { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-plant-based.jpg" },
+      { name: "Weekly Chicken Prep Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-prepped.webp" },
+      { name: "Granola Parfait Jars", time: "5 min prep", tag: "Prepped", image: "/meal-parfait.webp" },
+      { name: "Quinoa Lunch Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-buddha-bowl.webp" },
+      { name: "Tofu Stir-Fry Boxes", time: "5 min prep", tag: "Prepped", image: "/meal-plant-based.webp" },
     ],
   },
   {
     label: "Chicken",
     count: 14,
     recipes: [
-      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-katsu.jpg" },
-      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-greek-bowl.jpg" },
-      { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.jpg" },
-      { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-glutenfree.jpg" },
+      { name: "Chicken Katsu Curry", time: "35 min", tag: "Chicken", image: "/meal-katsu.webp" },
+      { name: "Greek Chicken Bowls", time: "25 min", tag: "Chicken", image: "/meal-greek-bowl.webp" },
+      { name: "Chicken Meal-Prep Boxes", time: "40 min", tag: "Chicken", image: "/meal-prepped.webp" },
+      { name: "Lime Chicken Quinoa Bowl", time: "25 min", tag: "Chicken", image: "/meal-lime-chicken.webp" },
     ],
   },
   {
     label: "Beef & Pork",
     count: 16,
     recipes: [
-      { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.jpg" },
-      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-chilli.jpg" },
-      { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-quick.jpg" },
-      { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-prepped.jpg" },
+      { name: "Steak with Chimichurri & Potatoes", time: "35 min", tag: "Beef", image: "/meal-beef.webp" },
+      { name: "Chilli Con Carne", time: "40 min", tag: "Beef", image: "/meal-chilli.webp" },
+      { name: "Pesto Pasta with Crispy Bacon", time: "20 min", tag: "Pork", image: "/meal-pesto-spaghetti.webp" },
+      { name: "Pork & Veg Prep Boxes", time: "40 min", tag: "Pork", image: "/meal-pork-prep.webp" },
     ],
   },
   {
     label: "Fish",
     count: 15,
     recipes: [
-      { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-fish.jpg" },
-      { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-tuna-salad.jpg" },
-      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-salmon-salad.jpg" },
+      { name: "Lemon Salmon with Crushed Potatoes", time: "30 min", tag: "Fish", image: "/meal-salmon-potatoes.webp" },
+      { name: "Salmon & Asparagus Traybake", time: "35 min", tag: "Fish", image: "/meal-salmon-traybake.webp" },
+      { name: "Tuna Salad Bowl with Herbs", time: "25 min", tag: "Fish", image: "/meal-tuna-salad.webp" },
+      { name: "Salmon Quinoa Salad", time: "20 min", tag: "Fish", image: "/meal-salmon-salad.webp" },
     ],
   },
   {
     label: "Vegetarian",
     count: 34,
     recipes: [
-      { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.jpg" },
-      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-mushroom-pasta.jpg" },
-      { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.jpg" },
-      { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-plant-based.jpg" },
+      { name: "Cauliflower Curry with Naan", time: "30 min", tag: "Vegetarian", image: "/meal-vegetarian.webp" },
+      { name: "Creamy Mushroom Pasta", time: "20 min", tag: "Vegetarian", image: "/meal-mushroom-pasta.webp" },
+      { name: "Granola & Honey Breakfast Bowl", time: "5 min", tag: "Vegetarian", image: "/meal-breakfast.webp" },
+      { name: "Sesame Veg & Rice Bowl", time: "25 min", tag: "Vegetarian", image: "/meal-tofu-rice.webp" },
     ],
   },
   {
     label: "Plant-Based",
     count: 15,
     recipes: [
-      { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.jpg" },
-      { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.jpg" },
-      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dahl.jpg" },
-      { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-quick.jpg" },
+      { name: "Crispy Tofu & Sesame Greens", time: "30 min", tag: "Plant-Based", image: "/meal-plant-based.webp" },
+      { name: "Cauliflower Curry with Rice", time: "30 min", tag: "Plant-Based", image: "/meal-vegetarian.webp" },
+      { name: "Lentil Dahl with Rice", time: "35 min", tag: "Plant-Based", image: "/meal-dahl.webp" },
+      { name: "Tomato Pesto Pasta (Vegan)", time: "15 min", tag: "Plant-Based", image: "/meal-pasta-primavera.webp" },
     ],
   },
   {
     label: "Gluten-Free",
     count: 13,
     recipes: [
-      { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free", image: "/meal-glutenfree.jpg" },
-      { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free", image: "/meal-beef.jpg" },
-      { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free", image: "/meal-fish.jpg" },
-      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-greek-bowl.jpg" },
+      { name: "Chicken Quinoa & Avocado Bowl", time: "25 min", tag: "Gluten-Free", image: "/meal-glutenfree.webp" },
+      { name: "Steak with Potatoes & Beans", time: "35 min", tag: "Gluten-Free", image: "/meal-steak-beans.webp" },
+      { name: "Salmon with Asparagus", time: "30 min", tag: "Gluten-Free", image: "/meal-salmon-traybake.webp" },
+      { name: "Chicken Rice & Salad Plate", time: "30 min", tag: "Gluten-Free", image: "/meal-chicken-rice.webp" },
     ],
   },
   {
     label: "Dairy-Free",
     count: 22,
     recipes: [
-      { name: "Coconut Chicken Curry", time: "35 min", tag: "Dairy-Free", image: "/meal-dairyfree.jpg" },
-      { name: "Sticky Sesame Tofu Bowl", time: "30 min", tag: "Dairy-Free", image: "/meal-plant-based.jpg" },
-      { name: "Salmon with Crushed Potatoes", time: "30 min", tag: "Dairy-Free", image: "/meal-fish.jpg" },
-      { name: "Quinoa Avocado Bowl", time: "25 min", tag: "Dairy-Free", image: "/meal-glutenfree.jpg" },
+      { name: "Coconut Chicken Curry", time: "35 min", tag: "Dairy-Free", image: "/meal-coconut-curry.webp" },
+      { name: "Sticky Sesame Tofu Bowl", time: "30 min", tag: "Dairy-Free", image: "/meal-tofu-rice.webp" },
+      { name: "Salmon with Crushed Potatoes", time: "30 min", tag: "Dairy-Free", image: "/meal-salmon-potatoes.webp" },
+      { name: "Quinoa Avocado Bowl", time: "25 min", tag: "Dairy-Free", image: "/meal-buddha-bowl.webp" },
     ],
   },
 ];
 
 const FEATURES = [
-  { icon: "📋", title: "7-day meal structure", desc: "Breakfast, lunch, dinner, and snacks — planned in one place." },
-  { icon: "🏷️", title: "Dietary filters", desc: "Choose vegetarian, gluten-free, dairy-free, halal, and more." },
-  { icon: "🛒", title: "Shopping lists", desc: "Items grouped by aisle so your shop is quicker." },
-  { icon: "🏪", title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
+  { Icon: IconClipboard, title: "7-day meal structure", desc: "Breakfast, lunch, dinner, and snacks — planned in one place." },
+  { Icon: IconTag, title: "Dietary filters", desc: "Choose vegetarian, gluten-free, dairy-free, halal, and more." },
+  { Icon: IconBasket, title: "Shopping lists", desc: "Items grouped by aisle so your shop is quicker." },
+  { Icon: IconShop, title: "Local shops", desc: "Country-specific supermarkets, cheapest store highlighted, closest branches linked." },
 ];
 
-const SUPERMARKETS = [
-  "Tesco",
-  "Aldi",
-  "Lidl",
-  "Asda",
-  "Morrisons",
-  "Sainsbury's",
-  "Iceland",
-  "Co-op",
+const SUPERMARKETS: { name: string; color: string }[] = [
+  { name: "Tesco", color: "#00539F" },
+  { name: "Aldi", color: "#F28C28" },
+  { name: "Lidl", color: "#E8A100" },
+  { name: "Asda", color: "#78BE20" },
+  { name: "Morrisons", color: "#F5A800" },
+  { name: "Sainsbury's", color: "#F06C00" },
+  { name: "Iceland", color: "#DA291C" },
+  { name: "Co-op", color: "#00B4AA" },
 ];
 
 const TESTIMONIALS = [
@@ -138,26 +151,108 @@ const TESTIMONIALS = [
   },
 ];
 
-const COMPARISON_ROWS: { feature: string; us: boolean; gpt: string; sites: string }[] = [
-  { feature: "Weekly plans in one tap", us: true, gpt: "✗", sites: "✗" },
-  { feature: "Shopping lists by aisle", us: true, gpt: "✗", sites: "✗" },
-  { feature: "UK supermarket prices", us: true, gpt: "✗", sites: "✗" },
-  { feature: "Budget optimisation", us: true, gpt: "✗", sites: "✗" },
+const COMPARISON_ROWS: { feature: string; us: boolean; gpt: false | string; sites: false | string }[] = [
+  { feature: "Weekly plans in one tap", us: true, gpt: false, sites: false },
+  { feature: "Shopping lists by aisle", us: true, gpt: false, sites: false },
+  { feature: "UK supermarket prices", us: true, gpt: false, sites: false },
+  { feature: "Budget optimisation", us: true, gpt: false, sites: false },
   { feature: "Dietary preferences", us: true, gpt: "Limited", sites: "Limited" },
 ];
 
 export default function Home() {
   const { format } = useCurrency();
   const { t } = useLanguage();
+  const router = useRouter();
+  const user = useCurrentUser();
   const [activeCategory, setActiveCategory] = useState("Plant-Based");
+  const [selectedRecipe, setSelectedRecipe] = useState<CardRecipe | null>(null);
   const category =
     CATEGORIES.find((c) => c.label === activeCategory) ?? CATEGORIES[0];
 
+  useEffect(() => {
+    if (user === null) router.replace("/login");
+  }, [user, router]);
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-24 text-center">
+        <p className="text-lg font-semibold">Welcome to Tiffinly</p>
+        <p className="mt-2 text-sm text-muted">
+          Taking you to the login page…
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background">
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
-        <div className="overflow-x-auto pb-3">
-          <div className="flex min-w-max items-center gap-2 rounded-full border border-card-border bg-card p-2 shadow-sm">
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:px-6 lg:pt-20">
+        <p className="kicker text-primary">
+          {t("hero.kicker")}
+        </p>
+        <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+          {t("hero.title").split(" ").slice(0, -1).join(" ")}{" "}
+          <span className="mark">{t("hero.title").split(" ").slice(-1)}</span>
+        </h1>
+        <p className="mt-6 max-w-xl text-lg text-muted">
+          {t("hero.subtitle")}
+        </p>
+        <div className="mt-9 flex flex-wrap gap-4">
+          <Link href="/preview" className="btn btn-primary">
+            {t("hero.cta")}
+          </Link>
+          <Link href="/sample" className="btn btn-ghost">
+            {t("hero.sample")}
+          </Link>
+        </div>
+        <p className="mt-6 text-sm text-muted">
+          {t("hero.freePreview")} · {t("hero.pricesFrom")}{" "}
+          {format(5.99)}
+          {t("hero.perMonth")}
+        </p>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-6 pt-12 sm:px-6">
+        <div className="grid gap-4 sm:grid-cols-[1.5fr_1fr]">
+          <figure className="overflow-hidden rounded-2xl">
+            <Image
+              src="/meal-katsu.webp"
+              alt="Chicken Katsu Curry"
+              width={800}
+              height={550}
+              priority
+              className="h-80 w-full object-cover sm:h-[26rem]"
+            />
+          </figure>
+          <figure className="overflow-hidden rounded-2xl">
+            <Image
+              src="/meal-salmon-traybake.webp"
+              alt="Salmon and asparagus traybake"
+              width={800}
+              height={550}
+              priority
+              className="h-80 w-full object-cover sm:h-[26rem]"
+            />
+          </figure>
+        </div>
+        <div className="mt-3 flex items-baseline justify-between text-sm text-muted">
+          <p>Chicken Katsu Curry · Salmon &amp; Asparagus Traybake — from a real generated week.</p>
+          <p className="hidden sm:block">Estimated {format(7.6)} saved/week</p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-card-border pb-6">
+          <h2 className="max-w-xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Pick a craving. We plan the week.
+          </h2>
+          <span className="text-sm font-medium text-muted">
+            this week · {category.label}
+          </span>
+        </div>
+
+        <div className="mt-7 overflow-x-auto pb-2">
+          <div className="flex min-w-max items-center gap-6 border-b border-card-border">
             {CATEGORIES.map((item) => {
               const isActive = item.label === activeCategory;
               return (
@@ -165,152 +260,100 @@ export default function Home() {
                   key={item.label}
                   type="button"
                   onClick={() => setActiveCategory(item.label)}
-                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+                  className={`-mb-px flex items-center gap-1.5 border-b-2 pb-3 text-sm transition ${
                     isActive
-                      ? "bg-[#e11d2e] text-white"
-                      : "bg-transparent text-foreground hover:bg-primary-light/50"
+                      ? "border-primary font-semibold text-foreground"
+                      : "border-transparent text-muted hover:text-foreground"
                   }`}
                 >
-                  <span>{item.label}</span>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                      isActive ? "bg-white/15 text-white" : "bg-black/5 text-muted"
-                    }`}
-                  >
-                    {item.count}
-                  </span>
+                  {item.label}
+                  <span className="text-xs text-muted">({item.count})</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-              {t("hero.kicker")}
-            </p>
-            <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              <span className="hand-underline">{t("hero.title").split(" ")[0]}</span>{" "}
-              {t("hero.title").split(" ").slice(1).join(" ")}
-            </h1>
-            <p className="mt-4 max-w-2xl text-lg text-muted sm:text-xl">
-              {t("hero.subtitle")}
-            </p>
-            <p className="font-hand mt-3 -rotate-1 text-2xl text-primary">
-              cooked by you, planned by us — no fuss
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/preview"
-                className="rounded-xl bg-[#e11d2e] px-6 py-3.5 text-base font-bold text-white shadow-md transition hover:brightness-95"
+        <div className="mt-9 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {category.recipes.map((recipe) => (
+            <article key={recipe.name}>
+              <button
+                type="button"
+                onClick={() => setSelectedRecipe(recipe)}
+                className="block w-full cursor-pointer"
+                aria-label={`View ${recipe.name} — ingredients, prices and steps`}
               >
-                {t("hero.cta")}
-              </Link>
-              <Link
-                href="/sample"
-                className="rounded-xl border border-card-border bg-card px-6 py-3.5 text-base font-semibold transition hover:border-primary hover:text-primary"
-              >
-                {t("hero.sample")}
-              </Link>
-            </div>
-            <p className="mt-4 text-sm text-muted">
-              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(7.99)}
-              {t("hero.perMonth")}
-            </p>
-          </div>
-
-          <div className="relative rotate-1 rounded-3xl border border-card-border bg-card p-4 shadow-lg sm:p-5 tape">
-            <div className="flex items-center justify-between border-b border-card-border pb-3">
-              <div>
-                <p className="text-sm font-semibold">
-                  {category.label} {t("menu.suffix")}
-                </p>
-                <p className="text-xs text-muted">{t("menu.subtitle")}</p>
-              </div>
-              <span className="font-hand -rotate-2 text-xl text-primary">
-                this week’s picks
-              </span>
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {category.recipes.map((recipe, idx) => (
-                <article
-                  key={recipe.name}
-                  className={`overflow-hidden rounded-2xl border border-card-border bg-card shadow-sm ${
-                    idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-                  }`}
+                <Image
+                  src={recipe.image}
+                  alt={recipe.name}
+                  width={800}
+                  height={550}
+                  className="h-48 w-full rounded-xl object-cover transition-transform duration-300 hover:scale-[1.02]"
+                />
+              </button>
+              <div className="mt-4">
+                <div className="flex items-center gap-3 text-xs text-muted">
+                  <span>{recipe.time}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{recipe.tag}</span>
+                </div>
+                <h3 className="mt-2 font-display text-lg font-bold leading-snug">{recipe.name}</h3>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRecipe(recipe)}
+                  className="mt-2 text-sm font-semibold text-primary underline-offset-2 hover:underline"
                 >
-                  <Image
-                    src={recipe.image}
-                    alt={recipe.name}
-                    width={800}
-                    height={550}
-                    className="h-44 w-full object-cover"
-                  />
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="rounded-full bg-black/5 px-2.5 py-1 text-xs font-semibold text-muted">
-                        {recipe.time}
-                      </div>
-                      <div className="rounded-full bg-[#e11d2e] px-2.5 py-1 text-xs font-bold text-white">
-                        {recipe.tag}
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <h2 className="text-lg font-bold leading-tight">{recipe.name}</h2>
-                      <p className="mt-2 text-sm text-muted">
-                        Proper food, made in your kitchen.
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+                  View recipe &amp; prices →
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section className="border-y border-card-border bg-card py-5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-            Prices compared across the shops you actually use
-          </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-base font-bold text-foreground/70">
-            {SUPERMARKETS.map((shop) => (
-              <span key={shop} className="flex items-center gap-1.5">
-                <span className="text-primary">✓</span> {shop}
-              </span>
-            ))}
-          </div>
+      <section className="border-y border-card-border py-5">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-7 gap-y-2 px-4 text-sm text-muted sm:px-6">
+          <span className="font-semibold text-foreground">Prices compared at</span>
+          {SUPERMARKETS.map((shop) => (
+            <span key={shop.name} className="flex items-center gap-2">
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: shop.color }}
+              />
+              {shop.name}
+            </span>
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div className="grid items-start gap-12 lg:grid-cols-2">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="kicker text-primary">
               How it works
             </p>
-            <h2 className="mt-3 text-3xl font-bold">Three steps, thirty seconds.</h2>
-            <ol className="mt-6 space-y-5">
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">Three steps, thirty seconds.</h2>
+            <ol className="mt-8 divide-y divide-card-border border-t border-card-border">
               {[
                 { step: "Tell us your budget, people and diet", note: "that’s it — allergies and calories can wait" },
                 { step: "We build your week of meals", note: "real recipes like Chicken Katsu Curry and Lentil Dahl" },
                 { step: "Shop the cheapest basket and cook", note: "list grouped by aisle, cheapest shop circled" },
               ].map((item, idx) => (
-                <li key={item.step} className="flex gap-4">
-                  <span className="font-hand mt-0.5 text-3xl leading-none text-primary">{idx + 1}.</span>
+                <li key={item.step} className="flex gap-5 py-5">
+                  <span className="font-display text-sm font-bold text-muted">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
                   <div>
-                    <p className="font-bold">{item.step}</p>
-                    <p className="font-hand text-lg text-muted">{item.note}</p>
+                    <p className="font-semibold">{item.step}</p>
+                    <p className="mt-0.5 text-sm text-muted">{item.note}</p>
                   </div>
                 </li>
               ))}
             </ol>
           </div>
-          <div className="relative -rotate-1 rounded-3xl border border-card-border bg-card p-6 shadow-lg tape">
-            <p className="text-sm font-semibold">Weekly basket · 21 meals, 2 people</p>
-            <div className="mt-4 space-y-3">
+          <div className="border-t border-card-border pt-8 lg:border-t-0 lg:pt-0">
+            <p className="font-semibold">Weekly basket · 21 meals, 2 people</p>
+            <div className="mt-5 divide-y divide-card-border border-y border-card-border">
               {[
                 { shop: "Tesco", priceGBP: 47.2, cheapest: false },
                 { shop: "Sainsbury's", priceGBP: 49.8, cheapest: false },
@@ -319,68 +362,61 @@ export default function Home() {
               ].map((row) => (
                 <div
                   key={row.shop}
-                  className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
-                    row.cheapest
-                      ? "border-primary bg-primary-light/40"
-                      : "border-card-border"
-                  }`}
+                  className="flex items-center justify-between py-4"
                 >
-                  <span className="font-semibold">{row.shop}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="font-bold">{format(row.priceGBP)}</span>
+                  <span className={row.cheapest ? "font-semibold" : "font-medium"}>{row.shop}</span>
+                  <span className="flex items-center gap-3">
                     {row.cheapest && (
-                      <span className="font-hand -rotate-2 text-lg text-primary">cheapest!</span>
+                      <span className="text-xs font-semibold uppercase tracking-wide text-accent">
+                        cheapest
+                      </span>
                     )}
+                    <span className="font-display text-lg font-bold">{format(row.priceGBP)}</span>
                   </span>
                 </div>
               ))}
             </div>
-            <p className="font-hand mt-4 rotate-1 text-right text-2xl text-primary">
-              you save {format(7.6)} this week
+            <p className="mt-5 text-sm text-muted">
+              You save about <span className="font-semibold text-foreground">{format(7.6)}</span> this week
+              by cooking the Aldi basket.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map((feature, idx) => (
-            <div
-              key={feature.title}
-              className={`rounded-2xl border border-card-border bg-card p-5 shadow-sm ${
-                idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-              }`}
-            >
-              <span className="font-hand text-3xl text-primary">{idx + 1}.</span>
-              <h3 className="mt-2 text-lg font-bold">{feature.title}</h3>
-              <p className="mt-1 text-sm text-muted">{feature.desc}</p>
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
+        <div className="grid gap-10 border-t border-card-border pt-12 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map((feature) => (
+            <div key={feature.title}>
+              <span className="flex h-10 w-10 items-center justify-center text-primary">
+                <feature.Icon className="h-7 w-7" />
+              </span>
+              <h3 className="mt-4 font-display text-lg font-bold">{feature.title}</h3>
+              <p className="mt-1.5 text-sm text-muted">{feature.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-card py-14">
+      <section className="border-y border-card-border bg-card py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-              From our early users
-            </p>
-            <h2 className="mt-3 text-3xl font-bold">
-              ⭐ 4.9/5 from beta testers
+          <div className="flex items-center gap-3">
+            <span className="flex gap-0.5 text-secondary">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <IconStar key={i} className="h-4 w-4" />
+              ))}
+            </span>
+            <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              4.9/5 from beta testers
             </h2>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {TESTIMONIALS.map((item, idx) => (
-              <figure
-                key={item.name}
-                className={`rounded-2xl border border-card-border bg-background p-5 shadow-sm ${
-                  idx % 2 === 0 ? "-rotate-1" : "rotate-1"
-                }`}
-              >
-                <blockquote className="text-sm">“{item.quote}”</blockquote>
-                <figcaption className="mt-3">
-                  <span className="font-bold">{item.name}</span>
-                  <span className="font-hand ml-2 text-lg text-muted">{item.detail}</span>
+          <div className="mt-10 grid gap-10 border-t border-card-border pt-10 sm:grid-cols-3">
+            {TESTIMONIALS.map((item) => (
+              <figure key={item.name}>
+                <blockquote className="text-base leading-relaxed">“{item.quote}”</blockquote>
+                <figcaption className="mt-4 text-sm">
+                  <span className="font-semibold">{item.name}</span>
+                  <span className="text-muted"> — {item.detail}</span>
                 </figcaption>
               </figure>
             ))}
@@ -388,25 +424,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-        <h2 className="text-center text-3xl font-bold">Why not just use ChatGPT?</h2>
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Why not just use ChatGPT?</h2>
         <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-separate border-spacing-0 overflow-hidden rounded-2xl border border-card-border bg-card text-sm">
+          <table className="w-full min-w-[560px] border-separate border-spacing-0 rounded-xl border border-card-border bg-card text-sm">
             <thead>
-              <tr className="bg-primary-light/40 text-left">
+              <tr className="bg-secondary-light text-left">
                 <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-bold text-primary">Mealsmith</th>
+                <th className="px-4 py-3 font-bold text-primary">Tiffinly</th>
                 <th className="px-4 py-3 font-semibold">ChatGPT</th>
                 <th className="px-4 py-3 font-semibold">Recipe websites</th>
               </tr>
             </thead>
             <tbody>
               {COMPARISON_ROWS.map((row) => (
-                <tr key={row.feature} className="border-t border-card-border">
+                <tr key={row.feature}>
                   <td className="border-t border-card-border px-4 py-3">{row.feature}</td>
-                  <td className="border-t border-card-border px-4 py-3 font-bold text-primary">✓</td>
-                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.gpt}</td>
-                  <td className="border-t border-card-border px-4 py-3 text-muted">{row.sites}</td>
+                  <td className="border-t border-card-border px-4 py-3 font-bold text-primary">
+                    <IconCheck className="h-5 w-5" />
+                  </td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">
+                    {row.gpt === false ? <IconCross className="h-5 w-5 opacity-50" /> : row.gpt}
+                  </td>
+                  <td className="border-t border-card-border px-4 py-3 text-muted">
+                    {row.sites === false ? <IconCross className="h-5 w-5 opacity-50" /> : row.sites}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -414,26 +456,26 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-card py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="border-t border-card-border py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-              Why people keep using it
-            </p>
-            <h2 className="mt-3 text-3xl font-bold">It feels like a menu, not a spreadsheet.</h2>
-            <p className="mt-3 text-muted">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">It feels like a menu, not a spreadsheet.</h2>
+            <p className="mt-4 max-w-md text-muted">
               The layout stays readable on small phones, stretches naturally on
               tablets and desktops, and keeps the important bits right up top.
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-8 border-t border-card-border pt-8 sm:grid-cols-3 lg:border-t-0 lg:pt-0">
             {[
-              { title: "Save time", desc: "Meals picked for you" },
-              { title: "Save money", desc: "Best local shop first" },
-              { title: "Stay on track", desc: "Progress is saved" },
+              { Icon: IconClipboard, title: "Save time", desc: "Meals picked for you" },
+              { Icon: IconBasket, title: "Save money", desc: "Best local shop first" },
+              { Icon: IconLeaf, title: "Stay on track", desc: "Progress is saved" },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl border border-card-border bg-background p-5">
-                <h3 className="font-bold">{item.title}</h3>
+              <div key={item.title}>
+                <span className="flex h-9 w-9 items-center justify-center text-primary">
+                  <item.Icon className="h-6 w-6" />
+                </span>
+                <h3 className="mt-3 font-semibold">{item.title}</h3>
                 <p className="mt-1 text-sm text-muted">{item.desc}</p>
               </div>
             ))}
@@ -442,6 +484,13 @@ export default function Home() {
       </section>
 
       <PricingSection />
+
+      {selectedRecipe && (
+        <RecipeDetailModal
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+        />
+      )}
     </div>
   );
 }

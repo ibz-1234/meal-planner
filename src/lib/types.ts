@@ -61,6 +61,6 @@ export interface SupermarketPrice {
   store: string;
   totalEstimatedCost: number;
   savings: number;
-  logo: string;
+  color: string;
   affiliateUrl: string;
 }

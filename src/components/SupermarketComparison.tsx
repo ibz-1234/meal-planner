@@ -10,6 +10,7 @@ import {
   type BasketItem,
   type UKStore,
 } from "@/lib/grocery-prices";
+import { IconCart, IconPin } from "@/lib/icons";
 
 const PREFERRED_STORE_KEY = "mmp-preferred-store";
 
@@ -150,7 +151,7 @@ export default function SupermarketComparison({
                       rel="noopener noreferrer"
                       className="rounded-full border border-card-border px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary"
                     >
-                      📍 Find your closest branch
+                      <IconPin className="mr-1 inline h-3.5 w-3.5" /> Find your closest branch
                     </a>
                     <a
                       href={meta.website}
@@ -158,7 +159,7 @@ export default function SupermarketComparison({
                       rel="noopener noreferrer"
                       className="rounded-full border border-card-border px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary"
                     >
-                      🛒 Shop online
+                      <IconCart className="mr-1 inline h-3.5 w-3.5" /> Shop online
                     </a>
                   </div>
                 )}
@@ -184,7 +185,7 @@ export default function SupermarketComparison({
     <div className="rounded-2xl border border-card-border bg-card p-6">
       <div className="mb-1 flex items-center justify-between gap-2">
         <h3 className="text-lg font-bold">
-          Shops in {country.flag} {country.name}
+          Shops in {country.name}
         </h3>
       </div>
       <p className="mb-4 text-sm text-muted">
@@ -206,7 +207,12 @@ export default function SupermarketComparison({
           >
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{store.logo}</span>
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-card-border font-display text-base font-extrabold text-white"
+                  style={{ backgroundColor: store.color }}
+                >
+                  {store.name.charAt(0)}
+                </span>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{store.name}</span>
@@ -239,7 +245,7 @@ export default function SupermarketComparison({
                 rel="noopener noreferrer"
                 className="rounded-full border border-card-border px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary"
               >
-                📍 Find your closest branch
+                <IconPin className="mr-1 inline h-3.5 w-3.5" /> Find your closest branch
               </a>
               {store.website !== "#" && (
                 <a
@@ -248,7 +254,7 @@ export default function SupermarketComparison({
                   rel="noopener noreferrer"
                   className="rounded-full border border-card-border px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary"
                 >
-                  🛒 Shop online
+                  <IconCart className="mr-1 inline h-3.5 w-3.5" /> Shop online
                 </a>
               )}
             </div>
