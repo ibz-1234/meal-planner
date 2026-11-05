@@ -189,12 +189,13 @@ export default function Home() {
               </Link>
             </div>
             <p className="mt-5 text-sm font-semibold text-muted">
-              {t("hero.freePreview")} · {t("hero.pricesFrom")} {format(5.99)}
+              {t("hero.freePreview")} · {t("hero.pricesFrom")}{" "}
+              {format(5.99)}
               {t("hero.perMonth")}
             </p>
           </div>
 
-          <div className="relative mx-auto w-full max-w-lg pb-10 pl-8">
+          <div className="relative mx-auto w-full max-w-lg pb-14 pl-8">
             <div className="hard rounded-3xl bg-card p-3">
               <Image
                 src="/meal-katsu.webp"
@@ -211,7 +212,7 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            <div className="hard-sm absolute -bottom-2 left-0 w-40 rounded-2xl bg-card p-2 sm:w-48">
+            <div className="hard-sm absolute -bottom-10 -left-2 w-36 rounded-2xl bg-card p-2 sm:w-44">
               <Image
                 src="/meal-salmon-traybake.webp"
                 alt="Salmon and asparagus traybake"
